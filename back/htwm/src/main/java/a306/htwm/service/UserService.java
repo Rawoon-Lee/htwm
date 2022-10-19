@@ -1,9 +1,6 @@
 package a306.htwm.service;
 
-import a306.htwm.dto.EditDTO;
-import a306.htwm.dto.FriendDTO;
-import a306.htwm.dto.RegisterDTO;
-import a306.htwm.dto.WeightDTO;
+import a306.htwm.dto.*;
 import a306.htwm.entity.Friend;
 import a306.htwm.entity.Mirror;
 import a306.htwm.entity.User;
@@ -17,15 +14,10 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.DateFormatter;
-import javax.swing.text.html.Option;
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,8 +33,12 @@ public class UserService {
     @Transactional
     public void register(RegisterDTO registerDTO) {
         User user = userRepository.findByUsername(registerDTO.getUsername());
-        Mirror mirror = mirrorRepository.findByUuid(registerDTO.getUuid());
-        user.setMirror(mirror);
+        if(user == null) throw new RuntimeException("username 이 존재하지 않습니다.");
+        Optional<Mirror> mirror = mirrorRepository.findByUuid(registerDTO.getUuid());
+        if(mirror.isEmpty()){
+            throw new RuntimeException("uuid 가 존재하지 않습니다.");
+        }
+        user.setMirror(mirror.get());
     }
 
     @Transactional
@@ -73,38 +69,49 @@ public class UserService {
         }
     }
 
-    public void acceptFriend(FriendDTO friendDTO) {
-        Optional<Friend> friend = friendRepository.findByMyNameAndFriendName(friendDTO.getUsername(), friendDTO.getFriendname());
+    @Transactional
+    public void acceptFriend(UsernameAndFriendDTO usernameAndFriendDTO) {
+        Optional<Friend> friend = friendRepository.findByMyNameAndFriendName(usernameAndFriendDTO.getUsername(), usernameAndFriendDTO.getFriendname());
         if(friend.isPresent()){
             throw new RuntimeException("이미 친구입니다.");
         }else{
             Friend newFriend = new Friend();
-            newFriend.setMyId(userRepository.findByUsername(friendDTO.getUsername()));
-            newFriend.setOtherId(userRepository.findByUsername(friendDTO.getFriendname()));
+            newFriend.setMyId(userRepository.findByUsername(usernameAndFriendDTO.getUsername()));
+            newFriend.setOtherId(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()));
 
             Friend newFriend2 = new Friend();
-            newFriend2.setMyId(userRepository.findByUsername(friendDTO.getFriendname()));
-            newFriend2.setOtherId(userRepository.findByUsername(friendDTO.getUsername()));
+            newFriend2.setMyId(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()));
+            newFriend2.setOtherId(userRepository.findByUsername(usernameAndFriendDTO.getUsername()));
 
             friendRepository.save(newFriend);
             friendRepository.save(newFriend2);
         }
     }
 
-    public void deleteFriend(FriendDTO friendDTO) {
-        Optional<Friend> friend = friendRepository.findByMyNameAndFriendName(friendDTO.getUsername(), friendDTO.getFriendname());
+    @Transactional
+    public void deleteFriend(UsernameAndFriendDTO usernameAndFriendDTO) {
+        Optional<Friend> friend = friendRepository.findByMyNameAndFriendName(usernameAndFriendDTO.getUsername(), usernameAndFriendDTO.getFriendname());
         if(friend.isPresent()){
             friendRepository.deleteById(friend.get().getId());
 
-            Optional<Friend> friend2 = friendRepository.findByMyNameAndFriendName(friendDTO.getFriendname(),friendDTO.getUsername());
+            Optional<Friend> friend2 = friendRepository.findByMyNameAndFriendName(usernameAndFriendDTO.getFriendname(), usernameAndFriendDTO.getUsername());
             friendRepository.deleteById(friend2.get().getId());
         }else{
             throw new RuntimeException("이미 친구가 아닙니다.");
         }
     }
 
-    public ArrayList<Friend> getFriend(FriendDTO friendDTO) {
-        return friendRepository.findAllByUsername(friendDTO.getUsername());
+    public ArrayList<FriendDTO> getFriend(UsernameDTO usernameDTO) {
+        ArrayList<Friend> friends = friendRepository.findAllByUsername(usernameDTO.getUsername());
+        ArrayList<FriendDTO> friendDTOS = new ArrayList<>();
+        for(Friend friend : friends){
+            FriendDTO friendDTO = FriendDTO.builder()
+                    .username(friend.getOtherId().getUsername())
+                    .nickname(friend.getOtherId().getNickname())
+                    .build();
+            friendDTOS.add(friendDTO);
+        }
+        return friendDTOS;
     }
 
 }

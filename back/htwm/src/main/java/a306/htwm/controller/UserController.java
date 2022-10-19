@@ -1,9 +1,6 @@
 package a306.htwm.controller;
 
-import a306.htwm.dto.EditDTO;
-import a306.htwm.dto.FriendDTO;
-import a306.htwm.dto.RegisterDTO;
-import a306.htwm.dto.WeightDTO;
+import a306.htwm.dto.*;
 import a306.htwm.entity.Friend;
 import a306.htwm.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +20,8 @@ public class UserController {
     public ResponseEntity register(@RequestBody RegisterDTO registerDTO){
         try{
             userService.register(registerDTO);
-        } catch(RuntimeException e){
-            return ResponseEntity.badRequest().body("invalid username or uuid");
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
@@ -34,7 +31,7 @@ public class UserController {
         try{
             userService.edit(editDTO);
         } catch(RuntimeException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("username 이 존재하지 않습니다.");
         }
         return ResponseEntity.ok().build();
     }
@@ -44,39 +41,37 @@ public class UserController {
         try{
             userService.weight(weightDTO);
         } catch(RuntimeException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("username 이 존재하지 않습니다.");
         }
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/friend")
-    public ResponseEntity acceptFriend(@RequestBody FriendDTO friendDTO){
+    public ResponseEntity acceptFriend(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
-            userService.acceptFriend(friendDTO);
+            userService.acceptFriend(usernameAndFriendDTO);
         } catch(RuntimeException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/friend")
-    public ResponseEntity deleteFriend(@RequestBody FriendDTO friendDTO){
+    public ResponseEntity deleteFriend(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
-            userService.deleteFriend(friendDTO);
+            userService.deleteFriend(usernameAndFriendDTO);
         } catch(RuntimeException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/friend")
-    public ResponseEntity getFriend(@RequestBody FriendDTO friendDTO){
-        ArrayList<Friend> friends;
+    public ResponseEntity<ArrayList<FriendDTO>> getFriend(@RequestBody UsernameDTO usernameDTO){
         try{
-            friends = userService.getFriend(friendDTO);
+            return ResponseEntity.ok().body(userService.getFriend(usernameDTO));
         } catch(RuntimeException e){
-            return ResponseEntity.badRequest( ).build();
+            return ResponseEntity.badRequest().body(new ArrayList<>());
         }
-        return ResponseEntity.ok().body(friends);
     }
 }
