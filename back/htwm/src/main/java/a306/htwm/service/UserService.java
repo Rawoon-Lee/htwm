@@ -81,14 +81,23 @@ public class UserService {
             Friend newFriend = new Friend();
             newFriend.setMyId(userRepository.findByUsername(friendDTO.getUsername()));
             newFriend.setOtherId(userRepository.findByUsername(friendDTO.getFriendname()));
+
+            Friend newFriend2 = new Friend();
+            newFriend2.setMyId(userRepository.findByUsername(friendDTO.getFriendname()));
+            newFriend2.setOtherId(userRepository.findByUsername(friendDTO.getUsername()));
+
             friendRepository.save(newFriend);
+            friendRepository.save(newFriend2);
         }
     }
 
     public void deleteFriend(FriendDTO friendDTO) {
         Optional<Friend> friend = friendRepository.findByMyNameAndFriendName(friendDTO.getUsername(), friendDTO.getFriendname());
         if(friend.isPresent()){
+            friendRepository.deleteById(friend.get().getId());
 
+            Optional<Friend> friend2 = friendRepository.findByMyNameAndFriendName(friendDTO.getFriendname(),friendDTO.getUsername());
+            friendRepository.deleteById(friend2.get().getId());
         }else{
             throw new RuntimeException("이미 친구가 아닙니다.");
         }
