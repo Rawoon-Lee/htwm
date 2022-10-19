@@ -76,5 +76,4 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Routine> routines = new ArrayList<>();
 
-
 }
