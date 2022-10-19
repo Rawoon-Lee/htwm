@@ -1,5 +1,6 @@
 package a306.htwm.service;
 
+import a306.htwm.dto.EditDTO;
 import a306.htwm.dto.RegisterDTO;
 import a306.htwm.entity.Mirror;
 import a306.htwm.entity.User;
@@ -23,5 +24,12 @@ public class UserService {
         User user = userRepository.findByUsername(registerDTO.getUsername());
         Mirror mirror = mirrorRepository.findByUuid(registerDTO.getUuid());
         user.setMirror(mirror);
+    }
+
+    @Transactional
+    public void edit(EditDTO editDTO) {
+        User user = userRepository.findByUsername(editDTO.getUsername());
+        user.setNickname(editDTO.getNickname());
+        user.setHeight(editDTO.getHeight());
     }
 }

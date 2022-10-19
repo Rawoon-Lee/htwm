@@ -26,8 +26,8 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "weight")
-    private String weight;
+    @Column(name = "height")
+    private double height;
 
     @Column(name = "img_url")
     private String imgUrl;
