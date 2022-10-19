@@ -46,12 +46,13 @@ public class User {
     @OneToMany(mappedBy = "otherId")
     private List<Friend> otherIds_f = new ArrayList<>();
 
-    //알림
+    /* 알림
     @OneToMany(mappedBy = "fromId")
     private List<Notice> fromIds = new ArrayList<>();
 
     @OneToMany(mappedBy = "toId")
     private List<Notice> toIds = new ArrayList<>();
+    */
 
     // 스트리밍
     @OneToMany(mappedBy = "myId")
