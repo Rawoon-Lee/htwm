@@ -4,6 +4,8 @@ import a306.htwm.dto.*;
 import a306.htwm.entity.Friend;
 import a306.htwm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,10 +70,10 @@ public class UserController {
 
     @GetMapping("/friend")
     public ResponseEntity<ArrayList<FriendDTO>> getFriend(@RequestBody UsernameDTO usernameDTO){
-        try{
+        try {
             return ResponseEntity.ok().body(userService.getFriend(usernameDTO));
-        } catch(RuntimeException e){
-            return ResponseEntity.badRequest().body(new ArrayList<>());
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().build();
         }
     }
 }
