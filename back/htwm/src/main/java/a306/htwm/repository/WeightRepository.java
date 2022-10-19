@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public interface WeightRepository extends JpaRepository<Weight, Long> {
 
-    @Query(nativeQuery = true, value = "select * from weight" +
-            "where date = :date and username = :username")
+    @Query(nativeQuery = true, value = "select * from weight w" +
+            "join user u " +
+            "on w.user_id = u.user_id " +
+            "where w.date = :date and u.username = :username")
     Optional<Weight> findByUsernameAndDate(@Param("username") String username, @Param("date") String date);
 }

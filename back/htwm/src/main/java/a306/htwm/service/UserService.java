@@ -54,9 +54,6 @@ public class UserService {
 
     @Transactional
     public void weight(WeightDTO weightDTO) {
-        // 반정규화 진행으로 인한 user 검색 불필요 : test 완료 시 주석 삭제 필요
-        // User user = userRepository.findByUsername(weightDTO.getUsername());
-
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -72,13 +69,12 @@ public class UserService {
             newWeight.setWeight(weightDTO.getWeight());
             newWeight.setDate(todayDate);
             newWeight.setUser(user);
-            // username 함께 update 되는지 test 필요
             weightRepository.save(newWeight);
         }
     }
 
     public void acceptFriend(FriendDTO friendDTO) {
-        Optional<Friend> friend = friendRepository.findByMyNameAndFreindName(friendDTO.getUsername(), friendDTO.getFriendname());
+        Optional<Friend> friend = friendRepository.findByMyNameAndFriendName(friendDTO.getUsername(), friendDTO.getFriendname());
         if(friend.isPresent()){
             throw new RuntimeException("이미 친구입니다.");
         }else{
@@ -90,7 +86,7 @@ public class UserService {
     }
 
     public void deleteFriend(FriendDTO friendDTO) {
-        Optional<Friend> friend = friendRepository.findByMyNameAndFreindName(friendDTO.getUsername(), friendDTO.getFriendname());
+        Optional<Friend> friend = friendRepository.findByMyNameAndFriendName(friendDTO.getUsername(), friendDTO.getFriendname());
         if(friend.isPresent()){
 
         }else{

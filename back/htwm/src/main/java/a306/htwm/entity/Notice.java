@@ -15,7 +15,7 @@ import java.util.Date;
 public class Notice {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "notice_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

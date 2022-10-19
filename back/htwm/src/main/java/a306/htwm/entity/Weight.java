@@ -25,7 +25,4 @@ public class Weight {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    //반정규화 진행 -> test 필요
-    private String username = user.getUsername();
 }

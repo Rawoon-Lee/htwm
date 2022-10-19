@@ -12,10 +12,13 @@ import java.util.Optional;
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     // 수정 필요 -> test 필요 해야함
-    @Query(nativeQuery = true, value = "select * from friend f join user u " +
-            "on f.my_id := u.user_id and f.other_id := u.user_id " +
-            "where ")
-    Optional<Friend> findByMyNameAndFreindName(@Param("myname") String myname, @Param("friendname") String friendname);
+    @Query(nativeQuery = true, value = "select * from friend f " +
+            "join user u " +
+            "on f.my_id := u.user_id " +
+            "join user u2 " +
+            "on f.other_id = u2.user_id " +
+            "where u.username := myname and u2.username := friendname")
+    Optional<Friend> findByMyNameAndFriendName(@Param("myname") String myname, @Param("friendname") String friendname);
 
     @Query(nativeQuery = true, value = "select * from friend f join user u " +
             "on f.my_id := u.user_id " +

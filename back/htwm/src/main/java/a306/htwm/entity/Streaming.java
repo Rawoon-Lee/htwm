@@ -17,7 +17,7 @@ import java.util.Date;
 public class Streaming {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "streaming_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
