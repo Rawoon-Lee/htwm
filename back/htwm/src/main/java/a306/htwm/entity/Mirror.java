@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "mirror")
@@ -22,6 +24,6 @@ public class Mirror {
     @Column(name = "uuid", unique = true)
     private String uuid;
 
-    @OneToOne(mappedBy = "mirror")
-    private User user;
+    @OneToMany(mappedBy = "mirror")
+    private List<User> users = new ArrayList<>();
 }
