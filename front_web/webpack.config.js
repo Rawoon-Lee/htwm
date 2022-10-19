@@ -9,7 +9,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist',
     filename: 'react.js',
-    publicPath: './',
+    // publicPath: './',
   },
   resolve: {
     extensions: ['.js', '.jsx'],
