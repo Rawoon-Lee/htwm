@@ -35,7 +35,7 @@ public class User {
     /* 연관관계 매핑 */
 
     //mirror
-    @OneToOne // 외래키가 있는 곳이 연관관계의 주인
+    @ManyToOne // 외래키가 있는 곳이 연관관계의 주인
     @JoinColumn(name = "mirror_id")
     private Mirror mirror;
 
