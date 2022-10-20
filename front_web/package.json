@@ -10,7 +10,7 @@
     "build": "yarn build:webpack && electron-builder"
   },
   "build": {
-    "productName": "HomeTMi",
+    "productName": "HTM",
     "appId": "com.HomeTMi.electron",
     "asar": true,
     "files": [

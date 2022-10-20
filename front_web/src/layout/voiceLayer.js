@@ -3,5 +3,7 @@ export default function Layout(props) {
 
   // STT
 
+  // 전화 오면 알림 띄우기
+
   return <div>This is Layout{props.children}</div>
 }
