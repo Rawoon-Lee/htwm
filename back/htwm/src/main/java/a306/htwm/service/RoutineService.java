@@ -1,9 +1,6 @@
 package a306.htwm.service;
 
-import a306.htwm.dto.CreateRoutineDTO;
-import a306.htwm.dto.ExerciseDTO;
-import a306.htwm.dto.FriendDTO;
-import a306.htwm.dto.SetDTO;
+import a306.htwm.dto.*;
 import a306.htwm.entity.Exercise;
 import a306.htwm.entity.Friend;
 import a306.htwm.entity.Routine;
@@ -66,5 +63,21 @@ public class RoutineService {
             set.setRoutine(routine);
             setRepository.save(set);
         }
+    }
+
+    @Transactional
+    public void delete(DeleteRoutineDTO deleteRoutineDTO){
+        if(routineRepository.findByNameAndUsername(deleteRoutineDTO.getName(), deleteRoutineDTO.getUsername()).isEmpty()){
+            throw new RuntimeException("루틴 명이 존재하지 않습니다.");
+        }
+        // 연관된 세트 삭제
+        Routine routine = routineRepository.findByNameAndUsername(deleteRoutineDTO.getName(), deleteRoutineDTO.getUsername()).get();
+
+        for(Set set : setRepository.findAllByRoutine(routine.getId())){
+            setRepository.delete(set);
+        }
+
+        // 해당 루팅 삭제
+        routineRepository.delete(routine);
     }
 }

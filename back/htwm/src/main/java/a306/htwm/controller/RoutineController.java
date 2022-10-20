@@ -1,6 +1,7 @@
 package a306.htwm.controller;
 
 import a306.htwm.dto.CreateRoutineDTO;
+import a306.htwm.dto.DeleteRoutineDTO;
 import a306.htwm.dto.ExerciseDTO;
 import a306.htwm.service.RoutineService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,13 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
-//    @DeleteMapping("")
-//    public ResponseEntity deleteRoutine(@RequestBody )
+    @DeleteMapping("")
+    public ResponseEntity deleteRoutine(@RequestBody DeleteRoutineDTO deleteRoutineDTO){
+        try{
+            routineService.delete(deleteRoutineDTO);
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

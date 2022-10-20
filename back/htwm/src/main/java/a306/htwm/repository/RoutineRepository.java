@@ -13,5 +13,10 @@ public interface RoutineRepository extends JpaRepository<Routine, Long> {
             "join user u " +
             "on r.user_id = u.user_id " +
             "where r.name = :name and u.username = :username")
-    Optional<Routine> findByNameAndUsername(@Param("name") String name,@Param("username") String username); //확인 필요
+    Optional<Routine> findByNameAndUsername(@Param("name") String name,@Param("username") String username);
+
+    boolean existsByName(String name);
+
+    @Query(nativeQuery = true, value = "select * from routine where name = :name")
+    Routine findByName(@Param("name") String name);
 }
