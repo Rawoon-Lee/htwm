@@ -20,7 +20,7 @@ public class Weight {
 
     private double weight;
 
-    private String date; // unique  키
+    private String date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
