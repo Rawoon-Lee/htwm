@@ -8,5 +8,6 @@ import java.util.ArrayList;
 @Getter @Setter
 public class CreateRoutineDTO {
     private String username;
+    private String name;
     private ArrayList<SetDTO> sets;
 }

@@ -3,9 +3,11 @@ package a306.htwm.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "set")
+@Table(name = "sets")
 @Getter
 @Setter
 @Builder
@@ -25,4 +27,9 @@ public class Set {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
+
+    // routine_set
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "routine_id")
+    private Routine routine;
 }

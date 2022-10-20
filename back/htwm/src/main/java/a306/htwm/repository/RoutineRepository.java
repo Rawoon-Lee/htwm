@@ -1,0 +1,17 @@
+package a306.htwm.repository;
+
+import a306.htwm.entity.Mirror;
+import a306.htwm.entity.Routine;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
+
+public interface RoutineRepository extends JpaRepository<Routine, Long> {
+    @Query(nativeQuery = true, value = "select * from routine r " +
+            "join user u " +
+            "on r.user_id = u.user_id " +
+            "where r.name = :name and u.username = :username")
+    Optional<Routine> findByNameAndUsername(@Param("name") String name,@Param("username") String username); //확인 필요
+}

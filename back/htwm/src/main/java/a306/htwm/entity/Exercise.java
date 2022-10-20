@@ -22,6 +22,7 @@ public class Exercise {
 
     private String url;
 
+    @Column(name="name", unique=true)
     private String name;
 
     // Set

@@ -21,8 +21,17 @@ public class RoutineController {
         return ResponseEntity.ok().body(routineService.getExercise());
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity createRoutine(@RequestBody CreateRoutineDTO createRoutineDTO){
+        try {
+            routineService.create(createRoutineDTO);
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
         return ResponseEntity.ok().build();
     }
+
+//    @DeleteMapping("")
+//    public ResponseEntity deleteRoutine(@RequestBody )
+
 }
