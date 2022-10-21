@@ -1,8 +1,6 @@
 package a306.htwm.controller;
 
-import a306.htwm.dto.CreateRoutineDTO;
-import a306.htwm.dto.DeleteRoutineDTO;
-import a306.htwm.dto.ExerciseDTO;
+import a306.htwm.dto.*;
 import a306.htwm.service.RoutineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,4 +40,8 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("")
+    public ResponseEntity<ArrayList<RoutineDTO>> getRoutine(@RequestParam("username") String username){
+        return ResponseEntity.ok().body(routineService.getRoutine(username));
+    }
 }

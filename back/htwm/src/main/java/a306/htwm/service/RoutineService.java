@@ -80,4 +80,17 @@ public class RoutineService {
         // 해당 루팅 삭제
         routineRepository.delete(routine);
     }
+
+    public ArrayList<RoutineDTO> getRoutine(String username) {
+        ArrayList<Routine> routines = routineRepository.findAllByUsername(username);
+        ArrayList<RoutineDTO> routineDTOS = new ArrayList<>();
+        for(Routine routine : routines){
+            RoutineDTO routineDTO = RoutineDTO.builder()
+                    .name(routine.getName())
+                    .username(routine.getUser().getUsername())
+                    .build();
+            routineDTOS.add(routineDTO);
+        }
+        return routineDTOS;
+    }
 }
