@@ -39,6 +39,7 @@ public class RoutineController {
         }catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+        return ResponseEntity.ok().build();
     }
 
 }
