@@ -1,5 +1,29 @@
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import * as Stomp from '@stomp/stompjs'
+import Sockjs from 'sockjs-client'
+
+import { setClient } from '../store/modules/util'
+
 export default function Layout(props) {
-  // 소켓 연결
+  const client = useSelector((state) => state.util.client)
+
+  useEffect(() => {
+    const stompClient = new Stomp.Client()
+    stompClient.webSocketFactory = () => new Sockjs('https://')
+    setClient(stompClient)
+  }, [])
+
+  useEffect(() => {
+    if (!client) return
+    // type1, type2 듣기
+
+    return () => {
+      if (client) {
+        client.deactivate()
+      }
+    }
+  }, [client])
 
   // STT
 

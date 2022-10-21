@@ -21,7 +21,7 @@ export default function Home() {
     <div>
       home
       <Link to="RealTime">asdf</Link>
-      <button onClick={() => (window.location.hash = '#/Picture')}>asdfasdf</button>
+      <button onClick={() => (window.location.hash = '#/Picture')}>picture로 이동</button>
       <button onClick={sendMain}>ipc 테스트</button>
     </div>
   )

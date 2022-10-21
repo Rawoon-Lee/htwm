@@ -18,12 +18,12 @@
       "public/main.js"
     ],
     "linux": {
-      "target": [
-        "deb",
-        "rpm",
-        "zip",
-        "tar.gz"
-      ]
+      "target": {
+        "target": "appimage",
+        "arch": [
+          "armv7l"
+        ]
+      }
     },
     "win": {
       "target": [
