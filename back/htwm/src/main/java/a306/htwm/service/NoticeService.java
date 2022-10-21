@@ -27,13 +27,33 @@ public class NoticeService {
         }
         Long userId = userRepository.findByUsername(usernameAndFriendDTO.getUsername()).getId();
         Long friendId = userRepository.findByUsername(usernameAndFriendDTO.getFriendname()).getId();
-        if(noticeRepository.findByFromIdAndToId(userId,friendId).isPresent()){
+        if(noticeRepository.findByFromIdAndToIdIfFriend(userId,friendId).isPresent()){
             throw new RuntimeException("이미 친구 신청을 보냈습니다.");
         }
         Notice notice = new Notice();
         notice.setFromId(userRepository.findByUsername(usernameAndFriendDTO.getUsername()));
         notice.setToId(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()));
         notice.setType(Type.FRIEND);
+        notice.setCreateTime(LocalDateTime.now());
+        notice.setIsread(false);
+
+        noticeRepository.save(notice);
+    }
+
+    @Transactional
+    public void requestStreaming(UsernameAndFriendDTO usernameAndFriendDTO) {
+        if(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()) == null){
+            throw new RuntimeException("친구의 username을 다시 확인하고 신청하세요.");
+        }
+        Long userId = userRepository.findByUsername(usernameAndFriendDTO.getUsername()).getId();
+        Long friendId = userRepository.findByUsername(usernameAndFriendDTO.getFriendname()).getId();
+        if(noticeRepository.findByFromIdAndToIdIfStreaming(userId,friendId).isPresent()){
+            throw new RuntimeException("이미 스트리밍 신청을 보냈습니다.");
+        }
+        Notice notice = new Notice();
+        notice.setFromId(userRepository.findByUsername(usernameAndFriendDTO.getUsername()));
+        notice.setToId(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()));
+        notice.setType(Type.STREAMING);
         notice.setCreateTime(LocalDateTime.now());
         notice.setIsread(false);
 

@@ -26,4 +26,13 @@ public class NoticeController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/streaming")
+    public ResponseEntity requestStreaming(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
+        try{
+            noticeService.requestStreaming(usernameAndFriendDTO);
+        } catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
 }
