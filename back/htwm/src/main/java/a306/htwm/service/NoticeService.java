@@ -1,5 +1,6 @@
 package a306.htwm.service;
 
+import a306.htwm.dto.NoticeDTO;
 import a306.htwm.dto.UsernameAndFriendDTO;
 import a306.htwm.entity.Notice;
 import a306.htwm.entity.Type;
@@ -71,5 +72,22 @@ public class NoticeService {
         for(Notice notice : notices) {
             notice.setIsread(true);
         }
+    }
+
+    public ArrayList<NoticeDTO> getList(String username){
+        Long userId = userRepository.findByUsername(username).getId();
+        ArrayList<Notice> notices = noticeRepository.findAllByToId(userId);
+        ArrayList<NoticeDTO> noticeDTOS = new ArrayList<>();
+        for(Notice notice : notices){
+            NoticeDTO noticeDTO = NoticeDTO.builder()
+                    .createTime(notice.getCreateTime())
+                    .fromUsername(notice.getFromId().getUsername())
+                    .toUsername(notice.getToId().getUsername())
+                    .isRead(notice.isIsread())
+                    .type(notice.getType())
+                    .build();
+            noticeDTOS.add(noticeDTO);
+        }
+        return noticeDTOS;
     }
 }
