@@ -4,6 +4,7 @@ package a306.htwm.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -20,8 +21,8 @@ public class Record {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date startDatetime;
-    private Date endDatetime;
+    private LocalDateTime startDatetime;
+    private LocalDateTime endDatetime;
     private int DoneSetNum; // 진행률
     private String routineString;
 
