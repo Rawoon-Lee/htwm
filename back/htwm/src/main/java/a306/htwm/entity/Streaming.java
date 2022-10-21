@@ -4,6 +4,7 @@ package a306.htwm.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -29,6 +30,6 @@ public class Streaming {
     @JoinColumn(name = "other_id")
     private User otherId;
 
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

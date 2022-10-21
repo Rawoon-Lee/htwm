@@ -4,6 +4,7 @@ package a306.htwm.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -22,7 +23,7 @@ public class Picture {
 
     private String url;
 
-    private Date datetime;
+    private LocalDateTime datetime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

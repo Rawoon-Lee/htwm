@@ -3,6 +3,7 @@ package a306.htwm.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -27,9 +28,9 @@ public class Notice {
     @JoinColumn(name = "to_id")
     private User toId;
 
-    private int status;
+    private Type type;
 
-    private Date createTime;
+    private LocalDateTime createTime;
 
     private boolean isread;
 }
