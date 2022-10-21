@@ -101,9 +101,9 @@ public class UserService {
         }
     }
 
-    public ArrayList<FriendDTO> getFriend(UsernameDTO usernameDTO) {
-        if(userRepository.findByUsername(usernameDTO.getUsername()) == null) throw new RuntimeException("username 이 존재하지 않습니다.");
-        ArrayList<Friend> friends = friendRepository.findAllByUsername(usernameDTO.getUsername());
+    public ArrayList<FriendDTO> getFriend(String username) {
+        if(userRepository.findByUsername(username) == null) throw new RuntimeException("username 이 존재하지 않습니다.");
+        ArrayList<Friend> friends = friendRepository.findAllByUsername(username);
         ArrayList<FriendDTO> friendDTOS = new ArrayList<>();
         for(Friend friend : friends){
             FriendDTO friendDTO = FriendDTO.builder()

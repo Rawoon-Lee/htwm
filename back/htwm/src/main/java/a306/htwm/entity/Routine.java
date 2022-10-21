@@ -3,6 +3,8 @@ package a306.htwm.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "routine")
@@ -23,4 +25,8 @@ public class Routine {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    // routine_set
+    @OneToMany(mappedBy = "routine")
+    private List<Set> sets = new ArrayList<>();
 }

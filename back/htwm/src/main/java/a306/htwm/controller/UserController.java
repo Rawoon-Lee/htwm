@@ -69,9 +69,9 @@ public class UserController {
     }
 
     @GetMapping("/friend")
-    public ResponseEntity<ArrayList<FriendDTO>> getFriend(@RequestBody UsernameDTO usernameDTO){
+    public ResponseEntity<ArrayList<FriendDTO>> getFriend(@RequestParam("username") String username){
         try {
-            return ResponseEntity.ok().body(userService.getFriend(usernameDTO));
+            return ResponseEntity.ok().body(userService.getFriend(username));
         } catch (RuntimeException e){
             return ResponseEntity.badRequest().build();
         }
