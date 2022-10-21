@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 @Service
 @Transactional(readOnly = true) // 기본은 false
@@ -58,5 +59,17 @@ public class NoticeService {
         notice.setIsread(false);
 
         noticeRepository.save(notice);
+    }
+
+    @Transactional
+    public void read(String username){
+        if(userRepository.findByUsername(username) == null){
+            throw new RuntimeException("username이 존재하지 않습니다.");
+        }
+        Long userId = userRepository.findByUsername(username).getId();
+        ArrayList<Notice> notices = noticeRepository.findAllByToId(userId);
+        for(Notice notice : notices) {
+            notice.setIsread(true);
+        }
     }
 }

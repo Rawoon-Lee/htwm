@@ -1,6 +1,7 @@
 package a306.htwm.controller;
 
 import a306.htwm.dto.UsernameAndFriendDTO;
+import a306.htwm.dto.UsernameDTO;
 import a306.htwm.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,16 @@ public class NoticeController {
     public ResponseEntity requestStreaming(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
             noticeService.requestStreaming(usernameAndFriendDTO);
+        } catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("")
+    public ResponseEntity readNotice(@RequestBody UsernameDTO usernameDTO) {
+        try{
+            noticeService.read(usernameDTO.getUsername());
         } catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
