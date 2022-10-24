@@ -21,7 +21,7 @@ public class NoticeController {
     @PostMapping("/friend")
     public ResponseEntity requestFriend(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
-            noticeService.addNotice(usernameAndFriendDTO,Type.RequestFriend);
+            noticeService.addNotice(usernameAndFriendDTO,Type.REQ_FRI);
         } catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -31,7 +31,7 @@ public class NoticeController {
     @PostMapping("/streaming")
     public ResponseEntity requestStreaming(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
-            noticeService.addNotice(usernameAndFriendDTO, Type.RequestStreaming);
+            noticeService.addNotice(usernameAndFriendDTO, Type.REQ_STR);
         } catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -31,7 +31,7 @@ public class StreamingController {
     @PostMapping("/accept")
     public ResponseEntity accept(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try {
-            noticeService.addNotice(usernameAndFriendDTO, Type.AcceptStreaming);
+            noticeService.addNotice(usernameAndFriendDTO, Type.ACC_STR);
             streamingService.accept(usernameAndFriendDTO);
 
             Message message = new Message();
@@ -61,8 +61,7 @@ public class StreamingController {
     @PostMapping("/deny")
     public ResponseEntity deny(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try {
-            noticeService.addNotice(usernameAndFriendDTO, Type.DenyStreaming);
-            //streamingService.deny(usernameAndFriendDTO);
+            noticeService.addNotice(usernameAndFriendDTO, Type.DEN_STR);
 
             Message message = new Message();
             message.setFrom(usernameAndFriendDTO.getUsername());

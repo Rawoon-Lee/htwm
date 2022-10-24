@@ -54,7 +54,7 @@ public class UserController {
     @PostMapping("/friend")
     public ResponseEntity acceptFriend(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
-            noticeService.addNotice(usernameAndFriendDTO, Type.AcceptFriend);
+            noticeService.addNotice(usernameAndFriendDTO, Type.ACC_FRI);
             userService.acceptFriend(usernameAndFriendDTO);
         } catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());

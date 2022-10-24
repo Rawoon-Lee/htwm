@@ -15,7 +15,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     @Query(nativeQuery = true,value = "select * from notice " +
             "where from_id = :fromId and to_id = :toId and type = :type")
-    Optional<Notice> findByFromIdAndToIdIfType(@Param("fromId") Long fromId, @Param("toId") Long toId,@Param("type") Type type);
+    Optional<Notice> findByFromIdAndToIdIfType(@Param("fromId") Long fromId, @Param("toId") Long toId,@Param("type") String type);
 
     @Query(nativeQuery = true, value = "select * from notice " +
             "where to_id = :userId")
