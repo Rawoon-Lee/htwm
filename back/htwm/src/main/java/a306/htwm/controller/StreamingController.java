@@ -3,7 +3,9 @@ package a306.htwm.controller;
 
 import a306.htwm.dto.UsernameAndFriendDTO;
 import a306.htwm.entity.Message;
+import a306.htwm.entity.Type;
 import a306.htwm.repository.StreamingRepository;
+import a306.htwm.service.NoticeService;
 import a306.htwm.service.StreamingService;
 import a306.htwm.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +26,12 @@ public class StreamingController {
     private final StreamingService streamingService;
     private final UserService userService;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
+    private final NoticeService noticeService;
 
     @PostMapping("/accept")
     public ResponseEntity accept(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try {
+            noticeService.addNotice(usernameAndFriendDTO, Type.AcceptStreaming);
             streamingService.accept(usernameAndFriendDTO);
 
             Message message = new Message();
@@ -54,4 +58,19 @@ public class StreamingController {
         simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
     }
 
+    @PostMapping("/deny")
+    public ResponseEntity deny(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
+        try {
+            noticeService.addNotice(usernameAndFriendDTO, Type.DenyStreaming);
+            //streamingService.deny(usernameAndFriendDTO);
+
+            Message message = new Message();
+            message.setFrom(usernameAndFriendDTO.getUsername());
+            message.setTo(usernameAndFriendDTO.getFriendname());
+            enter(message);
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
 }

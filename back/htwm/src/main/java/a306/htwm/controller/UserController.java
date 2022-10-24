@@ -2,6 +2,8 @@ package a306.htwm.controller;
 
 import a306.htwm.dto.*;
 import a306.htwm.entity.Friend;
+import a306.htwm.entity.Type;
+import a306.htwm.service.NoticeService;
 import a306.htwm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 public class UserController {
 
     private final UserService userService;
+    private final NoticeService noticeService;
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterDTO registerDTO){
@@ -51,6 +54,7 @@ public class UserController {
     @PostMapping("/friend")
     public ResponseEntity acceptFriend(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
+            noticeService.addNotice(usernameAndFriendDTO, Type.AcceptFriend);
             userService.acceptFriend(usernameAndFriendDTO);
         } catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
