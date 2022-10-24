@@ -14,7 +14,8 @@ import java.util.Optional;
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     @Query(nativeQuery = true,value = "select * from notice " +
-            "where from_id = :fromId and to_id = :toId and type = :type")
+            "where from_id = :fromId and to_id = :toId and type = :type " +
+            "order by create_time desc")
     Optional<Notice> findByFromIdAndToIdIfType(@Param("fromId") Long fromId, @Param("toId") Long toId,@Param("type") String type);
 
     @Query(nativeQuery = true, value = "select * from notice " +

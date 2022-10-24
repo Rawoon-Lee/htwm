@@ -37,16 +37,16 @@ public class StreamingController {
             Message message = new Message();
             message.setFrom(usernameAndFriendDTO.getUsername());
             message.setTo(usernameAndFriendDTO.getFriendname());
-            enter(message);
+            socket(message,"ENTER");
         } catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
 
-    @MessageMapping("/enter")
-    public void enter(Message message){
-        message.setType("ENTER");
+    @MessageMapping("/socket")
+    public void socket(Message message, String type){
+        message.setType(type);
         String friendUuid = userService.getUuid(message.getTo());
         simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
     }
@@ -66,10 +66,11 @@ public class StreamingController {
             Message message = new Message();
             message.setFrom(usernameAndFriendDTO.getUsername());
             message.setTo(usernameAndFriendDTO.getFriendname());
-            enter(message);
+            socket(message,"DENY");
         } catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
+
 }

@@ -32,10 +32,12 @@ public class NoticeService {
         Long userId = userRepository.findByUsername(usernameAndFriendDTO.getUsername()).getId();
         Long friendId = userRepository.findByUsername(usernameAndFriendDTO.getFriendname()).getId();
 
+        /*
         String nowType = type.toString();
         if(noticeRepository.findByFromIdAndToIdIfType(userId,friendId,nowType).isPresent()){
             throw new RuntimeException("이미 해당 알림을 보냈습니다.");
         }
+         */
 
         //Accept나 Deny 알림 : Request 읽음 처리
         if(type.equals(Type.ACC_FRI)){
