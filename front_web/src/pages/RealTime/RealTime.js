@@ -24,6 +24,7 @@ export default function RealTime() {
         audio: true,
         video: true,
       })
+      console.log(myStream, navigator.mediaDevices)
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
         myVideoRef.current.srcObject = myStream
         makeConnection()
