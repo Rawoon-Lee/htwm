@@ -115,4 +115,7 @@ public class UserService {
         return friendDTOS;
     }
 
+    public String getUuid(String username){
+        return userRepository.findByUsername(username).getMirror().getUuid();
+    }
 }
