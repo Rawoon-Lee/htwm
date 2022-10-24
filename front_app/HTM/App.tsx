@@ -1,23 +1,28 @@
 import { StatusBar } from "expo-status-bar"
 import { StyleSheet, Text, View } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import Main from "./screens/MainPage/Main"
 import RoutineList from "./screens/RoutinesList/RoutinesList"
 import AlarmList from "./screens/AlarmLsit/AlarmList"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import FriendsList from "./screens/FriendsList/FriendsList"
+import MyRecord from "./screens/MyRecord/MyRecord"
 
-const Stack = createNativeStackNavigator()
+const BottomTab = createBottomTabNavigator()
 export default function App() {
 	return (
-		<View style={styles.container}>
-			<Text>왜 이러지</Text>
+		<>
 			<StatusBar style="auto" />
 			<NavigationContainer>
-				<Stack.Navigator>
-					<Stack.Screen name="Main" component={Main} />
-				</Stack.Navigator>
+				<BottomTab.Navigator>
+					<BottomTab.Screen name="Main" component={Main} />
+					<BottomTab.Screen name="RoutineList" component={RoutineList} />
+					<BottomTab.Screen name="MyRecord" component={MyRecord} />
+					<BottomTab.Screen name="FriendsList" component={FriendsList} />
+					<BottomTab.Screen name="AlarmList" component={AlarmList} />
+				</BottomTab.Navigator>
 			</NavigationContainer>
-		</View>
+		</>
 	)
 }
 
