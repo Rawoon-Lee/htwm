@@ -3,6 +3,7 @@ package a306.htwm.controller;
 import a306.htwm.dto.NoticeDTO;
 import a306.htwm.dto.UsernameAndFriendDTO;
 import a306.htwm.dto.UsernameDTO;
+import a306.htwm.entity.Type;
 import a306.htwm.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class NoticeController {
     @PostMapping("/friend")
     public ResponseEntity requestFriend(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
-            noticeService.requestFriend(usernameAndFriendDTO);
+            noticeService.addNotice(usernameAndFriendDTO,Type.REQ_FRI);
         } catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -30,7 +31,7 @@ public class NoticeController {
     @PostMapping("/streaming")
     public ResponseEntity requestStreaming(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{
-            noticeService.requestStreaming(usernameAndFriendDTO);
+            noticeService.addNotice(usernameAndFriendDTO, Type.REQ_STR);
         } catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
