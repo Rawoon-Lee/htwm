@@ -73,4 +73,19 @@ public class StreamingController {
         return ResponseEntity.ok().build();
     }
 
+
+    @PostMapping("/end")
+    public ResponseEntity end(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
+        try {
+            streamingService.end(usernameAndFriendDTO);
+
+            Message message = new Message();
+            message.setFrom(usernameAndFriendDTO.getUsername());
+            message.setTo(usernameAndFriendDTO.getFriendname());
+            socket(message,"END");
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
 }
