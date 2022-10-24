@@ -28,6 +28,7 @@ public class Notice {
     @JoinColumn(name = "to_id")
     private User toId;
 
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     private LocalDateTime createTime;

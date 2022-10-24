@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true) // 기본은 false
@@ -23,39 +24,46 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
 
     @Transactional
-    public void requestFriend(UsernameAndFriendDTO usernameAndFriendDTO) {
+    public void addNotice(UsernameAndFriendDTO usernameAndFriendDTO, Type type){
         if(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()) == null){
             throw new RuntimeException("친구의 username을 다시 확인하고 신청하세요.");
         }
+
         Long userId = userRepository.findByUsername(usernameAndFriendDTO.getUsername()).getId();
         Long friendId = userRepository.findByUsername(usernameAndFriendDTO.getFriendname()).getId();
-        if(noticeRepository.findByFromIdAndToIdIfFriend(userId,friendId).isPresent()){
-            throw new RuntimeException("이미 친구 신청을 보냈습니다.");
+
+        /*
+        String nowType = type.toString();
+        if(noticeRepository.findByFromIdAndToIdIfType(userId,friendId,nowType).isPresent()){
+            throw new RuntimeException("이미 해당 알림을 보냈습니다.");
         }
+         */
+
+        //Accept나 Deny 알림 : Request 읽음 처리
+        if(type.equals(Type.ACC_FRI)){
+            Optional<Notice> notice = noticeRepository.findByFromIdAndToIdIfType(friendId,userId,Type.REQ_FRI.toString());
+            if(notice.isEmpty()){
+                throw new RuntimeException("신청을 먼저 보내고 요청해주세요");
+            }
+            Notice realNotice = notice.get();
+            realNotice.setIsread(true);
+            noticeRepository.save(realNotice);
+        }else if(type.equals(Type.ACC_STR)||type.equals(Type.DEN_STR)){
+            Optional<Notice> notice = noticeRepository.findByFromIdAndToIdIfType(friendId,userId,Type.REQ_FRI.toString());
+            if(notice.isEmpty()){
+                throw new RuntimeException("신청을 먼저 보내고 요청해주세요");
+            }
+            Notice realNotice = notice.get();
+            realNotice.setIsread(true);
+            noticeRepository.save(realNotice);
+        }
+
+
+        //notice 테이블 생성
         Notice notice = new Notice();
         notice.setFromId(userRepository.findByUsername(usernameAndFriendDTO.getUsername()));
         notice.setToId(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()));
-        notice.setType(Type.FRIEND);
-        notice.setCreateTime(LocalDateTime.now());
-        notice.setIsread(false);
-
-        noticeRepository.save(notice);
-    }
-
-    @Transactional
-    public void requestStreaming(UsernameAndFriendDTO usernameAndFriendDTO) {
-        if(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()) == null){
-            throw new RuntimeException("친구의 username을 다시 확인하고 신청하세요.");
-        }
-        Long userId = userRepository.findByUsername(usernameAndFriendDTO.getUsername()).getId();
-        Long friendId = userRepository.findByUsername(usernameAndFriendDTO.getFriendname()).getId();
-        if(noticeRepository.findByFromIdAndToIdIfStreaming(userId,friendId).isPresent()){
-            throw new RuntimeException("이미 스트리밍 신청을 보냈습니다.");
-        }
-        Notice notice = new Notice();
-        notice.setFromId(userRepository.findByUsername(usernameAndFriendDTO.getUsername()));
-        notice.setToId(userRepository.findByUsername(usernameAndFriendDTO.getFriendname()));
-        notice.setType(Type.STREAMING);
+        notice.setType(type);
         notice.setCreateTime(LocalDateTime.now());
         notice.setIsread(false);
 
