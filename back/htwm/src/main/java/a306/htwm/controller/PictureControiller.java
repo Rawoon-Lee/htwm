@@ -1,13 +1,30 @@
 package a306.htwm.controller;
 
 
+import a306.htwm.config.S3Uploader;
+import a306.htwm.service.PictureService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/picture")
 @RequiredArgsConstructor
 public class PictureControiller {
+    private final S3Uploader s3Uploader;
+    private final PictureService pictureService;
 
+    @PostMapping("")
+    @ResponseBody
+    public ResponseEntity photoGroupUpload(@RequestPart("image") MultipartFile multipartFile, String username){
+        String uploadUrl;
+        try {
+            uploadUrl = s3Uploader.uploadFiles(multipartFile, "body");
+        } catch (Exception e) {
+            throw new RuntimeException("파일을 읽을 수 없습니다.");
+        }
+        pictureService.join(uploadUrl,username);
+        return ResponseEntity.ok().build();
+    }
 }
