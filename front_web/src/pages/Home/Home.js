@@ -7,7 +7,8 @@ import weatherApi from '../../actions/api/weatherApi'
 
 export default function Home() {
   const { ipcRenderer } = window.require('electron')
-  const [weather, setWeather] = useState([])
+  const [near, setNear] = useState([])
+  const [far, setFar] = useState([])
 
   const getWeather = () => {
     const newDate = new Date()
@@ -21,8 +22,8 @@ export default function Home() {
       .padEnd(4, '0')
     weatherApi(date, time).then((res) => {
       const data = getWeatherDetail(res.data.response.body.items.item)
-      console.log(data)
-      setWeather(data)
+      setNear(data.near)
+      setFar(data.far)
     })
   }
 
@@ -113,41 +114,12 @@ export default function Home() {
     ipcRenderer.send(SEND_TEST, 'hello')
   }
 
-  const ctx = document.querySelector('#weatherChart')
-  const data = {
-    labels: ['asdf', 'wrg', 'fg', 'het', 'hte', 'hy'],
-    datasets: [
-      {
-        label: '12시간 예보',
-        data: [1, 2, 7, 4, 5, 6],
-        backgroundColor: ['rgba(0, 0, 0)'], // 점
-        borderColor: ['rgba(0, 0, 0)'], // 선
-        borderWidth: 3,
-        tension: 0.3,
-      },
-    ],
-  }
-  const config = {
-    type: 'line',
-    data: data,
-  }
-
-  useEffect(() => {
-    if (ctx) {
-      Chart.register(...registerables)
-      console.log(ctx)
-      const chart = new Chart(ctx, config)
-      console.log(chart)
-    }
-  }, [ctx])
-
   return (
     <div>
       home
       {/* <Link to="RealTime">RealTime</Link> */}
       <button onClick={sendMain}>ipc 테스트</button>
       <button onClick={getWeather}>날씨 테스트</button>
-      <canvas id="weatherChart" width="400" height="400"></canvas>
     </div>
   )
 }
