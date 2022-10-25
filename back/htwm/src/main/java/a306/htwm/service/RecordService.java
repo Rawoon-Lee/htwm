@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 @Service
 @Transactional(readOnly = true) // 기본은 false
 @RequiredArgsConstructor
@@ -29,5 +31,21 @@ public class RecordService {
         record.setRoutineString(recordRoutineDTO.getRoutineJson());
         record.setUser(userRepository.findByUsername(recordRoutineDTO.getUsername()));
         recordRepository.save(record);
+    }
+
+    public ArrayList<RecordRoutineDTO> getRoutine(String username) {
+        Long userId = userRepository.findByUsername(username).getId();
+        ArrayList<Record> records = recordRepository.findAllByUserId(userId);
+        ArrayList<RecordRoutineDTO> recordRoutineDTOS=new ArrayList<>();
+        for(Record record : records){
+            RecordRoutineDTO recordRoutineDTO = new RecordRoutineDTO();
+            recordRoutineDTO.setUsername(username);
+            recordRoutineDTO.setStartDateTime(record.getStartDatetime());
+            recordRoutineDTO.setEndDateTime(record.getEndDatetime());
+            recordRoutineDTO.setDoneSetNum(record.getDoneSetNum());
+            recordRoutineDTO.setRoutineJson(record.getRoutineString());
+            recordRoutineDTOS.add(recordRoutineDTO);
+        }
+        return recordRoutineDTOS;
     }
 }
