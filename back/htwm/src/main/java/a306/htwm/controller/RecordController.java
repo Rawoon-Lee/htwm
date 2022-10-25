@@ -30,14 +30,7 @@ public class RecordController {
 
     @GetMapping("/routine")
     public ResponseEntity<ArrayList<RecordRoutineDTO>> getRoutine(@RequestParam UsernameDTO usernameDTO){
-        ArrayList<RecordRoutineDTO> ret = new ArrayList<>();
-        try{
-            ret = recordService.getRoutine(usernameDTO.getUsername());
-        }catch(RuntimeException e){
-            ResponseEntity.badRequest().body(e.getMessage());
-        }
-        return ResponseEntity.ok().body(ret);
+        return ResponseEntity.ok().body(recordService.getRoutine(usernameDTO.getUsername()));
     }
-
 
 }

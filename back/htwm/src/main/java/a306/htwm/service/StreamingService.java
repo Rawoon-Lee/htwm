@@ -1,6 +1,9 @@
 package a306.htwm.service;
 
+import a306.htwm.dto.RecordRoutineDTO;
+import a306.htwm.dto.StreamingDTO;
 import a306.htwm.dto.UsernameAndFriendDTO;
+import a306.htwm.entity.Record;
 import a306.htwm.entity.Streaming;
 import a306.htwm.repository.NoticeRepository;
 import a306.htwm.repository.StreamingRepository;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -61,5 +65,20 @@ public class StreamingService {
 
         streamingRepository.save(myStreaming);
         streamingRepository.save(otherStreaming);
+    }
+
+    public ArrayList<StreamingDTO> getList(String username) {
+        Long userId = userRepository.findByUsername(username).getId();
+        ArrayList<Streaming> streamings = streamingRepository.findAllByUserId(userId);
+        ArrayList<StreamingDTO> streamingDTOS=new ArrayList<>();
+        for(Streaming streaming : streamings){
+            StreamingDTO streamingDTO = new StreamingDTO();
+            streamingDTO.setOtherUsername(streaming.getOtherId().getUsername());
+            streamingDTO.setOtherNickname(streaming.getOtherId().getNickname());
+            streamingDTO.setStartTime(streaming.getStartTime());
+            streamingDTO.setEndTime(streaming.getEndTime());
+            streamingDTOS.add(streamingDTO);
+        }
+        return streamingDTOS;
     }
 }
