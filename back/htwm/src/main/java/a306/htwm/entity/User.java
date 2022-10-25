@@ -35,9 +35,8 @@ public class User {
     /* 연관관계 매핑 */
 
     //mirror
-    @ManyToOne // 외래키가 있는 곳이 연관관계의 주인
-    @JoinColumn(name = "mirror_id")
-    private Mirror mirror;
+    @OneToMany(mappedBy = "user")
+    private List<Mirror> mirrors = new ArrayList<>();
 
     //친구 목록
     @OneToMany(mappedBy = "myId")
