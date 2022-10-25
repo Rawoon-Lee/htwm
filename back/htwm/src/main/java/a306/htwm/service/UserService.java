@@ -116,6 +116,6 @@ public class UserService {
     }
 
     public String getUuid(String username){
-        return mirrorRepository.findByUser(userRepository.findByUsername(username).getId()).getUuid();
+        return mirrorRepository.findByUser(userRepository.findByUsername(username)).getUuid();
     }
 }
