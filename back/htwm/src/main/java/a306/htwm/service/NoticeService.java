@@ -49,7 +49,7 @@ public class NoticeService {
             realNotice.setIsread(true);
             noticeRepository.save(realNotice);
         }else if(type.equals(Type.ACC_STR)||type.equals(Type.DEN_STR)){
-            Optional<Notice> notice = noticeRepository.findByFromIdAndToIdIfType(friendId,userId,Type.REQ_FRI.toString());
+            Optional<Notice> notice = noticeRepository.findByFromIdAndToIdIfType(friendId,userId,Type.REQ_STR.toString());
             if(notice.isEmpty()){
                 throw new RuntimeException("신청을 먼저 보내고 요청해주세요");
             }
