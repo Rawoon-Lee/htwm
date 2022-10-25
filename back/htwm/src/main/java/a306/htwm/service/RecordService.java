@@ -18,6 +18,7 @@ public class RecordService {
     public final RecordRepository recordRepository;
     public final UserRepository userRepository;
 
+    @Transactional
     public void join(RecordRoutineDTO recordRoutineDTO) {
 
         if(userRepository.findByUsername(recordRoutineDTO.getUsername())==null){
@@ -38,12 +39,13 @@ public class RecordService {
         ArrayList<Record> records = recordRepository.findAllByUserId(userId);
         ArrayList<RecordRoutineDTO> recordRoutineDTOS=new ArrayList<>();
         for(Record record : records){
-            RecordRoutineDTO recordRoutineDTO = new RecordRoutineDTO();
-            recordRoutineDTO.setUsername(username);
-            recordRoutineDTO.setStartDateTime(record.getStartDatetime());
-            recordRoutineDTO.setEndDateTime(record.getEndDatetime());
-            recordRoutineDTO.setDoneSetNum(record.getDoneSetNum());
-            recordRoutineDTO.setRoutineJson(record.getRoutineString());
+            RecordRoutineDTO recordRoutineDTO = RecordRoutineDTO.builder()
+                    .username(username)
+                    .StartDateTime(record.getStartDatetime())
+                    .EndDateTime(record.getEndDatetime())
+                    .doneSetNum(record.getDoneSetNum())
+                    .routineJson(record.getRoutineString())
+                    .build();
             recordRoutineDTOS.add(recordRoutineDTO);
         }
         return recordRoutineDTOS;

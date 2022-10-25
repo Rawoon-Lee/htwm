@@ -72,11 +72,12 @@ public class StreamingService {
         ArrayList<Streaming> streamings = streamingRepository.findAllByUserId(userId);
         ArrayList<StreamingDTO> streamingDTOS=new ArrayList<>();
         for(Streaming streaming : streamings){
-            StreamingDTO streamingDTO = new StreamingDTO();
-            streamingDTO.setOtherUsername(streaming.getOtherId().getUsername());
-            streamingDTO.setOtherNickname(streaming.getOtherId().getNickname());
-            streamingDTO.setStartTime(streaming.getStartTime());
-            streamingDTO.setEndTime(streaming.getEndTime());
+            StreamingDTO streamingDTO = StreamingDTO.builder()
+                    .otherUsername(streaming.getOtherId().getUsername())
+                    .otherNickname(streaming.getOtherId().getNickname())
+                    .startTime(streaming.getStartTime())
+                    .endTime(streaming.getEndTime())
+                    .build();
             streamingDTOS.add(streamingDTO);
         }
         return streamingDTOS;
