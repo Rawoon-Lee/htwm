@@ -14,4 +14,7 @@ public class NoticeDTO {
     private String toUsername;
     private boolean isRead;
     private Type type;
+
+    private String fromNickname;
+    private String toNickname;
 }

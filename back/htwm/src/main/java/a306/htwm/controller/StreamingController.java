@@ -1,6 +1,7 @@
 package a306.htwm.controller;
 
 
+import a306.htwm.dto.StreamingDTO;
 import a306.htwm.dto.UsernameAndFriendDTO;
 import a306.htwm.entity.Message;
 import a306.htwm.entity.Type;
@@ -13,10 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/streaming")
@@ -87,5 +87,10 @@ public class StreamingController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ArrayList<StreamingDTO>> getList(@RequestParam String username){
+        return ResponseEntity.ok().body(streamingService.getList(username));
     }
 }
