@@ -80,4 +80,9 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("login")
+    public ResponseEntity<String> getUsername(@RequestParam("uuid") String uuid){
+        return ResponseEntity.ok().body(userService.getUsernameByUuid(uuid));
+    }
 }
