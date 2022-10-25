@@ -29,8 +29,8 @@ public class RecordController {
     }
 
     @GetMapping("/routine")
-    public ResponseEntity<ArrayList<RecordRoutineDTO>> getRoutine(@RequestParam UsernameDTO usernameDTO){
-        return ResponseEntity.ok().body(recordService.getRoutine(usernameDTO.getUsername()));
+    public ResponseEntity<ArrayList<RecordRoutineDTO>> getRoutine(@RequestParam String username){
+        return ResponseEntity.ok().body(recordService.getRoutine(username));
     }
 
 }
