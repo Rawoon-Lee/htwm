@@ -29,5 +29,14 @@ export default function Layout(props) {
 
   // 전화 오면 알림 띄우기
 
-  return <div>This is Layout{props.children}</div>
+  return (
+    <div>
+      This is Layout
+      <button onClick={() => (window.location.hash = '#/')}>home으로 이동</button>
+      <button onClick={() => (window.location.hash = '#/RealTime')}>realTime으로 이동</button>
+      <button onClick={() => (window.location.hash = '#/Picture')}>picture로 이동</button>
+      <button onClick={() => (window.location.hash = '#/Routine')}>routine으로 이동</button>
+      {props.children}
+    </div>
+  )
 }

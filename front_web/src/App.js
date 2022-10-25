@@ -1,6 +1,6 @@
 import { Routes, Route, HashRouter } from 'react-router-dom'
 
-import Home from './pages/home/Home'
+import Home from './pages/Home/Home'
 import Picture from './pages/Picture/Picture'
 import RealTime from './pages/RealTime/RealTime'
 import Routine from './pages/Routine/Routine'
