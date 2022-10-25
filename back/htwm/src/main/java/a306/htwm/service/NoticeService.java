@@ -93,6 +93,8 @@ public class NoticeService {
                     .toUsername(notice.getToId().getUsername())
                     .isRead(notice.isIsread())
                     .type(notice.getType())
+                    .fromNickname(notice.getFromId().getNickname())
+                    .toNickname(notice.getToId().getNickname())
                     .build();
             noticeDTOS.add(noticeDTO);
         }
