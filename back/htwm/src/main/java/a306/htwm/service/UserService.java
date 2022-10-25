@@ -10,6 +10,7 @@ import a306.htwm.repository.MirrorRepository;
 import a306.htwm.repository.UserRepository;
 import a306.htwm.repository.WeightRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +35,11 @@ public class UserService {
     public void register(RegisterDTO registerDTO) {
         User user = userRepository.findByUsername(registerDTO.getUsername());
         if(user == null) throw new RuntimeException("username 이 존재하지 않습니다.");
-        Optional<Mirror> mirror = mirrorRepository.findByUuid(registerDTO.getUuid());
-        if(mirror.isEmpty()){
+        Mirror mirror = mirrorRepository.findByUuid(registerDTO.getUuid());
+        if(mirror==null){
             throw new RuntimeException("uuid 가 존재하지 않습니다.");
         }
-        user.setMirror(mirror.get());
+        mirror.setUser(user);
     }
 
     @Transactional
@@ -116,6 +117,10 @@ public class UserService {
     }
 
     public String getUuid(String username){
-        return userRepository.findByUsername(username).getMirror().getUuid();
+        return mirrorRepository.findByUser(userRepository.findByUsername(username).getId()).getUuid();
+    }
+
+    public String getUsernameByUuid(String uuid) {
+        return mirrorRepository.findByUuid(uuid).getUser().getUsername();
     }
 }
