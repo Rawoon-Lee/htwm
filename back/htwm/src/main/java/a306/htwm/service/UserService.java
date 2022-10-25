@@ -10,6 +10,7 @@ import a306.htwm.repository.MirrorRepository;
 import a306.htwm.repository.UserRepository;
 import a306.htwm.repository.WeightRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -116,6 +117,10 @@ public class UserService {
     }
 
     public String getUuid(String username){
-        return mirrorRepository.findByUser(userRepository.findByUsername(username)).getUuid();
+        return mirrorRepository.findByUser(userRepository.findByUsername(username).getId()).getUuid();
+    }
+
+    public String getUsernameByUuid(String uuid) {
+        return mirrorRepository.findByUuid(uuid).getUser().getUsername();
     }
 }
