@@ -3,6 +3,7 @@ package a306.htwm.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class Mirror {
 
     @Id
@@ -24,6 +26,8 @@ public class Mirror {
     @Column(name = "uuid", unique = true)
     private String uuid;
 
-    @OneToMany(mappedBy = "mirror")
-    private List<User> users = new ArrayList<>();
+    //mirror
+    @ManyToOne // 외래키가 있는 곳이 연관관계의 주인
+    @JoinColumn(name = "user_id")
+    private User user;
 }
