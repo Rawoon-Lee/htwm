@@ -61,12 +61,15 @@ public class StreamingController {
         simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
     }
 
+    /*
+    json 으로 sub 하는 코드 
     @MessageMapping("/streaming2")
     public void streaming2(Message message){
         message.setType("STREAMING");
         String friendUuid = userService.getUuid(message.getTo());
         simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
     }
+     */
 
     @PostMapping("/deny")
     public ResponseEntity deny(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
