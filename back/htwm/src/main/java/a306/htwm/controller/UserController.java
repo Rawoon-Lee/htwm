@@ -82,7 +82,33 @@ public class UserController {
     }
 
     @PostMapping("uuid")
-    public ResponseEntity<String> getUsername(@RequestBody String uuid){
-        return ResponseEntity.ok().body(userService.getUsernameByUuid(uuid));
+    public ResponseEntity<String> getUsername(@RequestBody UuidDTO uuid){
+        return ResponseEntity.ok().body(userService.getUsernameByUuid(uuid.getUuid()));
+    }
+
+    @PostMapping("login")
+    public ResponseEntity login(@RequestBody LoginDTO loginDTO){
+        return ResponseEntity.ok().body(userService.login(loginDTO));
+    }
+
+    @PostMapping("height")
+    public ResponseEntity height(@RequestBody HeightDTO heightDTO){
+        try{
+            userService.height(heightDTO);
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("info")
+    public ResponseEntity<UserInfoDTO> info(@RequestParam("username") String username){
+        UserInfoDTO ret = new UserInfoDTO();
+        try{
+            ret= userService.info(username);
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(ret);
     }
 }
