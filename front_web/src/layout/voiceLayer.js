@@ -16,6 +16,7 @@ export default function Layout(props) {
     user
       .uuid()
       .then((result) => {
+        console.log(result.data)
         dispatch(setUsername(result.data))
       })
       .catch((error) => console.log(error))
