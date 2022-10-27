@@ -3,6 +3,7 @@ package a306.htwm.controller;
 import a306.htwm.dto.*;
 import a306.htwm.service.RoutineService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,11 @@ public class RoutineController {
 
     @GetMapping("/exercise")
     public ResponseEntity<ArrayList<ExerciseDTO>> getExercise(){
-        return ResponseEntity.ok().body(routineService.getExercise());
+        try{
+            return ResponseEntity.ok().body(routineService.getExercise());
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("")
@@ -42,6 +47,10 @@ public class RoutineController {
 
     @GetMapping("")
     public ResponseEntity<ArrayList<RoutineDTO>> getRoutine(@RequestParam("username") String username){
-        return ResponseEntity.ok().body(routineService.getRoutine(username));
+        try{
+            return ResponseEntity.ok().body(routineService.getRoutine(username));
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

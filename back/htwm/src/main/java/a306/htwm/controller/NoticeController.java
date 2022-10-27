@@ -6,6 +6,7 @@ import a306.htwm.dto.UsernameDTO;
 import a306.htwm.entity.Type;
 import a306.htwm.service.NoticeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,10 @@ public class NoticeController {
 
     @GetMapping("")
     public ResponseEntity<ArrayList<NoticeDTO>> getNotice(@RequestParam String username){
-        return ResponseEntity.ok().body(noticeService.getList(username));
+        try{
+            return ResponseEntity.ok().body(noticeService.getList(username));
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -10,6 +10,7 @@ import a306.htwm.service.NoticeService;
 import a306.htwm.service.StreamingService;
 import a306.htwm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -91,6 +92,10 @@ public class StreamingController {
 
     @GetMapping("")
     public ResponseEntity<ArrayList<StreamingDTO>> getList(@RequestParam String username){
-        return ResponseEntity.ok().body(streamingService.getList(username));
+        try{
+            return ResponseEntity.ok().body(streamingService.getList(username));
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }
