@@ -6,6 +6,7 @@ import a306.htwm.dto.UsernameDTO;
 import a306.htwm.entity.User;
 import a306.htwm.service.RecordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,11 @@ public class RecordController {
 
     @GetMapping("/routine")
     public ResponseEntity<ArrayList<RecordRoutineDTO>> getRoutine(@RequestParam String username){
-        return ResponseEntity.ok().body(recordService.getRoutine(username));
+        try{
+            return ResponseEntity.ok().body(recordService.getRoutine(username));
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
