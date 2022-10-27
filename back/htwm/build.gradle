@@ -35,10 +35,12 @@ dependencies {
 
 	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 	
-	//swagger
-	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	//swagger 2
+	// implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	// implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 
+	//swagger3
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
 }
 
