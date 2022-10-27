@@ -123,4 +123,38 @@ public class UserService {
     public String getUsernameByUuid(String uuid) {
         return mirrorRepository.findByUuid(uuid).getUser().getUsername();
     }
+
+    @Transactional
+    public String login(LoginDTO loginDTO) {
+        User user = userRepository.findByUsername(loginDTO.getUsername());
+        if(user == null){
+            User newUser = new User();
+            newUser.setUsername(loginDTO.getUsername());
+            newUser.setNickname(loginDTO.getNickname());
+            newUser.setImgUrl(loginDTO.getUrl());
+            userRepository.save(newUser);
+            return "new user";
+        }
+        else{
+            return "login";
+        }
+    }
+
+    @Transactional
+    public void height(HeightDTO heightDTO) {
+        User user = userRepository.findByUsername(heightDTO.getUsername());
+        if(user == null) throw new RuntimeException("no such user");
+        user.setHeight(heightDTO.getHeight());
+    }
+
+    public UserInfoDTO info(String username) {
+        User user = userRepository.findByUsername(username);
+        if(user == null) throw new RuntimeException("no such user");
+        UserInfoDTO ret = UserInfoDTO.builder()
+                .height(user.getHeight())
+                .url(user.getImgUrl())
+                .nickname(user.getNickname())
+                .build();
+        return ret;
+    }
 }
