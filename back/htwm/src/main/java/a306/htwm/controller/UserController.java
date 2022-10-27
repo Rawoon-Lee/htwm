@@ -100,4 +100,15 @@ public class UserController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("info")
+    public ResponseEntity<UserInfoDTO> info(@RequestParam("username") String username){
+        UserInfoDTO ret = new UserInfoDTO();
+        try{
+            ret= userService.info(username);
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(ret);
+    }
 }

@@ -146,4 +146,15 @@ public class UserService {
         if(user == null) throw new RuntimeException("no such user");
         user.setHeight(heightDTO.getHeight());
     }
+
+    public UserInfoDTO info(String username) {
+        User user = userRepository.findByUsername(username);
+        if(user == null) throw new RuntimeException("no such user");
+        UserInfoDTO ret = UserInfoDTO.builder()
+                .height(user.getHeight())
+                .url(user.getImgUrl())
+                .nickname(user.getNickname())
+                .build();
+        return ret;
+    }
 }
