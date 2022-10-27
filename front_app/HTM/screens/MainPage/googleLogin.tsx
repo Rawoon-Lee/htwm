@@ -1,9 +1,9 @@
 import * as React from "react"
 import * as WebBrowser from "expo-web-browser"
-import { StyleSheet, View, Button, Image } from "react-native"
+import { StyleSheet, View, Button, Image, Text } from "react-native"
 import * as Google from "expo-auth-session/providers/google"
 import { ResponseType } from "expo-auth-session"
-import OAuthService from "./OAuthService"
+import axios from "axios"
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -11,7 +11,7 @@ function GoogleLogin() {
 	interface UserData {
 		accessToken: string
 	}
-	const [userInfo, setUserInfo] = React.useState()
+	const [userInfo, setUserInfo] = React.useState<any | null>(null)
 	// any할거면 interface 왜 만드나
 	const [accessToken, setAccessToken] = React.useState<any | null>(null)
 
@@ -21,42 +21,90 @@ function GoogleLogin() {
 		androidClientId:
 			"440495779704-3367tl8q0m2rctutebc91ksvbt6t0dho.apps.googleusercontent.com",
 		iosClientId:
-			"440495779704-5uftm1ea7girg4j5v78cbdrjq2lcuoe7.apps.googleusercontent.com",
-		responseType: ResponseType.IdToken
+			"440495779704-5uftm1ea7girg4j5v78cbdrjq2lcuoe7.apps.googleusercontent.com"
 	})
 
 	React.useEffect(() => {
 		if (response?.type === "success") {
 			// const { authentication } = response
 			setAccessToken(response.authentication?.accessToken)
-			console.log(response)
+			console.log(response.authentication)
 			console.log(response.authentication?.accessToken)
-			console.log(response.params?.id_token)
-			// console.log(
-			// 	"유저 정보",
-			// 	OAuthService.getAccountFromIdToken(
-			// 		"440495779704-3367tl8q0m2rctutebc91ksvbt6t0dho.apps.googleusercontent.com",
-			// 		response.params?.id_token
-			// 	)
-			// )
 		}
 	}, [response])
 
+	function showUserInfo() {
+		if (userInfo) {
+			return (
+				<View style={styles.userInfo}>
+					<Text>구글 로그인하기 위한 버튼</Text>
+					<Image source={{ uri: userInfo.picture }} style={styles.profilePic} />
+					<Text>Welcome {userInfo.name}</Text>
+					<Text>{userInfo.email}</Text>
+				</View>
+			)
+		}
+	}
+	// async function getUserData() {
+	// 	axios
+	// 		.get("people.googleapis.com/v1/people/me", {
+	// 			headers: { Authorization: `Bearer ${accessToken}` }
+	// 		})
+	// 		.then(result => {
+	// 			console.log(result.data)
+	// 			console.log("통괴됨")
+	// 		})
+	// 		.catch(err => {
+	// 			console.log(err)
+	// 			console.log("에러남")
+	// 		})
+	// }
 	async function getUserData() {
-		// let userInfoResponse = await
+		let userInfoResponse = await fetch(
+			"https://www.googleapis.com/userinfo/v2/me",
+			{
+				headers: { Authorization: `Bearer ${accessToken}` }
+			}
+		)
+
+		userInfoResponse.json().then(data => {
+			console.log(userInfo)
+			setUserInfo(data)
+		})
 	}
 	return (
 		<View>
+			<Text>test 중입니다</Text>
+			{showUserInfo()}
 			<Button
 				disabled={!request}
-				title="Login"
-				onPress={() => {
-					promptAsync()
-				}}
+				title={accessToken ? "Get User Data" : "Login"}
+				onPress={
+					accessToken
+						? getUserData
+						: () => {
+								promptAsync({ showInRecents: true })
+						  }
+				}
 			></Button>
 			<Button title="Logout" onPress={() => {}}></Button>
 		</View>
 	)
 }
-
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "#fff",
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	userInfo: {
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	profilePic: {
+		width: 50,
+		height: 50
+	}
+})
 export default GoogleLogin
