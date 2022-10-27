@@ -3,11 +3,11 @@ import api from "./api"
 const END_POINT = "user"
 
 const user = {
-	register(data: any) {
+	login(data: any) {
 		return api({
 			method: "post",
 			data: data,
-			url: `${END_POINT}/register`
+			url: `${END_POINT}/login`
 		})
 	},
 	edit(data: any) {
