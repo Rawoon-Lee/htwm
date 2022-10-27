@@ -3,8 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    username: 'b',
-    streamingPeer: 'a',
+    username: 'a',
+    streamingPeer: 'b',
   },
   reducers: {
     setUsername(state, action) {

@@ -47,7 +47,7 @@ export default function RealTime() {
   useEffect(() => {
     if (client) {
       console.log(client)
-      getMedia()
+      setTimeout(getMedia, 1000)
     }
   }, [client])
 
