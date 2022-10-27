@@ -3,14 +3,19 @@ import { createSlice } from '@reduxjs/toolkit'
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    currentUser: undefined,
+    username: undefined,
+    streamingPeer: 'b',
   },
   reducers: {
-    setCurrentUser(state, action) {
-      state.currentUser = action.payload
+    setUsername(state, action) {
+      localStorage.setItem('username', action.payload)
+      state.username = action.payload
+    },
+    setStreamingPeer(state, action) {
+      state.streamingPeer = action.payload
     },
   },
 })
 
-export const { setCurrentUser } = userSlice.actions
+export const { setUsername, setStreamingPeer } = userSlice.actions
 export const user = userSlice.reducer

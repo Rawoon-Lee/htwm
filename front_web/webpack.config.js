@@ -5,6 +5,7 @@ const dotenv = require('dotenv').config()
 
 module.exports = {
   mode: process.env.mode,
+  target: 'node',
   entry: './src/index.js',
   output: {
     path: __dirname + '/dist',

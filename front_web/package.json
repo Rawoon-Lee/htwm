@@ -8,7 +8,8 @@
     "start:react": "webpack serve --progress --mode development",
     "start": "concurrently \"yarn start:react\" \"wait-on http://localhost:8080 && electron .\"",
     "build:webpack": "webpack",
-    "build": "webpack && electron-builder"
+    "build": "webpack && electron-builder",
+    "build:linux": "webpack && electron-builder --linux --x64"
   },
   "build": {
     "productName": "HTM",

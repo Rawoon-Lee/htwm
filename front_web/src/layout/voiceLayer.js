@@ -3,27 +3,41 @@ import { useSelector, useDispatch } from 'react-redux'
 import * as Stomp from '@stomp/stompjs'
 import Sockjs from 'sockjs-client'
 
-import { setClient } from '../store/modules/util'
+import user from './../actions/api/user'
+import { setStreamingPeer, setUsername } from '../store/modules/user'
 
 export default function Layout(props) {
-  const client = useSelector((state) => state.util.client)
+  const dispatch = useDispatch()
+
+  let client
 
   useEffect(() => {
-    const stompClient = new Stomp.Client()
-    stompClient.webSocketFactory = () => new Sockjs('https://')
-    setClient(stompClient)
-  }, [])
+    user
+      .uuid()
+      .then((result) => {
+        dispatch(setUsername(result.data))
+      })
+      .catch((error) => console.log(error))
 
-  useEffect(() => {
-    if (!client) return
-    // type1, type2 듣기
+    client = new Stomp.Client()
+    client.webSocketFactory = () => new Sockjs(`wss://k7a306.p.ssafy.io/api/socket`)
+    client.onConnect = () => {
+      client.subscribe(`/sub/${UUID}`, (action) => {
+        const content = JSON.parse(action.body)
+        if (content.type === 'ENTER') {
+          // 통화 시작해야함을 알림
+          dispatch(setStreamingPeer(content.from))
+        }
+      })
+    }
+    client.activate()
 
     return () => {
       if (client) {
         client.deactivate()
       }
     }
-  }, [client])
+  }, [])
 
   // STT
 
@@ -32,6 +46,7 @@ export default function Layout(props) {
   return (
     <div>
       This is Layout
+      {/* <Link to="RealTime">RealTime</Link> */}
       <button onClick={() => (window.location.hash = '#/')}>home으로 이동</button>
       <button onClick={() => (window.location.hash = '#/RealTime')}>realTime으로 이동</button>
       <button onClick={() => (window.location.hash = '#/Picture')}>picture로 이동</button>

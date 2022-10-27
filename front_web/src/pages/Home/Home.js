@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Chart, registerables } from 'chart.js'
 
 import { SEND_TEST } from '../../store/constants'
 import weatherApi from '../../actions/api/weatherApi'
@@ -9,19 +8,36 @@ export default function Home() {
   const { ipcRenderer } = window.require('electron')
   const [near, setNear] = useState([])
   const [far, setFar] = useState([])
+  const [date, setDate] = useState('')
+
+  const getTime = () => {
+    const t = new Date()
+    setDate(
+      String(t.getFullYear()) +
+        String(t.getMonth() + 1).padStart(2, '0') +
+        String(t.getDate()).padStart(2, '0') +
+        '' +
+        String(t).slice(16, 24),
+    )
+  }
+
+  useEffect(() => {
+    getTime()
+    const interval = setInterval(getTime, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
 
   const getWeather = () => {
     const newDate = new Date()
-    const date =
-      String(newDate.getFullYear()) +
-      String(newDate.getMonth() + 1).padStart(2, '0') +
-      String(newDate.getDate()).padStart(2, '0')
     let time = newDate.getHours() - 2 >= 0 ? newDate.getHours() - 2 : newDate.getHours() + 22
     time = String(Math.floor(time / 3) * 3 + 2)
       .padStart(2, '0')
       .padEnd(4, '0')
-    weatherApi(date, time).then((res) => {
+    weatherApi(date.slice(0, 8), time).then((res) => {
       const data = getWeatherDetail(res.data.response.body.items.item)
+      console.log(data)
       setNear(data.near)
       setFar(data.far)
     })
@@ -36,7 +52,6 @@ export default function Home() {
         now.near = []
         now.far = []
       }
-      // console.log(data.fcstTime, data.category, data.fcstValue)
       // 가까운 정보는 상세내용으로 담기
       const time = String(data.fcstTime).slice(0, 2)
       if (!now.near.length || (now.near.length < 12 && now.near[now.near.length - 1]['시간'] != time)) {
@@ -96,10 +111,6 @@ export default function Home() {
     return now
   }
 
-  const getMsg = (event, arg) => {
-    console.log(event, arg, '받음')
-  }
-
   useEffect(() => {
     ipcRenderer.on(SEND_TEST, getMsg)
     getWeather()
@@ -110,6 +121,10 @@ export default function Home() {
     }
   }, [])
 
+  const getMsg = (event, arg) => {
+    console.log(event, arg, '받음')
+  }
+
   const sendMain = () => {
     ipcRenderer.send(SEND_TEST, 'hello')
   }
@@ -117,9 +132,13 @@ export default function Home() {
   return (
     <div>
       home
-      {/* <Link to="RealTime">RealTime</Link> */}
       <button onClick={sendMain}>ipc 테스트</button>
       <button onClick={getWeather}>날씨 테스트</button>
+      {date}
+      <div>
+        <div>{date.slice(4, 6)}월</div>
+        <div>{date.slice(6, 8)}일</div>
+      </div>
     </div>
   )
 }

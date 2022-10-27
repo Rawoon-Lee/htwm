@@ -1,11 +1,79 @@
 import { useState, useEffect, useRef } from 'react'
+import { useSelector } from 'react-redux'
+import * as Stomp from '@stomp/stompjs'
+import Sockjs from 'sockjs-client'
+
+import { UUID } from '../../store/constants'
 
 export default function RealTime() {
+  const username = useSelector((state) => state.user.username)
+  const streamingPeer = useSelector((state) => state.user.streamingPeer)
+
+  const [client, setClient] = useState(undefined)
+  const [isMuted, setIsMuted] = useState(false)
+
   const myVideoRef = useRef(null)
   const peerVideoRef = useRef(null)
-  const [isMuted, setIsMuted] = useState(false)
+
   let myStream
   let myPeerConnection
+
+  useEffect(() => {
+    const stompClient = new Stomp.Client()
+    stompClient.webSocketFactory = () => new Sockjs(`wss://k7a306.p.ssafy.io/api/socket`)
+    stompClient.onConnect = () => {
+      stompClient.publish({
+        destination: `/pub/streaming`,
+        body: JSON.stringify({
+          from: username,
+          to: streamingPeer,
+          data: { type: 1, data: 'test' },
+        }),
+      })
+      stompClient.subscribe(`/sub/${UUID}`, (action) => {
+        const content = JSON.parse(action.body)
+        console.log('받음', content)
+        if (content.type === 'STREAMING') {
+          if (content.data.type === 1) {
+            getOfferMakeAnswer(content.data.data)
+          }
+          if (content.data.type === 2) {
+            getAnswerMakeIce(content.data.data)
+          }
+          if (content.data.type === 3) {
+            getIceMakeStream(content.data.data)
+          }
+        }
+      })
+    }
+    stompClient.activate()
+    setClient(stompClient)
+
+    return () => {
+      stompClient.deactivate()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (client) {
+      console.log(client)
+      getMedia()
+    }
+  }, [client])
+
+  useEffect(() => {
+    if (isMuted) {
+      if (!myStream) return
+      myStream.getAudioTraks().forEach((track) => {
+        track.enabled = false
+      })
+    } else {
+      if (!myStream) return
+      myStream.getAudioTraks().forEach((track) => {
+        track.enabled = true
+      })
+    }
+  }, [isMuted])
 
   /*
     0. 서버로부터 type1 받으면 해당 페이지로 이동하며 상대방에게 알려준다. 알림 받으면 상대도 해당 페이지로 이동한다.
@@ -24,18 +92,16 @@ export default function RealTime() {
         audio: true,
         video: true,
       })
-      console.log(myStream, navigator.mediaDevices)
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
         myVideoRef.current.srcObject = myStream
-        makeConnection()
+        makeOffer()
       }
     } catch (error) {
       console.error(error)
     }
   }
-  getMedia()
 
-  const makeConnection = async () => {
+  const makeOffer = async () => {
     myPeerConnection = new RTCPeerConnection({
       iceServers: [
         {
@@ -52,45 +118,49 @@ export default function RealTime() {
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream))
     const offer = await myPeerConnection.createOffer()
     myPeerConnection.setLocalDescription(offer)
+    client.publish({
+      destination: `/pub/streaming`,
+      body: JSON.stringify({
+        from: username,
+        to: streamingPeer,
+        data: { type: 1, data: offer },
+      }),
+    })
+  }
 
-    // 소켓으로 오퍼 보내기. 위의 offer와 다른거임
-    let offer2
-    myPeerConnection.setRemoteDescription(offer2)
+  const getOfferMakeAnswer = async (offer) => {
+    myPeerConnection.setRemoteDescription(offer)
     const answer = await myPeerConnection.createAnswer()
-    // 소켓으로 answer 보내기
-
-    let answer2
-    myPeerConnection.setRemoteDescription(answer2)
-    // ice candidate
-    myPeerConnection.addEventListener('icecandidate', handleIce)
-
-    // addstream
-    myPeerConnection.addEventListener('addStream', handleAddStream)
+    client.publish({
+      destination: `/pub/streaming`,
+      body: JSON.stringify({
+        from: username,
+        to: streamingPeer,
+        data: { type: 2, data: answer },
+      }),
+    })
   }
 
-  const handleIce = (data) => {
-    // 소켓으로 iceCandidate (data.candidate) 보내기. 받으면 addIceCandidate하기
-    let ice
+  const getAnswerMakeIce = async (answer) => {
+    myPeerConnection.setRemoteDescription(answer)
+    myPeerConnection.addEventListener('icecandidate', (data) => {
+      client.publish({
+        destination: `/pub/streaming`,
+        body: JSON.stringify({
+          from: username,
+          to: streamingPeer,
+          data: { type: 3, data: data.candidate },
+        }),
+      })
+    })
+  }
+
+  const getIceMakeStream = (ice) => {
     myPeerConnection.addIceCandidate(ice)
+    myPeerConnection.addEventListener('addStream', (data) => {
+      peerVideoRef.current.srcObject = data.stream
+    })
   }
-
-  const handleAddStream = (data) => {
-    peerVideoRef.current.srcObject = data.stream
-  }
-
-  useEffect(() => {
-    if (isMuted) {
-      if (!myStream) return
-      myStream.getAudioTraks().forEach((track) => {
-        track.enabled = false
-      })
-    } else {
-      if (!myStream) return
-      myStream.getAudioTraks().forEach((track) => {
-        track.enabled = true
-      })
-    }
-  }, [isMuted])
 
   return (
     <div>
