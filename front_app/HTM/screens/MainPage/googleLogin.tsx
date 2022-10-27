@@ -1,9 +1,8 @@
 import * as React from "react"
 import * as WebBrowser from "expo-web-browser"
-import { StyleSheet, View, Button, Image, Text } from "react-native"
+import { StyleSheet, View, Pressable, Image, Text } from "react-native"
 import * as Google from "expo-auth-session/providers/google"
-import { ResponseType } from "expo-auth-session"
-import axios from "axios"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -24,6 +23,23 @@ function GoogleLogin() {
 			"440495779704-5uftm1ea7girg4j5v78cbdrjq2lcuoe7.apps.googleusercontent.com"
 	})
 
+	async function storeUserData() {
+		try {
+			const userId = userInfo.email.split("@")[0]
+			await AsyncStorage.setItem("userId", userId)
+		} catch (err) {
+			console.log(err)
+		}
+	}
+	async function retreiveUserData() {
+		try {
+			const loadedData = await AsyncStorage.getItem("userId")
+			console.log(loadedData)
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
 	React.useEffect(() => {
 		if (response?.type === "success") {
 			// const { authentication } = response
@@ -37,7 +53,6 @@ function GoogleLogin() {
 		if (userInfo) {
 			return (
 				<View style={styles.userInfo}>
-					<Text>구글 로그인하기 위한 버튼</Text>
 					<Image source={{ uri: userInfo.picture }} style={styles.profilePic} />
 					<Text>Welcome {userInfo.name}</Text>
 					<Text>{userInfo.email}</Text>
@@ -45,20 +60,7 @@ function GoogleLogin() {
 			)
 		}
 	}
-	// async function getUserData() {
-	// 	axios
-	// 		.get("people.googleapis.com/v1/people/me", {
-	// 			headers: { Authorization: `Bearer ${accessToken}` }
-	// 		})
-	// 		.then(result => {
-	// 			console.log(result.data)
-	// 			console.log("통괴됨")
-	// 		})
-	// 		.catch(err => {
-	// 			console.log(err)
-	// 			console.log("에러남")
-	// 		})
-	// }
+
 	async function getUserData() {
 		let userInfoResponse = await fetch(
 			"https://www.googleapis.com/userinfo/v2/me",
@@ -67,18 +69,24 @@ function GoogleLogin() {
 			}
 		)
 
-		userInfoResponse.json().then(data => {
+		await userInfoResponse.json().then(data => {
 			console.log(userInfo)
 			setUserInfo(data)
 		})
+
+		storeUserData()
+		retreiveUserData()
+	}
+
+	function logout() {
+		AsyncStorage.removeItem("userId")
 	}
 	return (
 		<View>
-			<Text>test 중입니다</Text>
 			{showUserInfo()}
-			<Button
+			<Pressable
+				style={styles.container}
 				disabled={!request}
-				title={accessToken ? "Get User Data" : "Login"}
 				onPress={
 					accessToken
 						? getUserData
@@ -86,25 +94,39 @@ function GoogleLogin() {
 								promptAsync({ showInRecents: true })
 						  }
 				}
-			></Button>
-			<Button title="Logout" onPress={() => {}}></Button>
+			>
+				<Image
+					source={require("../../assets/g-logo.png")}
+					style={styles.profilePic}
+				/>
+				<Text>{accessToken ? "Get User Data" : "구글 로그인"}</Text>
+			</Pressable>
+			{accessToken ? (
+				<Pressable onPress={logout}>
+					<Text>로그아웃</Text>
+				</Pressable>
+			) : null}
 		</View>
 	)
 }
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		flexDirection: "row",
 		backgroundColor: "#fff",
 		alignItems: "center",
-		justifyContent: "center"
+		justifyContent: "center",
+		elevation: 4,
+		padding: 10,
+		borderRadius: 10
 	},
 	userInfo: {
 		alignItems: "center",
 		justifyContent: "center"
 	},
 	profilePic: {
-		width: 50,
-		height: 50
+		width: 20,
+		height: 20,
+		marginRight: 12
 	}
 })
 export default GoogleLogin
