@@ -81,8 +81,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("login")
-    public ResponseEntity<String> getUsername(@RequestParam("uuid") String uuid){
+    @PostMapping("uuid")
+    public ResponseEntity<String> getUsername(@RequestBody String uuid){
         return ResponseEntity.ok().body(userService.getUsernameByUuid(uuid));
     }
 }
