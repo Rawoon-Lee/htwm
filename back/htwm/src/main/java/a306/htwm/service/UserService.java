@@ -123,4 +123,20 @@ public class UserService {
     public String getUsernameByUuid(String uuid) {
         return mirrorRepository.findByUuid(uuid).getUser().getUsername();
     }
+
+    @Transactional
+    public String login(LoginDTO loginDTO) {
+        User user = userRepository.findByUsername(loginDTO.getUsername());
+        if(user == null){
+            User newUser = new User();
+            newUser.setUsername(loginDTO.getUsername());
+            newUser.setNickname(loginDTO.getNickname());
+            newUser.setImgUrl(loginDTO.getUrl());
+            userRepository.save(newUser);
+            return "new user";
+        }
+        else{
+            return "login";
+        }
+    }
 }
