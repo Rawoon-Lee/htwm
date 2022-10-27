@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const HOST = "baseurl"
+const HOST = "https://k7a306.p.ssafy.io/api"
 
 axios.defaults.withCredentials = true
 const api = axios.create({
