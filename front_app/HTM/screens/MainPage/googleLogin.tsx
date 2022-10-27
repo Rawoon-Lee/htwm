@@ -126,7 +126,9 @@ function GoogleLogin() {
 					source={require("../../assets/g-logo.png")}
 					style={styles.profilePic}
 				/>
-				<Text>{accessToken ? "Get User Data" : "구글 로그인"}</Text>
+				<Text style={styles.googleFont}>
+					{accessToken ? "Get User Data" : "구글 로그인"}
+				</Text>
 			</Pressable>
 			{accessToken ? (
 				<>
@@ -157,6 +159,9 @@ const styles = StyleSheet.create({
 		width: 20,
 		height: 20,
 		marginRight: 12
+	},
+	googleFont: {
+		fontFamily: "Roboto-Medium"
 	}
 })
 export default GoogleLogin
