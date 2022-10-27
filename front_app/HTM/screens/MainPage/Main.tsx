@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from "react-native"
-import { TextInput } from "react-native"
 import GoogleLogin from "./googleLogin"
+import DeviceIntro from "./deviceIntro"
 
 function Main() {
 	return (
 		<View style={styles.container}>
-			<Text>여기는 메인화면 입니다</Text>
 			<GoogleLogin></GoogleLogin>
+			<DeviceIntro></DeviceIntro>
 		</View>
 	)
 }
