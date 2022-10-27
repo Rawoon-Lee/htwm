@@ -5,6 +5,7 @@ import Sockjs from 'sockjs-client'
 
 import user from './../actions/api/user'
 import { setStreamingPeer, setUsername } from '../store/modules/user'
+import { UUID } from '../store/constants'
 
 export default function Layout(props) {
   const dispatch = useDispatch()
@@ -19,11 +20,14 @@ export default function Layout(props) {
       })
       .catch((error) => console.log(error))
 
-    client = new Stomp.Client()
-    client.webSocketFactory = () => new Sockjs(`wss://k7a306.p.ssafy.io/api/socket`)
+    client = new Stomp.Client({
+      logRawCommunication: false,
+    })
+    client.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
     client.onConnect = () => {
       client.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
+        console.log('받음', content)
         if (content.type === 'ENTER') {
           // 통화 시작해야함을 알림
           dispatch(setStreamingPeer(content.from))

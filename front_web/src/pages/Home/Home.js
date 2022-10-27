@@ -35,7 +35,11 @@ export default function Home() {
     time = String(Math.floor(time / 3) * 3 + 2)
       .padStart(2, '0')
       .padEnd(4, '0')
-    weatherApi(date.slice(0, 8), time).then((res) => {
+    const date =
+      String(newDate.getFullYear()) +
+      String(newDate.getMonth() + 1).padStart(2, '0') +
+      String(newDate.getDate()).padStart(2, '0')
+    weatherApi(date, time).then((res) => {
       const data = getWeatherDetail(res.data.response.body.items.item)
       console.log(data)
       setNear(data.near)
@@ -134,10 +138,31 @@ export default function Home() {
       home
       <button onClick={sendMain}>ipc 테스트</button>
       <button onClick={getWeather}>날씨 테스트</button>
-      {date}
       <div>
         <div>{date.slice(4, 6)}월</div>
         <div>{date.slice(6, 8)}일</div>
+        <div>{date.slice(8, 16)}</div>
+      </div>
+      <div>
+        {near.map((data) => (
+          <div key={data['시간']}>
+            시간: {data['시간']}
+            온도: {data['온도']}
+            풍속: {data['풍속']}
+            강수확률: {data['강수확률']}
+            {data['강수형태'] !== '없음' ? data['강수형태'] : null}
+          </div>
+        ))}
+      </div>
+      <div>
+        {far.slice(1, 3).map((data, idx) => {
+          return (
+            <div key={data['날짜']}>
+              {idx === 0 ? '내일' : '모레'} {data['날짜'] + '일 ' + data['요일'] + '요일'}: 최고 {data['최고기온']},
+              최저 {data['최저기온']}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

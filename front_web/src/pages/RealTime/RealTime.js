@@ -20,27 +20,28 @@ export default function RealTime() {
 
   useEffect(() => {
     const stompClient = new Stomp.Client()
-    stompClient.webSocketFactory = () => new Sockjs(`wss://k7a306.p.ssafy.io/api/socket`)
+    stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
     stompClient.onConnect = () => {
       stompClient.publish({
         destination: `/pub/streaming`,
         body: JSON.stringify({
           from: username,
           to: streamingPeer,
-          data: { type: 1, data: 'test' },
+          type2: 1,
+          data: 'test',
         }),
       })
       stompClient.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
         console.log('받음', content)
         if (content.type === 'STREAMING') {
-          if (content.data.type === 1) {
+          if (content.type2 === 1) {
             getOfferMakeAnswer(content.data.data)
           }
-          if (content.data.type === 2) {
+          if (content.type2 === 2) {
             getAnswerMakeIce(content.data.data)
           }
-          if (content.data.type === 3) {
+          if (content.type2 === 3) {
             getIceMakeStream(content.data.data)
           }
         }
@@ -123,7 +124,8 @@ export default function RealTime() {
       body: JSON.stringify({
         from: username,
         to: streamingPeer,
-        data: { type: 1, data: offer },
+        type2: 1,
+        data: offer,
       }),
     })
   }
@@ -136,7 +138,8 @@ export default function RealTime() {
       body: JSON.stringify({
         from: username,
         to: streamingPeer,
-        data: { type: 2, data: answer },
+        type2: 2,
+        data: answer,
       }),
     })
   }
@@ -149,7 +152,8 @@ export default function RealTime() {
         body: JSON.stringify({
           from: username,
           to: streamingPeer,
-          data: { type: 3, data: data.candidate },
+          type2: 3,
+          data: data.candidate,
         }),
       })
     })
