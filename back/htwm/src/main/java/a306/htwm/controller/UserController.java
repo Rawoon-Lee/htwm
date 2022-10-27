@@ -90,4 +90,14 @@ public class UserController {
     public ResponseEntity login(@RequestBody LoginDTO loginDTO){
         return ResponseEntity.ok().body(userService.login(loginDTO));
     }
+
+    @PostMapping("height")
+    public ResponseEntity height(@RequestBody HeightDTO heightDTO){
+        try{
+            userService.height(heightDTO);
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }

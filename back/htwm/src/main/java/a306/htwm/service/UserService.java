@@ -139,4 +139,11 @@ public class UserService {
             return "login";
         }
     }
+
+    @Transactional
+    public void height(HeightDTO heightDTO) {
+        User user = userRepository.findByUsername(heightDTO.getUsername());
+        if(user == null) throw new RuntimeException("no such user");
+        user.setHeight(heightDTO.getHeight());
+    }
 }
