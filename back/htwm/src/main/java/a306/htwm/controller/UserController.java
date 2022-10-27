@@ -85,4 +85,9 @@ public class UserController {
     public ResponseEntity<String> getUsername(@RequestBody String uuid){
         return ResponseEntity.ok().body(userService.getUsernameByUuid(uuid));
     }
+
+    @PostMapping("login")
+    public ResponseEntity login(@RequestBody LoginDTO loginDTO){
+        return ResponseEntity.ok().body(userService.login(loginDTO));
+    }
 }
