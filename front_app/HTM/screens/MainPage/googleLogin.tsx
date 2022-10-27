@@ -3,6 +3,7 @@ import * as WebBrowser from "expo-web-browser"
 import { StyleSheet, View, Pressable, Image, Text } from "react-native"
 import * as Google from "expo-auth-session/providers/google"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { user } from "../../api/user"
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -34,7 +35,7 @@ function GoogleLogin() {
 	async function retreiveUserData() {
 		try {
 			const loadedData = await AsyncStorage.getItem("userId")
-			console.log(loadedData)
+			// console.log(loadedData)
 		} catch (err) {
 			console.log(err)
 		}
@@ -44,10 +45,30 @@ function GoogleLogin() {
 		if (response?.type === "success") {
 			// const { authentication } = response
 			setAccessToken(response.authentication?.accessToken)
-			console.log(response.authentication)
-			console.log(response.authentication?.accessToken)
+			// console.log(response.authentication)
+			// console.log(response.authentication?.accessToken)
 		}
+		getUserData()
 	}, [response])
+
+	React.useEffect(() => {
+		if (!userInfo) return
+		let data = {
+			nickname: userInfo.name,
+			url: userInfo.picture,
+			username: userInfo.email.split("@")[0]
+		}
+		user
+			.login(data)
+			.then(result => {
+				console.log(result.data)
+				console.log("성공함")
+			})
+			.catch(err => {
+				console.log(err)
+				console.log("실패함")
+			})
+	}, [userInfo])
 
 	function showUserInfo() {
 		if (userInfo) {
@@ -70,7 +91,7 @@ function GoogleLogin() {
 		)
 
 		await userInfoResponse.json().then(data => {
-			console.log(userInfo)
+			// console.log(userInfo)
 			setUserInfo(data)
 		})
 
@@ -83,7 +104,6 @@ function GoogleLogin() {
 	}
 	return (
 		<View>
-			{showUserInfo()}
 			<Pressable
 				style={styles.container}
 				disabled={!request}
@@ -102,9 +122,12 @@ function GoogleLogin() {
 				<Text>{accessToken ? "Get User Data" : "구글 로그인"}</Text>
 			</Pressable>
 			{accessToken ? (
-				<Pressable onPress={logout}>
-					<Text>로그아웃</Text>
-				</Pressable>
+				<>
+					{showUserInfo()}
+					<Pressable onPress={logout}>
+						<Text>로그아웃</Text>
+					</Pressable>
+				</>
 			) : null}
 		</View>
 	)

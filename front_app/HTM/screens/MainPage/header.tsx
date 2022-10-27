@@ -1,7 +1,10 @@
 import { StyleSheet, Text, View } from "react-native"
 import GoogleLogin from "./googleLogin"
+import { useNavigation } from "@react-navigation/native"
 
 function Header() {
+	const navigation = useNavigation()
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.text}>Hello</Text>
