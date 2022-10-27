@@ -10,6 +10,7 @@ import a306.htwm.service.NoticeService;
 import a306.htwm.service.StreamingService;
 import a306.htwm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -53,7 +54,15 @@ public class StreamingController {
     }
 
     @MessageMapping("/streaming")
-    public void streaming(Message message){
+    public void streaming(String message){
+        JSONObject jObject = new JSONObject(message);
+        String to = jObject.getString("to");
+        String friendUuid = userService.getUuid(to);
+        simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
+    }
+
+    @MessageMapping("/streaming2")
+    public void streaming2(Message message){
         message.setType("STREAMING");
         String friendUuid = userService.getUuid(message.getTo());
         simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
