@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### yaml ###
-credentials.yaml
+/src/main/resources/credentials.yaml
