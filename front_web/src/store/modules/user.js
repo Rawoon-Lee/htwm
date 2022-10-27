@@ -4,7 +4,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     username: undefined,
-    streamingPeer: 'b',
+    streamingPeer: undefined,
   },
   reducers: {
     setUsername(state, action) {

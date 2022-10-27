@@ -22,28 +22,17 @@ export default function RealTime() {
     const stompClient = new Stomp.Client()
     stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
     stompClient.onConnect = () => {
-      stompClient.publish({
-        destination: `/pub/streaming`,
-        body: JSON.stringify({
-          from: username,
-          to: streamingPeer,
-          type2: 1,
-          data: 'test',
-        }),
-      })
       stompClient.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
         console.log('받음', content)
-        if (content.type === 'STREAMING') {
-          if (content.type2 === 1) {
-            getOfferMakeAnswer(content.data.data)
-          }
-          if (content.type2 === 2) {
-            getAnswerMakeIce(content.data.data)
-          }
-          if (content.type2 === 3) {
-            getIceMakeStream(content.data.data)
-          }
+        if (content.type === 1) {
+          getOfferMakeAnswer(content.data)
+        }
+        if (content.type === 2) {
+          getAnswerMakeIce(content.data)
+        }
+        if (content.type === 3) {
+          getIceMakeStream(content.data)
         }
       })
     }
@@ -124,7 +113,7 @@ export default function RealTime() {
       body: JSON.stringify({
         from: username,
         to: streamingPeer,
-        type2: 1,
+        type: 1,
         data: offer,
       }),
     })
@@ -138,7 +127,7 @@ export default function RealTime() {
       body: JSON.stringify({
         from: username,
         to: streamingPeer,
-        type2: 2,
+        type: 2,
         data: answer,
       }),
     })
@@ -152,7 +141,7 @@ export default function RealTime() {
         body: JSON.stringify({
           from: username,
           to: streamingPeer,
-          type2: 3,
+          type: 3,
           data: data.candidate,
         }),
       })

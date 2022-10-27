@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { SEND_TEST } from '../../store/constants'
 import weatherApi from '../../actions/api/weatherApi'
 
+import CameraTest from './cameraTest'
+
 export default function Home() {
   const { ipcRenderer } = window.require('electron')
   const [near, setNear] = useState([])

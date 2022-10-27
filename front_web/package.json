@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "main": "public/main.js",
   "license": "MIT",
-  "author": "MoCCo <kd8317@gmail.com>",
+  "author": {
+    "name": "MoCCO",
+    "email": "kd8317@gmail.com"
+  },
+  "repository": {},
+  "keywords": [],
+  "homepage": "https://github.com/sosyho/yhw_test",
   "scripts": {
     "start:react": "webpack serve --progress --mode development",
     "start": "concurrently \"yarn start:react\" \"wait-on http://localhost:8080 && electron .\"",
     "build:webpack": "webpack",
     "build": "webpack && electron-builder",
-    "build:linux": "webpack && electron-builder --linux --x64"
+    "build:linux": "webpack && electron-builder --linux --armv7l"
   },
   "build": {
     "productName": "HTM",
@@ -20,9 +26,7 @@
     ],
     "linux": {
       "target": [
-        "deb",
-        "snap",
-        "rpm"
+        "tar.gz"
       ]
     },
     "win": {
