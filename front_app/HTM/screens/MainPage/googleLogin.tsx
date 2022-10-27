@@ -9,9 +9,15 @@ WebBrowser.maybeCompleteAuthSession()
 
 function GoogleLogin() {
 	interface UserData {
-		accessToken: string
+		email: string
+		given_name: string
+		id: string
+		locale: string
+		name: string
+		picture: string
+		verified_email: boolean
 	}
-	const [userInfo, setUserInfo] = React.useState<any | null>(null)
+	const [userInfo, setUserInfo] = React.useState<UserData | null>(null)
 	// any할거면 interface 왜 만드나
 	const [accessToken, setAccessToken] = React.useState<any | null>(null)
 
@@ -25,6 +31,7 @@ function GoogleLogin() {
 	})
 
 	async function storeUserData() {
+		if (!userInfo || typeof userInfo.email === "undefined") return
 		try {
 			const userId = userInfo.email.split("@")[0]
 			await AsyncStorage.setItem("userId", userId)
@@ -52,7 +59,7 @@ function GoogleLogin() {
 	}, [response])
 
 	React.useEffect(() => {
-		if (!userInfo) return
+		if (!userInfo || typeof userInfo.email === "undefined") return
 		let data = {
 			nickname: userInfo.name,
 			url: userInfo.picture,
@@ -95,8 +102,8 @@ function GoogleLogin() {
 			setUserInfo(data)
 		})
 
-		storeUserData()
-		retreiveUserData()
+		await storeUserData()
+		// // retreiveUserData()
 	}
 
 	function logout() {
