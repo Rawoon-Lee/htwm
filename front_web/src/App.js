@@ -13,7 +13,7 @@ export default function App() {
         <Routes>
           <Route path="/" basename="Home" element={<Home />} />
           <Route path="/picture" basename="Picture" element={<Picture />} />
-          <Route path="/realtime" basename="RealTime" element={<RealTime />} />
+          {/* <Route path="/realtime" basename="RealTime" element={<RealTime />} /> */}
           <Route path="/routine" basename="Routine" element={<Routine />} />
         </Routes>
       </Layout>

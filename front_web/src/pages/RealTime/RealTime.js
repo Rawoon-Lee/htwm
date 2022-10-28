@@ -5,7 +5,7 @@ import Sockjs from 'sockjs-client'
 
 import { UUID } from '../../store/constants'
 
-export default function RealTime() {
+export default function RealTime(props) {
   const username = useSelector((state) => state.user.username)
   const streamingPeer = useSelector((state) => state.user.streamingPeer)
 
@@ -17,7 +17,7 @@ export default function RealTime() {
 
   let myStream
   let myPeerConnection
-  let client
+  let client = props.client
 
   useEffect(() => {
     myPeerConnection = new RTCPeerConnection({
@@ -48,12 +48,13 @@ export default function RealTime() {
       peerVideoRef.current.srcObject = data.stream
     })
 
-    const stompClient = new Stomp.Client()
-    if (typeof stompClient !== 'function') {
-      stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
-    }
-    stompClient.onConnect = () => {
-      stompClient.subscribe(`/sub/${UUID}`, (action) => {
+    // const stompClient = new Stomp.Client()
+    // if (typeof stompClient !== 'function') {
+    //   stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
+    // }
+    // stompClient.onConnect = () => {
+    if (client) {
+      client.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
         console.log('받음', content)
         if (content.type === 1) {
@@ -67,18 +68,20 @@ export default function RealTime() {
         }
       })
     }
-    stompClient.activate()
-    // setClient(stompClient)
-    client = stompClient
+
+    // }
+    // stompClient.activate()
+    // // setClient(stompClient)
+    // client = stompClient
   }, [])
 
   useEffect(() => {
     if (client) {
       getMedia()
     }
-    return () => {
-      client?.deactivate()
-    }
+    // return () => {
+    //   client?.deactivate()
+    // }
   }, [client])
 
   useEffect(() => {

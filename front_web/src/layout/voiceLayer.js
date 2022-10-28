@@ -7,10 +7,12 @@ import user from './../actions/api/user'
 import { setStreamingPeer, setUsername } from '../store/modules/user'
 import { UUID } from '../store/constants'
 
+import RealTime from '../pages/RealTime/RealTime'
+
 export default function Layout(props) {
   const dispatch = useDispatch()
-
-  // let client
+  const [client, setClient] = useState(undefined)
+  const [showRealTime, setShowRealTime] = useState(false)
 
   useEffect(() => {
     user
@@ -21,27 +23,28 @@ export default function Layout(props) {
       })
       .catch((error) => console.log(error))
 
-    // client = new Stomp.Client({
-    //   logRawCommunication: false,
-    // })
-    // client.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
-    // client.onConnect = () => {
-    //   client.subscribe(`/sub/${UUID}`, (action) => {
-    //     const content = JSON.parse(action.body)
-    //     console.log('받음', content)
-    //     if (content.type === 'ENTER') {
-    //       // 통화 시작해야함을 알림
-    //       dispatch(setStreamingPeer(content.from))
-    //     }
-    //   })
-    // }
-    // client.activate()
+    const stompClient = new Stomp.Client({
+      logRawCommunication: false,
+    })
+    stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
+    stompClient.onConnect = () => {
+      stompClient.subscribe(`/sub/${UUID}`, (action) => {
+        const content = JSON.parse(action.body)
+        console.log('받음', content)
+        if (content.type === 'ENTER') {
+          // 통화 시작해야함을 알림
+          dispatch(setStreamingPeer(content.from))
+        }
+      })
+    }
+    stompClient.activate()
+    setClient(stompClient)
 
-    // return () => {
-    //   if (client) {
-    //     client.deactivate()
-    //   }
-    // }
+    return () => {
+      if (stompClient) {
+        stompClient.deactivate()
+      }
+    }
   }, [])
 
   // STT
@@ -52,11 +55,13 @@ export default function Layout(props) {
     <div>
       This is Layout
       {/* <Link to="RealTime">RealTime</Link> */}
-      <button onClick={() => (window.location.hash = '#/')}>home으로 이동</button>
+      {/* <button onClick={() => (window.location.hash = '#/')}>home으로 이동</button>
       <button onClick={() => (window.location.hash = '#/RealTime')}>realTime으로 이동</button>
       <button onClick={() => (window.location.hash = '#/Picture')}>picture로 이동</button>
-      <button onClick={() => (window.location.hash = '#/Routine')}>routine으로 이동</button>
-      {props.children}
+      <button onClick={() => (window.location.hash = '#/Routine')}>routine으로 이동</button> */}
+      {/* {props.children} */}
+      <button onClick={() => setShowRealTime(!showRealTime)}>showToggle</button>
+      {showRealTime && <RealTime client={client} />}
     </div>
   )
 }
