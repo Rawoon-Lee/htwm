@@ -20,11 +20,38 @@ export default function RealTime() {
   let client
 
   useEffect(() => {
+    myPeerConnection = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: [
+            'stun:stun.l.google.con:19302',
+            'stun:stun1.l.google.con:19302',
+            'stun:stun2.l.google.con:19302',
+            'stun:stun3.l.google.con:19302',
+            'stun:stun4.l.google.con:19302',
+          ],
+        },
+      ],
+    })
+    myPeerConnection.addEventListener('icecandidate', (data) => {
+      client.publish({
+        destination: `/pub/streaming`,
+        body: JSON.stringify({
+          from: username,
+          to: streamingPeer,
+          type: 3,
+          data: data.candidate,
+        }),
+      })
+    })
+    myPeerConnection.addEventListener('addstream', (data) => {
+      peerVideoRef.current.srcObject = data.stream
+    })
+
     const stompClient = new Stomp.Client()
     if (typeof stompClient !== 'function') {
       stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
     }
-
     stompClient.onConnect = () => {
       stompClient.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
@@ -95,34 +122,6 @@ export default function RealTime() {
   }
 
   const makeOffer = async () => {
-    myPeerConnection = await new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: [
-            'stun:stun.l.google.con:19302',
-            'stun:stun1.l.google.con:19302',
-            'stun:stun2.l.google.con:19302',
-            'stun:stun3.l.google.con:19302',
-            'stun:stun4.l.google.con:19302',
-          ],
-        },
-      ],
-    })
-    myPeerConnection.addEventListener('icecandidate', (data) => {
-      client.publish({
-        destination: `/pub/streaming`,
-        body: JSON.stringify({
-          from: username,
-          to: streamingPeer,
-          type: 3,
-          data: data.candidate,
-        }),
-      })
-    })
-    myPeerConnection.addEventListener('addstream', (data) => {
-      peerVideoRef.current.srcObject = data.stream
-    })
-
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream))
     const offer = await myPeerConnection.createOffer()
     myPeerConnection.setLocalDescription(offer)
