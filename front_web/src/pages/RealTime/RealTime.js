@@ -9,7 +9,7 @@ export default function RealTime() {
   const username = useSelector((state) => state.user.username)
   const streamingPeer = useSelector((state) => state.user.streamingPeer)
 
-  const [client, setClient] = useState(undefined)
+  // const [client, setClient] = useState(undefined)
   const [isMuted, setIsMuted] = useState(false)
 
   const myVideoRef = useRef(null)
@@ -17,6 +17,7 @@ export default function RealTime() {
 
   let myStream
   let myPeerConnection
+  let client
 
   useEffect(() => {
     const stompClient = new Stomp.Client()
@@ -29,15 +30,16 @@ export default function RealTime() {
           getOfferMakeAnswer(content.data)
         }
         if (content.type === 2) {
-          getAnswerMakeIce(content.data)
+          getAnswer(content.data)
         }
         if (content.type === 3) {
-          getIceMakeStream(content.data)
+          getIce(content.data)
         }
       })
     }
     stompClient.activate()
-    setClient(stompClient)
+    // setClient(stompClient)
+    client = stompClient
 
     return () => {
       stompClient.deactivate()
@@ -46,8 +48,7 @@ export default function RealTime() {
 
   useEffect(() => {
     if (client) {
-      console.log(client)
-      setTimeout(getMedia, 1000)
+      getMedia()
     }
   }, [client])
 
@@ -87,12 +88,12 @@ export default function RealTime() {
         makeOffer()
       }
     } catch (error) {
-      console.error(error)
+      console.log(error)
     }
   }
 
   const makeOffer = async () => {
-    myPeerConnection = new RTCPeerConnection({
+    myPeerConnection = await new RTCPeerConnection({
       iceServers: [
         {
           urls: [
@@ -105,9 +106,25 @@ export default function RealTime() {
         },
       ],
     })
+    myPeerConnection.addEventListener('icecandidate', (data) => {
+      client.publish({
+        destination: `/pub/streaming`,
+        body: JSON.stringify({
+          from: username,
+          to: streamingPeer,
+          type: 3,
+          data: data.candidate,
+        }),
+      })
+    })
+    myPeerConnection.addEventListener('addstream', (data) => {
+      peerVideoRef.current.srcObject = data.stream
+    })
+
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream))
     const offer = await myPeerConnection.createOffer()
     myPeerConnection.setLocalDescription(offer)
+
     client.publish({
       destination: `/pub/streaming`,
       body: JSON.stringify({
@@ -133,26 +150,12 @@ export default function RealTime() {
     })
   }
 
-  const getAnswerMakeIce = async (answer) => {
-    myPeerConnection.setRemoteDescription(answer)
-    myPeerConnection.addEventListener('icecandidate', (data) => {
-      client.publish({
-        destination: `/pub/streaming`,
-        body: JSON.stringify({
-          from: username,
-          to: streamingPeer,
-          type: 3,
-          data: data.candidate,
-        }),
-      })
-    })
+  const getAnswer = async (answer) => {
+    await myPeerConnection.setRemoteDescription(answer)
   }
 
-  const getIceMakeStream = (ice) => {
+  const getIce = async (ice) => {
     myPeerConnection.addIceCandidate(ice)
-    myPeerConnection.addEventListener('addStream', (data) => {
-      peerVideoRef.current.srcObject = data.stream
-    })
   }
 
   return (
