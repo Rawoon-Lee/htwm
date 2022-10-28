@@ -28,5 +28,5 @@ public class Routine {
 
     // routine_set
     @OneToMany(mappedBy = "routine")
-    private List<Set> sets = new ArrayList<>();
+    private List<Sets> sets = new ArrayList<>();
 }
