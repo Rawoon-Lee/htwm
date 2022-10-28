@@ -27,6 +27,6 @@ public class Exercise {
 
     // Set
     @OneToMany(mappedBy = "exercise")
-    private List<Set> sets = new ArrayList<>();
+    private List<Sets> sets = new ArrayList<>();
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Set {
+public class Sets {
 
     @Id
     @Column(name = "set_id")
