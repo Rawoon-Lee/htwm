@@ -45,14 +45,18 @@ export default function RealTime(props) {
       })
     })
     myPeerConnection.addEventListener('addstream', (data) => {
-      peerVideoRef.current.srcObject = data.stream
+      console.log('add stream', data)
+      if (peerVideoRef && peerVideoRef.current) {
+        peerVideoRef.current.srcObject = data.stream
+        // const test = document.createElement('video')
+        // test.setAttribute('autoPlay', true)
+        // test.setAttribute('playsInLine', true)
+        // test.setAttribute('srcObject', data.stream)
+        // const div1 = document.querySelector('div')
+        // div1.appendChild(test)
+      }
     })
 
-    // const stompClient = new Stomp.Client()
-    // if (typeof stompClient !== 'function') {
-    //   stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
-    // }
-    // stompClient.onConnect = () => {
     if (client) {
       client.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
@@ -68,20 +72,12 @@ export default function RealTime(props) {
         }
       })
     }
-
-    // }
-    // stompClient.activate()
-    // // setClient(stompClient)
-    // client = stompClient
   }, [])
 
   useEffect(() => {
     if (client) {
       getMedia()
     }
-    // return () => {
-    //   client?.deactivate()
-    // }
   }, [client])
 
   useEffect(() => {
@@ -112,7 +108,7 @@ export default function RealTime(props) {
   const getMedia = async () => {
     try {
       myStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
+        // audio: true,
         video: true,
       })
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
