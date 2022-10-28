@@ -21,7 +21,10 @@ export default function RealTime() {
 
   useEffect(() => {
     const stompClient = new Stomp.Client()
-    stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
+    if (typeof stompClient !== 'function') {
+      stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
+    }
+
     stompClient.onConnect = () => {
       stompClient.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
@@ -40,15 +43,14 @@ export default function RealTime() {
     stompClient.activate()
     // setClient(stompClient)
     client = stompClient
-
-    return () => {
-      stompClient.deactivate()
-    }
   }, [])
 
   useEffect(() => {
     if (client) {
       getMedia()
+    }
+    return () => {
+      client?.deactivate()
     }
   }, [client])
 
@@ -85,7 +87,7 @@ export default function RealTime() {
       })
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
         myVideoRef.current.srcObject = myStream
-        makeOffer()
+        await makeOffer()
       }
     } catch (error) {
       console.log(error)
