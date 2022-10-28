@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import * as Stomp from '@stomp/stompjs'
-import Sockjs from 'sockjs-client'
+
+import Calling from './calling'
 
 import { UUID } from '../../store/constants'
 
@@ -11,6 +11,8 @@ export default function RealTime(props) {
 
   // const [client, setClient] = useState(undefined)
   const [isMuted, setIsMuted] = useState(false)
+  const [isStarted, setIsStarted] = useState(false)
+  const [startTime, setStartTime] = useState('')
 
   const myVideoRef = useRef(null)
   const peerVideoRef = useRef(null)
@@ -47,13 +49,8 @@ export default function RealTime(props) {
     myPeerConnection.addEventListener('addstream', (data) => {
       console.log('add stream', data)
       if (peerVideoRef && peerVideoRef.current) {
+        setIsStarted(true)
         peerVideoRef.current.srcObject = data.stream
-        // const test = document.createElement('video')
-        // test.setAttribute('autoPlay', true)
-        // test.setAttribute('playsInLine', true)
-        // test.setAttribute('srcObject', data.stream)
-        // const div1 = document.querySelector('div')
-        // div1.appendChild(test)
       }
     })
 
@@ -108,8 +105,8 @@ export default function RealTime(props) {
   const getMedia = async () => {
     try {
       myStream = await navigator.mediaDevices.getUserMedia({
-        // audio: true,
         video: true,
+        // audio: true,
       })
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
         myVideoRef.current.srcObject = myStream
@@ -155,7 +152,7 @@ export default function RealTime(props) {
   }
 
   const getIce = async (ice) => {
-    myPeerConnection.addIceCandidate(ice)
+    await myPeerConnection.addIceCandidate(ice)
   }
 
   return (
@@ -163,6 +160,9 @@ export default function RealTime(props) {
       RealTime
       <video ref={myVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
       <video ref={peerVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
+      <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
+        <Calling />
+      </div>
     </div>
   )
 }

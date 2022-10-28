@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+
+import Profile from '../../components/profile'
 
 import { SEND_TEST } from '../../store/constants'
-import weatherApi from '../../actions/api/weatherApi'
-
-import CameraTest from './cameraTest'
+import { weather } from '../../actions/api/api'
 
 export default function Home() {
   const { ipcRenderer } = window.require('electron')
@@ -41,7 +40,7 @@ export default function Home() {
       String(newDate.getFullYear()) +
       String(newDate.getMonth() + 1).padStart(2, '0') +
       String(newDate.getDate()).padStart(2, '0')
-    weatherApi(date, time).then((res) => {
+    weather(date, time).then((res) => {
       const data = getWeatherDetail(res.data.response.body.items.item)
       console.log(data)
       setNear(data.near)
@@ -138,6 +137,7 @@ export default function Home() {
   return (
     <div>
       home
+      <Profile />
       <button onClick={sendMain}>ipc 테스트</button>
       <button onClick={getWeather}>날씨 테스트</button>
       <div>
