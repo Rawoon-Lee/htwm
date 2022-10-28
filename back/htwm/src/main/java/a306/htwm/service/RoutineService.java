@@ -91,7 +91,7 @@ public class RoutineService {
                 SetDTO setDTO = SetDTO.builder()
                         .sec(set.getTime())
                         .exercise_id(set.getExercise().getId())
-                        .exercise_name(set.getExercise().getName())
+                        .exercise_name(exerciseRepository.findById(set.getExercise().getId()).get().getName())
                         .number(set.getNumber())
                         .set_cnt(set.getSet_cnt())
                         .build();
