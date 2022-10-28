@@ -2,9 +2,8 @@ package a306.htwm.service;
 
 import a306.htwm.dto.*;
 import a306.htwm.entity.Exercise;
-import a306.htwm.entity.Friend;
 import a306.htwm.entity.Routine;
-import a306.htwm.entity.Set;
+import a306.htwm.entity.Sets;
 import a306.htwm.repository.ExerciseRepository;
 import a306.htwm.repository.RoutineRepository;
 import a306.htwm.repository.SetRepository;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true) // 기본은 false
@@ -53,7 +53,7 @@ public class RoutineService {
         // 세트 생성
         ArrayList<SetDTO> setDTOS = createRoutineDTO.getSets();
         for(SetDTO setDTO : setDTOS){
-            Set set = new Set();
+            Sets set = new Sets();
             Long exerciseId = setDTO.getExercise_id();
             if(exerciseId == 0f) set.setExercise(null); // 0 일때 휴식으로 예외 처리
             else set.setExercise(exerciseRepository.findById(exerciseId).get());
@@ -73,7 +73,7 @@ public class RoutineService {
         // 연관된 세트 삭제
         Routine routine = routineRepository.findByNameAndUsername(deleteRoutineDTO.getName(), deleteRoutineDTO.getUsername()).get();
 
-        for(Set set : setRepository.findAllByRoutine(routine.getId())){
+        for(Sets set : setRepository.findAllByRoutine(routine.getId())){
             setRepository.delete(set);
         }
 
@@ -85,9 +85,23 @@ public class RoutineService {
         ArrayList<Routine> routines = routineRepository.findAllByUsername(username);
         ArrayList<RoutineDTO> routineDTOS = new ArrayList<>();
         for(Routine routine : routines){
+            List<Sets> sets = routine.getSets();
+            ArrayList<SetDTO> setDTOS = new ArrayList<>();
+            for(Sets set : sets){
+                SetDTO setDTO = SetDTO.builder()
+                        .sec(set.getTime())
+                        .exercise_id(set.getExercise().getId())
+                        .exercise_name(exerciseRepository.findById(set.getExercise().getId()).get().getName())
+                        .number(set.getNumber())
+                        .set_cnt(set.getSet_cnt())
+                        .build();
+                setDTOS.add(setDTO);
+            }
+
             RoutineDTO routineDTO = RoutineDTO.builder()
                     .name(routine.getName())
                     .username(routine.getUser().getUsername())
+                    .sets(setDTOS)
                     .build();
             routineDTOS.add(routineDTO);
         }
