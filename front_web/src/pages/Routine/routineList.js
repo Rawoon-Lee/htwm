@@ -4,7 +4,7 @@ import { routine } from '../../actions/api/api'
 import { setRoutineDetail, setRoutineList } from '../../store/modules/util'
 
 export default function RoutineList(props) {
-  const setState = props.setState
+  const setRoutineState = props.setRoutineState
   const dispatch = useDispatch()
   const username = useSelector((state) => state.user.username)
   const routineList = useSelector((state) => state.util.routineList)
@@ -33,7 +33,7 @@ export default function RoutineList(props) {
     })
     console.log(routineDetail)
     dispatch(setRoutineDetail(routineDetail))
-    setState(1)
+    setRoutineState(1)
   }
 
   return (

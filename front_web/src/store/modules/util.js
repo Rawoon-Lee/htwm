@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const utilSlice = createSlice({
   name: 'util',
   initialState: {
+    weatherData: {},
     client: undefined,
     routineList: [
       {
@@ -32,8 +33,12 @@ const utilSlice = createSlice({
       ],
       username: 'string',
     },
+    routineResult: {},
   },
   reducers: {
+    setWeatherData(state, action) {
+      state.weatherData = action.payload
+    },
     setClient(state, action) {
       state.client = action.payload
     },
@@ -50,10 +55,14 @@ const utilSlice = createSlice({
           newRoutine.sets.push(copy)
         })
       }
+      console.log(newRoutine)
       state.routineDetail = newRoutine
+    },
+    setRoutineResult(state, action) {
+      state.routineResult = action.payload
     },
   },
 })
 
-export const { setClient, setRoutineList, setRoutineDetail } = utilSlice.actions
+export const { setWeatherData, setClient, setRoutineList, setRoutineDetail, setRoutineResult } = utilSlice.actions
 export const util = utilSlice.reducer

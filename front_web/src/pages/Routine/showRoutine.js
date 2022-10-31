@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 export default function ShowRoutine(props) {
-  const setState = props.setState
+  const setRoutineState = props.setRoutineState
   const routineDetail = useSelector((state) => state.util.routineDetail)
 
   console.log(routineDetail)
 
   useEffect(() => {
     setTimeout(() => {
-      setState(2)
+      setRoutineState(2)
     }, 5000)
   }, [])
 
