@@ -38,10 +38,19 @@ const utilSlice = createSlice({
       state.client = action.payload
     },
     setRoutineList(state, action) {
-      state.routine = action.payload
+      state.routineList = action.payload
     },
     setRoutineDetail(state, action) {
-      state.routineDetail = action.payload
+      const newRoutine = { ...action.payload }
+      newRoutine.sets = []
+      if (action.payload.sets?.length) {
+        action.payload.sets.map((set) => {
+          const copy = { ...set }
+          copy.set_cnt = 0
+          newRoutine.sets.push(copy)
+        })
+      }
+      state.routineDetail = newRoutine
     },
   },
 })
