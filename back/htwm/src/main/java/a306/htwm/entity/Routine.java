@@ -22,6 +22,8 @@ public class Routine {
 
     private String name;
 
+    private String color;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
