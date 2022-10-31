@@ -11,21 +11,28 @@ import CameraTest from '../pages/cameraTest'
 
 import { user } from '../actions/api/api'
 import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/user'
-import { UUID } from '../store/constants'
+import { UUID, SEND_TEST } from '../store/constants'
 
 export default function mainLayout(props) {
   const dispatch = useDispatch()
-
-  const userInfo = useSelector((state) => state.user.userInfo)
+  const { ipcRenderer } = window.require('electron')
 
   const [client, setClient] = useState(undefined)
   const [state, setState] = useState(0)
 
-  const components = [<Home />, <Picture />, <RealTime client={client} />, <Routine />, <CameraTest />]
+  const components = [
+    <Home />,
+    <Picture />,
+    <RealTime client={client} />,
+    <Routine setState={setState} />,
+    <CameraTest />,
+  ]
 
   useEffect(() => {
     getUserInfos() // 일정 시간이나 소켓 요청에 따라 업데이트 되도록하기
   }, [])
+
+  ////////////////////////////////////////////////////webSocket 통신//////////////////////////////////////////////////////////////
 
   useEffect(() => {
     const stompClient = new Stomp.Client({
@@ -77,6 +84,23 @@ export default function mainLayout(props) {
       .catch((error) => console.log(error))
   }
 
+  ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    ipcRenderer.on(SEND_TEST, getMsg)
+    return () => {
+      ipcRenderer.removeListener(SEND_TEST, getMsg)
+    }
+  }, [])
+
+  const getMsg = (event, arg) => {
+    console.log(event, arg, '받음')
+  }
+
+  const sendMain = () => {
+    ipcRenderer.send(SEND_TEST, 'hello')
+  }
+
   return (
     <div>
       <button onClick={() => setState(0)}>home</button>
@@ -84,6 +108,7 @@ export default function mainLayout(props) {
       <button onClick={() => setState(2)}>realTime</button>
       <button onClick={() => setState(3)}>Routine</button>
       <button onClick={() => setState(4)}>CameraTest</button>
+      <button onClick={sendMain}>ipc 테스트</button>
       {components[state]}
     </div>
   )

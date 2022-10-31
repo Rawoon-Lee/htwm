@@ -1,45 +1,50 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { routine } from '../../actions/api/api'
-import { setRoutineDetail } from '../../store/modules/util'
+import { setRoutineDetail, setRoutineResult } from '../../store/modules/util'
 
 export default function StartRoutine(props) {
-  const setState = props.setState
   const dispatch = useDispatch()
+
+  const setRoutineState = props.setRoutineState
   const username = useSelector((state) => state.user.username)
   const routineDetail = useSelector((state) => state.util.routineDetail)
-  const [startDateTime, setStartDateTime] = useState('')
 
   const setNo = useRef(0) // 진행중인 세트번호
+  const totSet = routineDetail.sets.length // 전체 세트 수
   const count = useRef(0) // 운동 카운트
   const [viewCount, setViewCount] = useState(0)
   const progressRate = useRef(0) // 진행률
 
-  const [viewTime, setViewTime] = useState(10)
-  const time = useRef(5)
-  const totSet = routineDetail.sets.length
+  const [viewTime, setViewTime] = useState(0)
+  const time = useRef(0)
 
   useEffect(() => {
+    let startDateTime = new Date()
+    startDateTime = startDateTime.toISOString()
     return () => {
       // 루틴 끝낸 결과 보내기
-      const doneSetNum = Math.round(progressRate.current * 100).toFixed()
+      const doneSetNum = parseInt(Math.round(progressRate.current * 100))
       const routineJson = String(JSON.stringify(routineDetail))
       const date = new Date()
       const endDateTime = date.toISOString()
 
-      console.log(startDateTime, endDateTime, routineJson, doneSetNum, username)
+      console.log(1, startDateTime, 2, endDateTime, 3, routineJson, 4, doneSetNum, 5, username)
+      dispatch(setRoutineResult({ startDateTime, endDateTime, routineJson, doneSetNum, username }))
       if (doneSetNum > 3) {
-        routine.recordRoutine({ startDateTime, endDateTime, routineJson, doneSetNum, username }).then((result) => {
-          console.log('기록 api 결과', result.data)
-        })
+        routine
+          .recordRoutine({ startDateTime, endDateTime, routineJson, doneSetNum, username })
+          .then((result) => {
+            console.log('기록 api 결과', result)
+          })
+          .catch((error) => console.log(error))
       }
       dispatch(setRoutineDetail({}))
     }
   }, [])
 
   useEffect(() => {
-    const date = new Date()
-    setStartDateTime(date.toISOString())
+    time.current = routineDetail.sets[0].sec
     setViewTime(routineDetail.sets[0].sec)
     const interval = setInterval(() => {
       if (time.current > 0) {
@@ -54,12 +59,6 @@ export default function StartRoutine(props) {
     }
   }, [])
 
-  //     exercise_id: 0,  // row id
-  //     exercise_name: 'string', // 운동이름
-  //     number: 0,  // 목표 횟수
-  //     sec: 0,  // 세트당 시간
-  //     set_cnt: 0,  // 세트 개수
-
   // 다음 세트로 넘어가는 함수
   const nextSet = () => {
     // 휴식시간 처리
@@ -68,7 +67,7 @@ export default function StartRoutine(props) {
     count.current = 0
     setViewCount(0)
     if (setNo.current === totSet - 1) {
-      setState(3)
+      setRoutineState(3)
       console.log('운동 끝')
     } else {
       setNo.current++
@@ -90,6 +89,8 @@ export default function StartRoutine(props) {
         남은 세트 - {setNo.current + 1}/{totSet}
       </p>
       <p>카운트 - {viewCount}</p>
+      <p>진행중인 운동 - {routineDetail.sets[setNo.current].exercise_name}</p>
+      <p>참고 영상 - url이 없음</p>
       <button onClick={addCount}>카운트 증가</button>
     </div>
   )
