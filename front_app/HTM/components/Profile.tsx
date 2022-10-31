@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View } from "react-native"
-import GoogleLogin from "./googleLogin"
+import { StyleSheet, Text, View, Image } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 
 function Header() {
@@ -7,8 +6,8 @@ function Header() {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.text}>Hello</Text>
-			<GoogleLogin></GoogleLogin>
+			<Text style={styles.text}>Sabina</Text>
+			<Image source={require("../assets/profileImg.jpg")} />
 		</View>
 	)
 }
