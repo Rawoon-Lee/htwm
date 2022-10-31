@@ -28,7 +28,7 @@ export default function App() {
 						options={{ headerShown: false }}
 					></Stack.Screen>
 				</Stack.Navigator>
-				<BottomTabNav></BottomTabNav>
+				{/* <BottomTabNav></BottomTabNav> */}
 			</NavigationContainer>
 		</>
 	)

@@ -9,7 +9,7 @@ import MyRecord from "../screens/MyRecord/MyRecord"
 
 const BottomTab = createBottomTabNavigator()
 
-export default function BottomTabNav() {
+export default function BottomTabNav({ navigation }: any) {
 	return (
 		<BottomTab.Navigator
 			screenOptions={{

@@ -23,12 +23,7 @@ function RoutineList() {
 				}}
 			/>
 			<Text>루틴 리스트</Text>
-			<Feather.Button
-				name="plus-circle"
-				size={24}
-				color="black"
-				onPress={() => navigation.navigate("CreateRoutine")}
-			/>
+
 			<StatusBar style="auto" />
 		</View>
 	)
