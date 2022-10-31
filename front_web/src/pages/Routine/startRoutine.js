@@ -62,7 +62,12 @@ export default function StartRoutine(props) {
   // 다음 세트로 넘어가는 함수
   const nextSet = () => {
     // 휴식시간 처리
-    const addRate = (1 / totSet) * Math.min(count.current / (routineDetail.sets[setNo.current].number || 1), 1)
+    const addRate =
+      (1 / totSet) *
+      Math.min(
+        routineDetial.sets[setNo.current].number ? count.current / routineDetail.sets[setNo.current].number : 1,
+        1,
+      )
     progressRate.current += addRate
     count.current = 0
     setViewCount(0)
