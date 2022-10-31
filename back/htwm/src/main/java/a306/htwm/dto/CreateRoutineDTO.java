@@ -10,4 +10,5 @@ public class CreateRoutineDTO {
     private String username;
     private String name;
     private ArrayList<SetDTO> sets;
+    private String color;
 }

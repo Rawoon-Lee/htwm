@@ -50,7 +50,7 @@ public class RoutineController {
         try{
             return ResponseEntity.ok().body(routineService.getRoutine(username));
         }catch (RuntimeException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 }
