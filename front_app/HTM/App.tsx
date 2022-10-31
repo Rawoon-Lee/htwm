@@ -1,35 +1,39 @@
 import { StatusBar } from "expo-status-bar"
 import { StyleSheet, Text, View, Image } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
-
+import { Provider } from "react-redux"
 import {
 	createStackNavigator,
 	StackNavigationProp
 } from "@react-navigation/stack"
 
 import BottomTabNav from "./components/BottomTabNav"
+import { store } from "./store/store"
+
 import CreateRoutine from "./screens/RoutinesList/createRoutine"
 
 const Stack = createStackNavigator()
 export default function App() {
 	return (
 		<>
-			<StatusBar style="auto" />
-			<NavigationContainer>
-				<Stack.Navigator initialRouteName="BottomTabNav">
-					<Stack.Screen
-						name="BottomTabNav"
-						component={BottomTabNav}
-						options={{ headerShown: false }}
-					></Stack.Screen>
-					<Stack.Screen
-						name="CreateRoutine"
-						component={CreateRoutine}
-						options={{ headerShown: false }}
-					></Stack.Screen>
-				</Stack.Navigator>
-				{/* <BottomTabNav></BottomTabNav> */}
-			</NavigationContainer>
+			<Provider store={store}>
+				<StatusBar style="auto" />
+				<NavigationContainer>
+					<Stack.Navigator initialRouteName="BottomTabNav">
+						<Stack.Screen
+							name="BottomTabNav"
+							component={BottomTabNav}
+							options={{ headerShown: false }}
+						></Stack.Screen>
+						<Stack.Screen
+							name="CreateRoutine"
+							component={CreateRoutine}
+							options={{ headerShown: false }}
+						></Stack.Screen>
+					</Stack.Navigator>
+					{/* <BottomTabNav></BottomTabNav> */}
+				</NavigationContainer>
+			</Provider>
 		</>
 	)
 }
