@@ -10,5 +10,6 @@ import java.util.ArrayList;
 public class RoutineDTO {
     private String username;
     private String name;
+    private String color;
     private ArrayList<SetDTO> sets;
 }

@@ -47,12 +47,14 @@ public class RoutineService {
             throw new RuntimeException("중복된 루틴명입니다.");
         }
         routine.setName(createRoutineDTO.getName());
+        routine.setColor(createRoutineDTO.getColor());
         routine.setUser(userRepository.findByUsername(createRoutineDTO.getUsername()));
         routineRepository.save(routine);
 
         // 세트 생성
         ArrayList<SetDTO> setDTOS = createRoutineDTO.getSets();
         for(SetDTO setDTO : setDTOS){
+            if(exerciseRepository.findById(setDTO.getExercise_id()).isEmpty()) throw new RuntimeException("no such exercise id, start from 1");
             Sets set = new Sets();
             Long exerciseId = setDTO.getExercise_id();
             if(exerciseId == 0f) set.setExercise(null); // 0 일때 휴식으로 예외 처리
@@ -83,6 +85,7 @@ public class RoutineService {
 
     public ArrayList<RoutineDTO> getRoutine(String username) {
         ArrayList<Routine> routines = routineRepository.findAllByUsername(username);
+        if(userRepository.findByUsername(username) == null) throw new RuntimeException("no such username");
         ArrayList<RoutineDTO> routineDTOS = new ArrayList<>();
         for(Routine routine : routines){
             List<Sets> sets = routine.getSets();
@@ -102,6 +105,7 @@ public class RoutineService {
                     .name(routine.getName())
                     .username(routine.getUser().getUsername())
                     .sets(setDTOS)
+                    .color(routine.getColor())
                     .build();
             routineDTOS.add(routineDTO);
         }
