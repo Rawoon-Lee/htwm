@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native"
 import { SelectButton } from "../../components/PrimaryButton"
-import { routine } from "../../api/routineAPi"
+import { routine } from "../../api/routineAPI"
 
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width

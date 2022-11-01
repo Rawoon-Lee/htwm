@@ -8,7 +8,7 @@ import { Feather } from "@expo/vector-icons"
 import RoutineBox from "./routineBox"
 import { routine } from "../../api/routineAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
-import Routine, { getRoutineList } from "../../store/routine"
+import { getRoutineList } from "../../store/routine"
 import { SelectButton } from "../../components/PrimaryButton"
 
 function RoutineList() {
@@ -17,6 +17,7 @@ function RoutineList() {
 
 	const userId = useAppSelector(state => state.userId)
 	const routineList = useAppSelector(state => state.routineList)
+	console.log("루틴목록", routineList)
 
 	React.useEffect(() => {
 		routine
@@ -41,25 +42,28 @@ function RoutineList() {
 					navigation.goBack()
 				}}
 			/>
-
-			<View style={{ justifyContent: "space-between" }}>
-				<Text
-					style={{
-						flexDirection: "row",
-						justifyContent: "flex-start",
-						fontSize: 30
-					}}
-				>
-					루틴
-				</Text>
-				<View style={{ alignItems: "center" }}>
-					{routineList.map((cur, idx) => {
-						return (
-							<RoutineBox key={idx} routine={routineList[idx]}></RoutineBox>
-						)
-					})}
+			{routineList.length == 1 ? (
+				<View style={{ justifyContent: "space-between" }}>
+					<Text
+						style={{
+							flexDirection: "row",
+							justifyContent: "flex-start",
+							fontSize: 30
+						}}
+					>
+						루틴
+					</Text>
+					<View style={{ alignItems: "center" }}>
+						{routineList.map((cur, idx) => {
+							return (
+								<RoutineBox key={idx} routine={routineList[idx]}></RoutineBox>
+							)
+						})}
+					</View>
 				</View>
-			</View>
+			) : (
+				<Text>아직 루틴이 없군요</Text>
+			)}
 
 			<View
 				style={{
