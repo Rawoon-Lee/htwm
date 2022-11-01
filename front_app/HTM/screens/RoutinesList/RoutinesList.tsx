@@ -1,18 +1,35 @@
-import { StatusBar } from "expo-status-bar"
 import { StyleSheet, Text, View } from "react-native"
-import { TextInput } from "react-native"
-import { routine } from "../../api/routine"
+import Constants from "expo-constants"
 import * as React from "react"
-import { Feather } from "@expo/vector-icons"
 import { useNavigation } from "@react-navigation/native"
+import { TextInput } from "react-native"
+
+import { Feather } from "@expo/vector-icons"
+
+import { routine } from "../../api/routine"
+import { useAppSelector, useAppDispatch } from "../../store/hook"
+import { getRoutineList } from "../../store/routine"
 
 function RoutineList() {
-	const [routineList, setRoutineList] = React.useState()
 	const navigation = useNavigation()
-	// React.useEffect({}, [])
+	const dispatch = useAppDispatch()
 
+	const userId = useAppSelector(state => state.userId)
+	const routineList = useAppSelector(state => state.routineList)
+
+	React.useEffect(() => {
+		routine
+			.routineList(userId.id)
+			.then(result => {
+				console.log(result.data)
+				dispatch(getRoutineList(result.data))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [])
 	return (
-		<View>
+		<View style={styles.container}>
 			<Feather.Button
 				style={styles.buttons}
 				name="arrow-left"
@@ -23,8 +40,7 @@ function RoutineList() {
 				}}
 			/>
 			<Text>루틴 리스트</Text>
-
-			<StatusBar style="auto" />
+			<Text>{routineList.color}</Text>
 		</View>
 	)
 }
@@ -32,6 +48,9 @@ function RoutineList() {
 export default RoutineList
 
 const styles = StyleSheet.create({
+	container: {
+		marginTop: Constants.statusBarHeight
+	},
 	buttons: {
 		backgroundColor: "white"
 	}

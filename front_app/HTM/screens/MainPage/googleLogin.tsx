@@ -4,6 +4,8 @@ import { StyleSheet, View, Pressable, Image, Text } from "react-native"
 import * as Google from "expo-auth-session/providers/google"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { user } from "../../api/user"
+import { getUserId } from "../../store/user"
+import { useAppSelector, useAppDispatch } from "../../store/hook"
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -17,6 +19,9 @@ function GoogleLogin() {
 		picture: string
 		verified_email: boolean
 	}
+	const dispatch = useAppDispatch()
+	const userIdRedux = useAppSelector(state => state.userId)
+	const [userId, setUserId] = React.useState<string | null>(null)
 	const [userInfo, setUserInfo] = React.useState<UserData | null>(null)
 	// any할거면 interface 왜 만드나
 	const [accessToken, setAccessToken] = React.useState<any | null>(null)
@@ -35,6 +40,7 @@ function GoogleLogin() {
 		try {
 			const userId = userInfo.email.split("@")[0]
 			await AsyncStorage.setItem("userId", userId)
+			dispatch(getUserId(userId))
 		} catch (err) {
 			console.log(err)
 		}
@@ -42,11 +48,17 @@ function GoogleLogin() {
 	async function retreiveUserData() {
 		try {
 			const loadedData = await AsyncStorage.getItem("userId")
-			// console.log(loadedData)
+			setUserId(loadedData)
 		} catch (err) {
 			console.log(err)
 		}
 	}
+
+	React.useEffect(() => {
+		retreiveUserData()
+		if (!userId) return
+		dispatch(getUserId(userId))
+	}, [])
 
 	React.useEffect(() => {
 		if (response?.type === "success") {
@@ -89,6 +101,7 @@ function GoogleLogin() {
 					<Image source={{ uri: userInfo.picture }} style={styles.profilePic} />
 					<Text>Hello {userInfo.name}</Text>
 					<Text>{userInfo.email}</Text>
+					<Text>{userIdRedux.id}</Text>
 				</View>
 			)
 		}
@@ -113,34 +126,41 @@ function GoogleLogin() {
 
 	function logout() {
 		AsyncStorage.removeItem("userId")
+		dispatch(getUserId(""))
 	}
 	return (
 		<View>
-			<Pressable
-				style={styles.container}
-				disabled={!request}
-				onPress={
-					accessToken
-						? getUserData
-						: () => {
-								promptAsync({ showInRecents: true })
-						  }
-				}
-			>
-				<Image
-					source={require("../../assets/g-logo.png")}
-					style={styles.profilePic}
-				/>
-				<Text>{accessToken ? "Get User Data" : "구글 로그인"}</Text>
-			</Pressable>
-			{accessToken ? (
+			{userId ? (
+				<Pressable onPress={logout}>
+					<Text>로그아웃</Text>
+				</Pressable>
+			) : (
+				<Pressable
+					style={styles.container}
+					disabled={!request}
+					onPress={
+						accessToken
+							? getUserData
+							: () => {
+									promptAsync({ showInRecents: true })
+							  }
+					}
+				>
+					<Image
+						source={require("../../assets/g-logo.png")}
+						style={styles.profilePic}
+					/>
+					<Text>구글 로그인</Text>
+				</Pressable>
+			)}
+			{/* {userId ? (
 				<>
 					{showUserInfo()}
 					<Pressable onPress={logout}>
 						<Text>로그아웃</Text>
 					</Pressable>
 				</>
-			) : null}
+			) : null} */}
 		</View>
 	)
 }
