@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 export default function ShowRoutine(props) {
   const setRoutineState = props.setRoutineState
-  const routineDetail = useSelector((state) => state.util.routineDetail)
+  const routineDetail = useSelector((state) => state.routine.routineDetail)
 
   useEffect(() => {
     setTimeout(() => {

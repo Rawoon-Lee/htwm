@@ -12,7 +12,7 @@ export default function RealTime(props) {
   // const [client, setClient] = useState(undefined)
   const [isMuted, setIsMuted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
-  const [startTime, setStartTime] = useState('')
+  const [cnt, setCnt] = useState(0)
 
   const myVideoRef = useRef(null)
   const peerVideoRef = useRef(null)
@@ -163,6 +163,7 @@ export default function RealTime(props) {
       <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
         <Calling />
       </div>
+      <button onClick={() => setCnt(cnt + 1)}>reload{cnt}</button>
     </div>
   )
 }
