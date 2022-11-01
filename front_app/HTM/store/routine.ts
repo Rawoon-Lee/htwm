@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-export interface RoutineData {
+export type RoutineDataList = RoutineData[]
+interface RoutineData {
 	color: string
 	name: string
 	username: string
@@ -13,25 +14,27 @@ interface SetData {
 	sec: number
 	set_cnt: number
 }
-const initialStateRoutineData: RoutineData = {
-	color: "#E0BB95",
-	name: "",
-	username: "",
-	sets: [
-		{
-			exercise_id: 0,
-			exercise_name: "스쿼트",
-			number: 0,
-			sec: 0,
-			set_cnt: 0
-		}
-	]
-}
+const initialStateRoutineData: RoutineDataList = [
+	{
+		color: "#E0BB95",
+		name: "",
+		username: "",
+		sets: [
+			{
+				exercise_id: 0,
+				exercise_name: "스쿼트",
+				number: 0,
+				sec: 0,
+				set_cnt: 0
+			}
+		]
+	}
+]
 const RoutineListSlice = createSlice({
 	name: "userInfo",
 	initialState: initialStateRoutineData,
 	reducers: {
-		getRoutineList: (state, action: PayloadAction<RoutineData>) => {
+		getRoutineList: (state, action: PayloadAction<RoutineDataList>) => {
 			return action.payload
 		}
 	}

@@ -22,7 +22,8 @@ function RoutineList() {
 			.routineList(userId.id)
 			.then(result => {
 				console.log(result.data)
-				dispatch(getRoutineList(result.data))
+				console.log(typeof result.data)
+				if (result.data) dispatch(getRoutineList(result.data))
 			})
 			.catch(err => {
 				console.log(err)
@@ -40,7 +41,7 @@ function RoutineList() {
 				}}
 			/>
 			<Text>루틴 리스트</Text>
-			<Text>{routineList.color}</Text>
+			<Text>{routineList[0].color}</Text>
 		</View>
 	)
 }

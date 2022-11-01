@@ -49,6 +49,9 @@ function GoogleLogin() {
 		try {
 			const loadedData = await AsyncStorage.getItem("userId")
 			setUserId(loadedData)
+			if (loadedData) {
+				dispatch(getUserId(loadedData))
+			}
 		} catch (err) {
 			console.log(err)
 		}
@@ -56,8 +59,6 @@ function GoogleLogin() {
 
 	React.useEffect(() => {
 		retreiveUserData()
-		if (!userId) return
-		dispatch(getUserId(userId))
 	}, [])
 
 	React.useEffect(() => {

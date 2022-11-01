@@ -24,10 +24,10 @@ const routine = {
 			url: `${END_POINT}/`
 		})
 	},
-	routineList(username: string) {
+	routineList(data: string) {
 		return api({
 			method: "get",
-			url: `${END_POINT}?username=${username}`
+			url: `${END_POINT}?username=${data}`
 		})
 	},
 	exerciseList() {

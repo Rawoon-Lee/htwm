@@ -43,6 +43,12 @@ const user = {
 			data: data,
 			url: `${END_POINT}/friend`
 		})
+	},
+	friendList(data: string) {
+		return api({
+			method: "get",
+			url: `${END_POINT}/friend?username=${data}`
+		})
 	}
 }
 
