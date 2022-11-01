@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native"
-import PrimaryButton from "../../components/PrimaryButton"
+import { PrimaryButton } from "../../components/PrimaryButton"
 
 function DeviceIntro() {
 	return (

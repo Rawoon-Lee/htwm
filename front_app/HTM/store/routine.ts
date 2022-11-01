@@ -41,15 +41,15 @@ const RoutineListSlice = createSlice({
 })
 
 // const userIdSlice = createSlice({
-// 	name: "userId",
-// 	initialState: {
-// 		id: ""
-// 	},
-// 	reducers: {
-// 		getUserId: (state, action: PayloadAction<string>) => {
-// 			state.id = action.payload
-// 		}
-// 	}
+//     name: "userId",
+//     initialState: {
+//         id: ""
+//     },
+//     reducers: {
+//         getUserId: (state, action: PayloadAction<string>) => {
+//             state.id = action.payload
+//         }
+//     }
 // })
 
 export const { getRoutineList } = RoutineListSlice.actions
