@@ -6,7 +6,7 @@ import { TextInput } from "react-native"
 
 import { Feather } from "@expo/vector-icons"
 
-import { routine } from "../../api/routine"
+import { routine } from "../../api/routineAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getRoutineList } from "../../store/routine"
 
@@ -23,7 +23,7 @@ function RoutineList() {
 			.then(result => {
 				console.log(result.data)
 				console.log(typeof result.data)
-				if (result.data) dispatch(getRoutineList(result.data))
+				dispatch(getRoutineList(result.data))
 			})
 			.catch(err => {
 				console.log(err)

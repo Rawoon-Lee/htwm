@@ -16,14 +16,10 @@ export type FreindDataList = FriendData[]
 interface FriendData {
 	nickname: string
 	username: string
+	url: string
 }
 
-const initialStateFriend: FreindDataList = [
-	{
-		nickname: "",
-		username: ""
-	}
-]
+const initialStateFriend: FreindDataList = []
 
 const userInfoSlice = createSlice({
 	name: "userInfo",
