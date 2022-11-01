@@ -5,10 +5,11 @@ import { useNavigation } from "@react-navigation/native"
 import { TextInput } from "react-native"
 
 import { Feather } from "@expo/vector-icons"
-
+import RoutineBox from "./routineBox"
 import { routine } from "../../api/routine"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
-import { getRoutineList } from "../../store/routine"
+import Routine, { getRoutineList } from "../../store/routine"
+import { SelectButton } from "../../components/PrimaryButton"
 
 function RoutineList() {
 	const navigation = useNavigation()
@@ -30,6 +31,7 @@ function RoutineList() {
 	}, [])
 	return (
 		<View style={styles.container}>
+
 			<Feather.Button
 				style={styles.buttons}
 				name="arrow-left"
@@ -39,8 +41,28 @@ function RoutineList() {
 					navigation.goBack()
 				}}
 			/>
-			<Text>루틴 리스트</Text>
-			<Text>{routineList.color}</Text>
+
+			<View style={{ justifyContent: "space-between" }}>
+				<Text style={{ flexDirection: "row", justifyContent: "flex-start", fontSize: 30 }}>
+					루틴
+				</Text>
+				<View style={{ alignItems: "center" }}>
+					{
+						routineList.map((cur, idx) => {
+							return <RoutineBox key={idx} routine={routineList[idx]}></RoutineBox>
+						})
+					}
+				</View>
+
+			</View>
+
+			<View style={{ flexDirection: "row", justifyContent: "center", marginTop: 10 }}>
+
+				<SelectButton children={"추가"} color={"white"} borderColor={"green"} clickFunction={() => {
+					console.log("클릭함");
+				}} />
+
+			</View>
 		</View>
 	)
 }
