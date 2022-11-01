@@ -4,7 +4,7 @@ import { TextInput } from "react-native"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getUserRecord } from "../../store/record"
 import * as React from "react"
-import { record } from "../../api/record"
+import { record } from "../../api/recordAPI"
 import DailyInfo from "./dailyInfo"
 
 function MyRecord() {

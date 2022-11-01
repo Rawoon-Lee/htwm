@@ -4,6 +4,8 @@ const END_POINT = "user"
 
 const user = {
 	login(data: any) {
+		console.log("로그인하자")
+		console.log(data)
 		return api({
 			method: "post",
 			data: data,
@@ -31,6 +33,8 @@ const user = {
 		})
 	},
 	friendAdd(data: any) {
+		console.log("친구추가하자")
+		console.log(data)
 		return api({
 			method: "post",
 			data: data,
@@ -39,7 +43,7 @@ const user = {
 	},
 	friendDelete(data: any) {
 		return api({
-			method: "post",
+			method: "delete",
 			data: data,
 			url: `${END_POINT}/friend`
 		})
@@ -48,6 +52,12 @@ const user = {
 		return api({
 			method: "get",
 			url: `${END_POINT}/friend?username=${data}`
+		})
+	},
+	friendSearch(data: string) {
+		return api({
+			method: "get",
+			url: `${END_POINT}/search?nickname=${data}`
 		})
 	}
 }

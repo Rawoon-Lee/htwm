@@ -3,8 +3,8 @@ import * as WebBrowser from "expo-web-browser"
 import { StyleSheet, View, Pressable, Image, Text } from "react-native"
 import * as Google from "expo-auth-session/providers/google"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { user } from "../../api/user"
-import { getUserId } from "../../store/user"
+import { user } from "../../api/userAPI"
+import { getUserId, getUserInfo } from "../../store/user"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 
 WebBrowser.maybeCompleteAuthSession()
@@ -20,8 +20,7 @@ function GoogleLogin() {
 		verified_email: boolean
 	}
 	const dispatch = useAppDispatch()
-	const userIdRedux = useAppSelector(state => state.userId)
-	const [userId, setUserId] = React.useState<string | null>(null)
+	const userId = useAppSelector(state => state.userId)
 	const [userInfo, setUserInfo] = React.useState<UserData | null>(null)
 	// any할거면 interface 왜 만드나
 	const [accessToken, setAccessToken] = React.useState<any | null>(null)
@@ -48,7 +47,6 @@ function GoogleLogin() {
 	async function retreiveUserData() {
 		try {
 			const loadedData = await AsyncStorage.getItem("userId")
-			setUserId(loadedData)
 			if (loadedData) {
 				dispatch(getUserId(loadedData))
 			}
@@ -102,7 +100,7 @@ function GoogleLogin() {
 					<Image source={{ uri: userInfo.picture }} style={styles.profilePic} />
 					<Text>Hello {userInfo.name}</Text>
 					<Text>{userInfo.email}</Text>
-					<Text>{userIdRedux.id}</Text>
+					<Text>{userId.id}</Text>
 				</View>
 			)
 		}
@@ -126,12 +124,19 @@ function GoogleLogin() {
 	}
 
 	function logout() {
+		console.log("로그아웃 ㄱㄱ")
 		AsyncStorage.removeItem("userId")
+		let data = {
+			nickname: "",
+			url: "",
+			height: 0
+		}
+		dispatch(getUserInfo(data))
 		dispatch(getUserId(""))
 	}
 	return (
 		<View>
-			{userId ? (
+			{userId.id ? (
 				<Pressable onPress={logout}>
 					<Text>로그아웃</Text>
 				</Pressable>

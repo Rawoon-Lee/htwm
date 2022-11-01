@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getUserRecord } from "../../store/record"
 import * as React from "react"
-import { record } from "../../api/record"
+import { record } from "../../api/recordAPI"
 
 export default function DailyInfo() {
 	const userId = useAppSelector(state => state.userId)

@@ -18,21 +18,8 @@ export default function BottomTabNav({ navigation }: any) {
 					fontSize: 13
 				}
 			}}
+			initialRouteName={"Home"}
 		>
-			<BottomTab.Screen
-				name="Home"
-				component={Main}
-				options={{
-					headerShown: false,
-					tabBarLabel: "홈",
-					tabBarIcon: ({ focused }) =>
-						focused ? (
-							<Feather name="home" size={24} color="#FFA500" />
-						) : (
-							<Feather name="home" size={24} color="#b4b4b4" />
-						)
-				}}
-			/>
 			<BottomTab.Screen
 				name="RoutineList"
 				component={RoutineList}
@@ -58,6 +45,20 @@ export default function BottomTabNav({ navigation }: any) {
 							<Feather name="calendar" size={24} color="#FFA500" />
 						) : (
 							<Feather name="calendar" size={24} color="#b4b4b4" />
+						)
+				}}
+			/>
+			<BottomTab.Screen
+				name="Home"
+				component={Main}
+				options={{
+					headerShown: false,
+					tabBarLabel: "홈",
+					tabBarIcon: ({ focused }) =>
+						focused ? (
+							<Feather name="home" size={24} color="#FFA500" />
+						) : (
+							<Feather name="home" size={24} color="#b4b4b4" />
 						)
 				}}
 			/>
