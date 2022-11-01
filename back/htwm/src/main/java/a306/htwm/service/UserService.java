@@ -104,6 +104,7 @@ public class UserService {
             FriendDTO friendDTO = FriendDTO.builder()
                     .username(friend.getOtherId().getUsername())
                     .nickname(friend.getOtherId().getNickname())
+                    .url(friend.getOtherId().getImgUrl())
                     .build();
             friendDTOS.add(friendDTO);
         }
