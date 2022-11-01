@@ -97,6 +97,7 @@ public class RoutineService {
                         .exercise_name(exerciseRepository.findById(set.getExercise().getId()).get().getName())
                         .number(set.getNumber())
                         .set_cnt(set.getSet_cnt())
+                        .url(set.getExercise().getUrl())
                         .build();
                 setDTOS.add(setDTO);
             }
