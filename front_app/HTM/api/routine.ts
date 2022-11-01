@@ -27,7 +27,7 @@ const routine = {
 	routineList(username: string) {
 		return api({
 			method: "get",
-			url: `${END_POINT}/${username}`
+			url: `${END_POINT}?username=${username}`
 		})
 	},
 	exerciseList() {

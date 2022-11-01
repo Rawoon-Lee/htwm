@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar"
 import { StyleSheet, Text, View } from "react-native"
+import Constants from "expo-constants"
 import GoogleLogin from "./googleLogin"
 import DeviceIntro from "./deviceIntro"
 import ExerciseDays from "./exerciseDays"
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#fff",
 		alignItems: "center",
-		justifyContent: "center"
+		justifyContent: "center",
+		marginTop: Constants.statusBarHeight
 	}
 })
