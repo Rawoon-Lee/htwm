@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ArrayList<FriendDTO>> searchFriend(@RequestParam("username") String string){
+    public ResponseEntity<ArrayList<FriendDTO>> searchFriend(@RequestParam("nickname") String string){
         try {
             return ResponseEntity.ok().body(userService.searchFriend(string));
         } catch (RuntimeException e){
