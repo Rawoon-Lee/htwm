@@ -51,6 +51,7 @@ export default function RealTime(props) {
       if (peerVideoRef && peerVideoRef.current) {
         setIsStarted(true)
         peerVideoRef.current.srcObject = data.stream
+        console.log(1234, peerVideoRef.current.srcObject)
       }
     })
 
@@ -159,8 +160,8 @@ export default function RealTime(props) {
     <div>
       RealTime
       <video ref={myVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
-      <video ref={peerVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
-      <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
+      <video className="peerVideoTag" ref={peerVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
+      <div className={cnt} style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
         <Calling />
       </div>
       <button onClick={() => setCnt(cnt + 1)}>reload{cnt}</button>
