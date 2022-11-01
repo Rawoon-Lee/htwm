@@ -34,6 +34,7 @@ function FriendsList({ navigation }: any) {
 			})
 			.catch(err => console.log(err))
 	}, [])
+
 	function moveToSearch() {
 		navigation.navigate("FriendSearch")
 	}

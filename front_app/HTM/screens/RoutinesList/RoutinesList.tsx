@@ -11,8 +11,7 @@ import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getRoutineList } from "../../store/routine"
 import { SelectButton } from "../../components/PrimaryButton"
 
-function RoutineList() {
-	const navigation = useNavigation()
+function RoutineList({ navigation }: any) {
 	const dispatch = useAppDispatch()
 
 	const userId = useAppSelector(state => state.userId)
@@ -31,6 +30,11 @@ function RoutineList() {
 				console.log(err)
 			})
 	}, [])
+
+	function moveToCreate() {
+		navigation.navigate("CreateRoutine")
+	}
+
 	return (
 		<View style={styles.container}>
 			<Feather.Button
@@ -42,7 +46,7 @@ function RoutineList() {
 					navigation.goBack()
 				}}
 			/>
-			{routineList.length == 1 ? (
+			{routineList.length >= 1 ? (
 				<View style={{ justifyContent: "space-between" }}>
 					<Text
 						style={{
@@ -76,9 +80,7 @@ function RoutineList() {
 					children={"추가"}
 					color={"white"}
 					borderColor={"green"}
-					clickFunction={() => {
-						console.log("클릭함")
-					}}
+					clickFunction={moveToCreate}
 				/>
 			</View>
 		</View>
