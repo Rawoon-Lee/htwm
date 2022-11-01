@@ -1,16 +1,9 @@
 package a306.htwm.service;
 
 import a306.htwm.dto.*;
-import a306.htwm.entity.Friend;
-import a306.htwm.entity.Mirror;
-import a306.htwm.entity.User;
-import a306.htwm.entity.Weight;
-import a306.htwm.repository.FriendRepository;
-import a306.htwm.repository.MirrorRepository;
-import a306.htwm.repository.UserRepository;
-import a306.htwm.repository.WeightRepository;
+import a306.htwm.entity.*;
+import a306.htwm.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +23,7 @@ public class UserService {
     private final MirrorRepository mirrorRepository;
     private final WeightRepository weightRepository;
     private final FriendRepository friendRepository;
+    private final NoticeRepository noticeRepository;
 
     @Transactional
     public void register(RegisterDTO registerDTO) {
@@ -110,20 +104,35 @@ public class UserService {
             FriendDTO friendDTO = FriendDTO.builder()
                     .username(friend.getOtherId().getUsername())
                     .nickname(friend.getOtherId().getNickname())
+                    .url(friend.getOtherId().getImgUrl())
                     .build();
             friendDTOS.add(friendDTO);
         }
         return friendDTOS;
     }
 
-    public ArrayList<FriendDTO> searchFriend(String string){
+    public ArrayList<SearchDTO> searchFriend(String string, String username){
         ArrayList<User> users = userRepository.findByString(string);
-        ArrayList<FriendDTO> friendInfoDTOS = new ArrayList<>();
+        ArrayList<SearchDTO> friendInfoDTOS = new ArrayList<>();
+
         for(User user : users){
-            FriendDTO friendInfoDTO = FriendDTO.builder()
+
+            String status = "null";
+
+            Optional<Notice> sentNotice = noticeRepository.findByFromIdAndToIdIfType(userRepository.findByUsername(username).getId(), user.getId(),Type.REQ_FRI.toString());
+            if(sentNotice.isPresent()) status = "친구 신청 보낸 상태";
+
+            Optional<Notice> receivedNotice = noticeRepository.findByFromIdAndToIdIfType(user.getId(),userRepository.findByUsername(username).getId(),Type.REQ_FRI.toString());
+            if(receivedNotice.isPresent()) status = "친구가 이미 나한테 친구 신청한 상태";
+
+            Optional<Friend> friends = friendRepository.findByMyIdAndFriendId(userRepository.findByUsername(username).getId(), user.getId());
+            if(friends.isPresent()) status = "이미 친구임";
+
+            SearchDTO friendInfoDTO = SearchDTO.builder()
                     .nickname(user.getNickname())
                     .username(user.getUsername())
                     .url(user.getImgUrl())
+                    .status(status)
                     .build();
             friendInfoDTOS.add(friendInfoDTO);
         }
