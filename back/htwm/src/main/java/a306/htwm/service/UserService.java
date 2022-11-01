@@ -116,6 +116,20 @@ public class UserService {
         return friendDTOS;
     }
 
+    public ArrayList<FriendDTO> searchFriend(String string){
+        ArrayList<User> users = userRepository.findByString(string);
+        ArrayList<FriendDTO> friendInfoDTOS = new ArrayList<>();
+        for(User user : users){
+            FriendDTO friendInfoDTO = FriendDTO.builder()
+                    .nickname(user.getNickname())
+                    .username(user.getUsername())
+                    .url(user.getImgUrl())
+                    .build();
+            friendInfoDTOS.add(friendInfoDTO);
+        }
+        return friendInfoDTOS;
+    }
+
     public String getUuid(String username){
         return mirrorRepository.findByUser(userRepository.findByUsername(username).getId()).getUuid();
     }
