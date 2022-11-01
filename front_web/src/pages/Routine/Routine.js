@@ -4,18 +4,25 @@ import { useDispatch, useSelector } from 'react-redux'
 import RoutineList from './routineList'
 import ShowRoutine from './ShowRoutine'
 import StartRoutine from './startRoutine'
+import RoutineResult from './routineResult'
 
-export default function Routine() {
-  const [state, setState] = useState(0)
+export default function Routine(props) {
+  const setState = props.setState
+  const [routineState, setRoutineState] = useState(0)
 
-  const components = [<RoutineList />, <ShowRoutine setState={setState} />, <StartRoutine />]
+  const components = [
+    <RoutineList setRoutineState={setRoutineState} />,
+    <ShowRoutine setRoutineState={setRoutineState} />,
+    <StartRoutine setRoutineState={setRoutineState} />,
+    <RoutineResult setState={setState} />,
+  ]
 
-  // 루틴 디테일 골라지면 startRoutine 띄우기
+  // 운동 중단 요청오면 setState 변경
 
   return (
     <div>
       routine
-      {components[state]}
+      {components[routineState]}
     </div>
   )
 }

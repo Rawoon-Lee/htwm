@@ -1,15 +1,32 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Profile from '../../components/profile'
 
-import { SEND_TEST } from '../../store/constants'
 import { weather } from '../../actions/api/api'
+import { setWeatherData } from '../../store/modules/util'
 
 export default function Home() {
-  const { ipcRenderer } = window.require('electron')
-  const [near, setNear] = useState([])
-  const [far, setFar] = useState([])
+  const dispatch = useDispatch()
+
+  const weatherData = useSelector((state) => state.util.weatherData)
   const [date, setDate] = useState('')
+
+  useEffect(() => {
+    getTime()
+    const interval = setInterval(getTime, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
+  useEffect(() => {
+    getWeather()
+    const getWeatherInterval = setInterval(getWeather, 600000)
+    return () => {
+      clearInterval(getWeatherInterval)
+    }
+  }, [])
 
   const getTime = () => {
     const t = new Date()
@@ -22,14 +39,6 @@ export default function Home() {
     )
   }
 
-  useEffect(() => {
-    getTime()
-    const interval = setInterval(getTime, 1000)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
-
   const getWeather = () => {
     const newDate = new Date()
     let time = newDate.getHours() - 2 >= 0 ? newDate.getHours() - 2 : newDate.getHours() + 22
@@ -41,10 +50,9 @@ export default function Home() {
       String(newDate.getMonth() + 1).padStart(2, '0') +
       String(newDate.getDate()).padStart(2, '0')
     weather(date, time).then((res) => {
+      console.log(res)
       const data = getWeatherDetail(res.data.response.body.items.item)
-      console.log(data)
-      setNear(data.near)
-      setFar(data.far)
+      dispatch(setWeatherData(data))
     })
   }
 
@@ -116,37 +124,17 @@ export default function Home() {
     return now
   }
 
-  useEffect(() => {
-    ipcRenderer.on(SEND_TEST, getMsg)
-    getWeather()
-    const getWeatherInterval = setInterval(getWeather, 600000)
-    return () => {
-      ipcRenderer.removeListener(SEND_TEST, getMsg)
-      clearInterval(getWeatherInterval)
-    }
-  }, [])
-
-  const getMsg = (event, arg) => {
-    console.log(event, arg, '받음')
-  }
-
-  const sendMain = () => {
-    ipcRenderer.send(SEND_TEST, 'hello')
-  }
-
   return (
     <div>
       home
       <Profile />
-      <button onClick={sendMain}>ipc 테스트</button>
-      <button onClick={getWeather}>날씨 테스트</button>
       <div>
         <div>{date.slice(4, 6)}월</div>
         <div>{date.slice(6, 8)}일</div>
         <div>{date.slice(8, 16)}</div>
       </div>
       <div>
-        {near.map((data) => (
+        {weatherData.near?.map((data) => (
           <div key={data['시간']}>
             시간: {data['시간']}
             온도: {data['온도']}
@@ -157,7 +145,7 @@ export default function Home() {
         ))}
       </div>
       <div>
-        {far.slice(1, 3).map((data, idx) => {
+        {weatherData.far?.slice(1, 3).map((data, idx) => {
           return (
             <div key={data['날짜']}>
               {idx === 0 ? '내일' : '모레'} {data['날짜'] + '일 ' + data['요일'] + '요일'}: 최고 {data['최고기온']},
