@@ -5,8 +5,6 @@ export default function ShowRoutine(props) {
   const setRoutineState = props.setRoutineState
   const routineDetail = useSelector((state) => state.util.routineDetail)
 
-  console.log(routineDetail)
-
   useEffect(() => {
     setTimeout(() => {
       setRoutineState(2)

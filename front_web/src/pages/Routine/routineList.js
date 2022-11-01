@@ -12,7 +12,6 @@ export default function RoutineList(props) {
   useEffect(() => {
     routine.getRoutine({ username }).then((result) => {
       dispatch(setRoutineList(result.data))
-      console.log(result.data)
     })
   }, [])
 
@@ -31,7 +30,6 @@ export default function RoutineList(props) {
         routineDetail.sets.push(set)
       }
     })
-    console.log(routineDetail)
     dispatch(setRoutineDetail(routineDetail))
     setRoutineState(1)
   }

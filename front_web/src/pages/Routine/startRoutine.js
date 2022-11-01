@@ -29,7 +29,7 @@ export default function StartRoutine(props) {
       const date = new Date()
       const endDateTime = date.toISOString()
 
-      console.log(1, startDateTime, 2, endDateTime, 3, routineJson, 4, doneSetNum, 5, username)
+      console.log({ startDateTime, endDateTime, routineJson, doneSetNum, username })
       dispatch(setRoutineResult({ startDateTime, endDateTime, routineJson, doneSetNum, username }))
       if (doneSetNum > 3) {
         routine
@@ -59,13 +59,28 @@ export default function StartRoutine(props) {
     }
   }, [])
 
+  useEffect(() => {
+    const videoDiv = document.querySelector('.videoDiv')
+
+    let videoSrc = routineDetail.sets[setNo.current].url
+    let videoTag = document.createElement('video')
+    if (videoSrc) {
+      videoTag.setAttribute('class', 'videoTag')
+      videoTag.setAttribute('autoPlay', true)
+      videoTag.setAttribute('loop', true)
+      videoTag.src = videoSrc
+      videoDiv.replaceChildren(videoTag)
+      console.log(videoDiv, routineDetail.sets[setNo.current].url, videoTag)
+    }
+  }, [setNo.current])
+
   // 다음 세트로 넘어가는 함수
   const nextSet = () => {
     // 휴식시간 처리
     const addRate =
       (1 / totSet) *
       Math.min(
-        routineDetial.sets[setNo.current].number ? count.current / routineDetail.sets[setNo.current].number : 1,
+        routineDetail.sets[setNo.current].number ? count.current / routineDetail.sets[setNo.current].number : 1,
         1,
       )
     progressRate.current += addRate
@@ -95,8 +110,10 @@ export default function StartRoutine(props) {
       </p>
       <p>카운트 - {viewCount}</p>
       <p>진행중인 운동 - {routineDetail.sets[setNo.current].exercise_name}</p>
-      <p>참고 영상 - url이 없음</p>
       <button onClick={addCount}>카운트 증가</button>
+      <hr />
+      <p>참고 영상</p>
+      <div className="videoDiv" style={{ borderStyle: 'dotted' }}></div>
     </div>
   )
 }

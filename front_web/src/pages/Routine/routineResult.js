@@ -11,7 +11,6 @@ export default function RoutineResult(props) {
         setState(0)
       }, 5000)
     }
-    console.log(setState)
   }, [setState])
 
   return (
