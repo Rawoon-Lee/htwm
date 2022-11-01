@@ -29,7 +29,6 @@ export default function App() {
 						<Stack.Screen
 							name="CreateRoutine"
 							component={CreateRoutine}
-							options={{ headerShown: false }}
 						></Stack.Screen>
 						<Stack.Screen
 							name="FriendSearch"

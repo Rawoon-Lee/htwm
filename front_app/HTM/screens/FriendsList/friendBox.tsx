@@ -30,7 +30,6 @@ export default function FriendBox({
 			<Text>{username}</Text>
 			<Text>{nickname}</Text>
 			<Image source={{ uri: url }} style={styles.profilePic} />
-			<Text>{url}</Text>
 			{isSearch ? (
 				<Pressable onPress={() => friendRequest()}>
 					<Text>친구 신청</Text>
