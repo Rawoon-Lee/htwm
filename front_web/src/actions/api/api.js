@@ -34,6 +34,13 @@ export const routine = {
       data,
     })
   },
+  getRecordRoutine(data) {
+    return api({
+      method: 'get',
+      url: 'record/routine',
+      params: { username: 'b' },
+    })
+  },
 }
 
 export const picture = {
