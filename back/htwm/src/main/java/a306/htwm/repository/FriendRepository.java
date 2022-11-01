@@ -24,4 +24,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
             "on f.my_id = u.user_id " +
             "where u.username = :username")
     ArrayList<Friend> findAllByUsername(@Param("username") String username);
+
+    @Query(nativeQuery = true, value = "select * from friend " +
+            "where my_id = :myId and other_id = :friendId")
+    Optional<Friend> findByMyIdAndFriendId(@Param("myId")Long myId,@Param("friendId") Long friendId);
+
 }
