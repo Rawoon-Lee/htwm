@@ -9,13 +9,6 @@ const record = {
 			data: data,
 			url: `${END_POINT}/routine?username=${data}`
 		})
-	},
-	routineDone(data: any) {
-		return api({
-			method: "post",
-			data: data,
-			url: `${END_POINT}/`
-		})
 	}
 }
 

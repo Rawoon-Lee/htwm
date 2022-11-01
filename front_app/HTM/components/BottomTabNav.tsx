@@ -24,7 +24,7 @@ export default function BottomTabNav({ navigation }: any) {
 				component={Main}
 				options={{
 					headerShown: false,
-					// tabBarLabel: "홈",
+					tabBarLabel: "홈",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
 							<Feather name="home" size={24} color="#FFA500" />

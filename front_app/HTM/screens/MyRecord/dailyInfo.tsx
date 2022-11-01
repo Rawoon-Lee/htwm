@@ -4,7 +4,7 @@ import { getUserRecord } from "../../store/record"
 import * as React from "react"
 import { record } from "../../api/record"
 
-function MyRecord() {
+export default function DailyInfo() {
 	const userId = useAppSelector(state => state.userId)
 	const recordList = useAppSelector(state => state.recordList)
 	const dispatch = useAppDispatch()
@@ -21,10 +21,7 @@ function MyRecord() {
 
 	return (
 		<View>
-			<Text>기록</Text>
-			<Text>{recordList[0].routineInfo}</Text>
+			<Text>{recordList[0].doneSetNum}</Text>
 		</View>
 	)
 }
-
-export default MyRecord

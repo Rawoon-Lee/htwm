@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar"
-import { StyleSheet, Text, View, Image } from "react-native"
+import { SafeAreaView, StyleSheet, Text, View, Image } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { Provider } from "react-redux"
 import {
@@ -17,8 +17,8 @@ export default function App() {
 	return (
 		<>
 			<Provider store={store}>
-				<StatusBar style="auto" />
 				<NavigationContainer>
+					<StatusBar />
 					<Stack.Navigator initialRouteName="BottomTabNav">
 						<Stack.Screen
 							name="BottomTabNav"
@@ -31,7 +31,6 @@ export default function App() {
 							options={{ headerShown: false }}
 						></Stack.Screen>
 					</Stack.Navigator>
-					{/* <BottomTabNav></BottomTabNav> */}
 				</NavigationContainer>
 			</Provider>
 		</>
