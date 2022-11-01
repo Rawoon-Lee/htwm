@@ -1,14 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface RecordData {
-	startDateTime: Date
-	endDateTime: Date
+	startDateTime: string
+	endDateTime: string
 	username: string
 	doneSetNum: number
 	routineInfo: string
 }
 export type RecordDataList = RecordData[]
-const initialStateRecoirdList: RecordDataList = []
+const initialStateRecoirdList: RecordDataList = [
+	{
+		startDateTime: "",
+		endDateTime: "",
+		username: "",
+		doneSetNum: 0,
+		routineInfo: ""
+	}
+]
 const recordListSlice = createSlice({
 	name: "recordListSlice",
 	initialState: initialStateRecoirdList,
