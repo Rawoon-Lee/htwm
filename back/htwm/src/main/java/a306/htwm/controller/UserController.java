@@ -81,6 +81,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ArrayList<FriendDTO>> searchFriend(@RequestParam("nickname") String string){
+        try {
+            return ResponseEntity.ok().body(userService.searchFriend(string));
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("uuid")
     public ResponseEntity<String> getUsername(@RequestBody UuidDTO uuid){
         return ResponseEntity.ok().body(userService.getUsernameByUuid(uuid.getUuid()));
