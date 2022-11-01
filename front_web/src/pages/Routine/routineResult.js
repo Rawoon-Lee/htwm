@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 export default function RoutineResult(props) {
   const setState = props.setState
-  const routineResult = useSelector((state) => state.util.routineResult)
+  const routineResult = useSelector((state) => state.routine.routineResult)
 
   useEffect(() => {
     if (typeof setState === 'function') {

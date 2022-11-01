@@ -6,6 +6,14 @@ import Profile from '../../components/profile'
 import { weather } from '../../actions/api/api'
 import { setWeatherData } from '../../store/modules/util'
 
+import cloudy from './../../assets/cloudy.png'
+import midCloudy from './../../assets/midCloudy.png'
+import sunny from './../../assets/sunny.png'
+
+import heavyRain from './../../assets/heavyRain.png'
+import lightRain from './../../assets/lightRain.png'
+import snow from './../../assets/ice.png'
+
 export default function Home() {
   const dispatch = useDispatch()
 
@@ -77,6 +85,10 @@ export default function Home() {
         if (data.category === 'POP') {
           now.near[now.near.length - 1]['강수확률'] = String(data.fcstValue) + '%'
         }
+        // 하늘
+        if (data.category === 'SKY') {
+          now.near[now.near.length - 1]['하늘'] = ['맑음', '', '구름많음', '흐림'][data.fcstValue - 1]
+        }
         // 강수형태 0없음 1비 2비/눈 3눈 4소나기
         if (data.category === 'PTY') {
           let type
@@ -140,7 +152,22 @@ export default function Home() {
             온도: {data['온도']}
             풍속: {data['풍속']}
             강수확률: {data['강수확률']}
-            {data['강수형태'] !== '없음' ? data['강수형태'] : null}
+            하늘: {data['하늘']}
+            {data['하늘'] === '맑음' ? (
+              <img src={sunny} width="12px" />
+            ) : data['하늘'] === '구름많음' ? (
+              <img src={midCloudy} width="12px" />
+            ) : (
+              <img src={cloudy} width="12px" />
+            )}
+            {data['강수형태'] === '없음' ? null : data['강수형태']}
+            {data['강수형태'] === '없음' ? null : data['강수형태'] === '소나기' ? (
+              <img src={heavyRain} width="12px" />
+            ) : data['강수형태'] === '비' ? (
+              <img src={lightRain} width="12px" />
+            ) : (
+              <img src={snow} width="12px" />
+            )}
           </div>
         ))}
       </div>

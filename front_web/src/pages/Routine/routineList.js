@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { routine } from '../../actions/api/api'
-import { setRoutineDetail, setRoutineList } from '../../store/modules/util'
+import { setRoutineDetail, setRoutineList } from '../../store/modules/routine'
 
 export default function RoutineList(props) {
   const setRoutineState = props.setRoutineState
   const dispatch = useDispatch()
   const username = useSelector((state) => state.user.username)
-  const routineList = useSelector((state) => state.util.routineList)
+  const routineList = useSelector((state) => state.routine.routineList)
 
   useEffect(() => {
     routine.getRoutine({ username }).then((result) => {

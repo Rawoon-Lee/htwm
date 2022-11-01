@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState } from 'react'
 
 import RoutineList from './routineList'
-import ShowRoutine from './ShowRoutine'
+import ShowRoutine from './showRoutine'
 import StartRoutine from './startRoutine'
 import RoutineResult from './routineResult'
 

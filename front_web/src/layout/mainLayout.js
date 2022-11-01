@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import * as Stomp from '@stomp/stompjs'
 import Sockjs from 'sockjs-client'
 
@@ -12,6 +12,7 @@ import CameraTest from '../pages/cameraTest'
 import { user } from '../actions/api/api'
 import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/user'
 import { UUID, SEND_TEST } from '../store/constants'
+import { setModalMsg, setModalState } from '../store/modules/util'
 
 export default function mainLayout(props) {
   const dispatch = useDispatch()
@@ -29,7 +30,10 @@ export default function mainLayout(props) {
   ]
 
   useEffect(() => {
-    getUserInfos() // 일정 시간이나 소켓 요청에 따라 업데이트 되도록하기
+    const getInfoInterval = setInterval(getUserInfos, 600000)
+    return () => {
+      clearInterval(getInfoInterval)
+    }
   }, [])
 
   ////////////////////////////////////////////////////webSocket 통신//////////////////////////////////////////////////////////////
@@ -50,9 +54,15 @@ export default function mainLayout(props) {
         }
         if (content.type === 'DENY') {
           // 상대가 거절함을 알리고 통화 종료
+          dispatch(setModalMsg('상대가 통화를 거절했습니다.'))
+          dispatch(setModalState(true))
+          setState(0)
         }
         if (content.type === 'END') {
           // 통화 종료됨을 알리고 통화 종료
+          dispatch(setModalMsg('통화가 종료되었습니다.'))
+          dispatch(setModalState(true))
+          setState(0)
         }
       })
     }
