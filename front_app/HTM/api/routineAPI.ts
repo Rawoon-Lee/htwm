@@ -12,7 +12,7 @@ const routine = {
 	},
 	routineDelete(data: any) {
 		return api({
-			method: "post",
+			method: "delete",
 			data: data,
 			url: `${END_POINT}/`
 		})
