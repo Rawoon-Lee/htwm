@@ -29,6 +29,10 @@ public class NoticeService {
             throw new RuntimeException("친구의 username을 다시 확인하고 신청하세요.");
         }
 
+        if(usernameAndFriendDTO.getFriendname().equals(usernameAndFriendDTO.getUsername())){
+            throw new RuntimeException("자기 자신과 친구를 할 수 없습니다.");
+        }
+
         Long userId = userRepository.findByUsername(usernameAndFriendDTO.getUsername()).getId();
         Long friendId = userRepository.findByUsername(usernameAndFriendDTO.getFriendname()).getId();
 
