@@ -30,6 +30,7 @@ export default function mainLayout(props) {
   ]
 
   useEffect(() => {
+    getUserInfos()
     const getInfoInterval = setInterval(getUserInfos, 600000)
     return () => {
       clearInterval(getInfoInterval)
