@@ -4,21 +4,28 @@ import { TextInput } from "react-native"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getUserRecord } from "../../store/record"
 import * as React from "react"
-import { record } from "../../api/record"
+import { record } from "../../api/recordAPI"
 import DailyInfo from "./dailyInfo"
 
+export interface DateData {
+	year: number
+	month: number
+	date: number
+}
+
 function MyRecord() {
-	const userInfo = useAppSelector(state => state.recordList)
+	const recordList = useAppSelector(state => state.recordList)
 	const dispatch = useAppDispatch()
 
 	React.useEffect(() => {
 		// record.recordList()
 	})
 
+	function selectDay() {}
 	return (
 		<View style={styles.container}>
 			<Text>기록</Text>
-			<DailyInfo></DailyInfo>
+			<DailyInfo year={0} month={0} date={0}></DailyInfo>
 		</View>
 	)
 }

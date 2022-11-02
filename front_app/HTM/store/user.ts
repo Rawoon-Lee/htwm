@@ -11,6 +11,19 @@ const initialStateUserInfo: UserData = {
 	url: "",
 	height: 0
 }
+
+type FreindDataList = FriendData[]
+
+export interface FriendData {
+	nickname: string
+	username: string
+	url: string
+	status?: string
+	isSearch?: boolean
+}
+
+const initialStateFriend: FreindDataList = []
+
 const userInfoSlice = createSlice({
 	name: "userInfo",
 	initialState: initialStateUserInfo,
@@ -32,7 +45,21 @@ const userIdSlice = createSlice({
 		}
 	}
 })
-
+const FriendListSlice = createSlice({
+	name: "friendList",
+	initialState: initialStateFriend,
+	reducers: {
+		getFriendsList: (state, action: PayloadAction<FreindDataList>) => {
+			return action.payload
+		}
+	}
+})
 export const { getUserInfo } = userInfoSlice.actions
 export const { getUserId } = userIdSlice.actions
-export default { userInfo: userInfoSlice.reducer, userId: userIdSlice.reducer }
+
+export const { getFriendsList } = FriendListSlice.actions
+export default {
+	userInfo: userInfoSlice.reducer,
+	userId: userIdSlice.reducer,
+	friendList: FriendListSlice.reducer
+}

@@ -7,6 +7,7 @@ export const store = configureStore({
 	reducer: {
 		userInfo: userInfoReducer.userInfo,
 		userId: userInfoReducer.userId,
+		friendList: userInfoReducer.friendList,
 		recordList: recordReducer,
 		routineList: routineReducer.routineList
 	}
