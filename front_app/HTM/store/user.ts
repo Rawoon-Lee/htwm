@@ -12,11 +12,14 @@ const initialStateUserInfo: UserData = {
 	height: 0
 }
 
-export type FreindDataList = FriendData[]
-interface FriendData {
+type FreindDataList = FriendData[]
+
+export interface FriendData {
 	nickname: string
 	username: string
 	url: string
+	status?: string
+	isSearch?: boolean
 }
 
 const initialStateFriend: FreindDataList = []

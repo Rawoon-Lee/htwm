@@ -9,7 +9,7 @@ import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getFriendsList } from "../../store/user"
 
 import FriendBox from "./friendBox"
-import { FriendData } from "./friendSearch"
+import { FriendData } from "../../store/user"
 
 function renderItems({ item }: { item: FriendData }) {
 	return (

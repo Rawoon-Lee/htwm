@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View } from "react-native"
 import Constants from "expo-constants"
 import * as React from "react"
-import { useNavigation } from "@react-navigation/native"
-import { TextInput } from "react-native"
 
 import { Feather } from "@expo/vector-icons"
 import RoutineBox from "./routineBox"
