@@ -7,16 +7,22 @@ import ExerciseDays from "./exerciseDays"
 import Header from "./header"
 import WeightGraph from "./weightGraph"
 import WeightInput from "./weightInput"
+import TrainingBird from "./trainingBird"
 
 function Main() {
 	return (
 		<View style={styles.container}>
 			<StatusBar style="auto" />
 			<Header></Header>
-			<ExerciseDays></ExerciseDays>
-			<WeightInput></WeightInput>
+			<TrainingBird></TrainingBird>
+			<View style={{flexDirection: "row", marginTop: 10}}>
+				<ExerciseDays></ExerciseDays>
+				<WeightInput></WeightInput>
+			</View>
 			<WeightGraph></WeightGraph>
-			<DeviceIntro></DeviceIntro>
+			<View style={{backgroundColor: "#D9D9D9", borderRadius:20}}>
+				<DeviceIntro></DeviceIntro>
+			</View>
 		</View>
 	)
 }

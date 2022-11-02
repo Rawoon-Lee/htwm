@@ -1,6 +1,8 @@
 import * as React from "react"
 import { StyleSheet, Text, View, Pressable} from "react-native"
 
+
+
 function PrimaryButton({ children, clickFunction }: any) {
 	function pressHandler() {
 		console.log("눌렀다!")
@@ -19,10 +21,11 @@ function PrimaryButton({ children, clickFunction }: any) {
 	)
 }
 
-function SelectButton({ children, clickFunction, color, borderColor }: any) {
+function SelectButton({ children, clickFunction, color, borderColor}: any) {
 	function pressHandler() {
 		console.log("눌렀다!")
 	}
+
 
 	return (
 		<View style={styles2(color, borderColor).outerContainer}>
@@ -37,7 +40,28 @@ function SelectButton({ children, clickFunction, color, borderColor }: any) {
 	)
 }
 
-export {PrimaryButton, SelectButton}
+function SmallButton({ children, clickFunction, color, borderColor}: any) {
+	function pressHandler() {
+		console.log("눌렀다!")
+	}
+
+
+	return (
+		<View style={styles3(color, borderColor).outerContainer}>
+			<Pressable
+				style={styles3(color, borderColor).innerContainer}
+				onPress={clickFunction}
+				android_ripple={{ color: "yellow" }}
+			>
+				<Text style={styles3(color, borderColor).textStyle}>{children}</Text>
+			</Pressable>
+		</View>
+	)
+}
+
+
+
+export {PrimaryButton, SelectButton, SmallButton}
 
 const styles = StyleSheet.create({
 	outerContainer: {
@@ -47,11 +71,11 @@ const styles = StyleSheet.create({
 	},
 	innerContainer: {
 		padding: 16,
-		backgroundColor: "grey",
+		backgroundColor: "#FAFAFA",
 		elevation: 4
 	},
 	textStyle: {
-		color: "white",
+		color: "#373737",
 		fontSize: 20,
 		textAlign: "center"
 	}
@@ -70,11 +94,29 @@ const styles2 = (color:any, borderColor:any) => StyleSheet.create({
 		paddingHorizontal: 30,
 		paddingVertical: 4,
 		backgroundColor: color,
-		elevation: 4
 	},
 	textStyle: {
 		color: "black",
 		fontSize: 20,
+		textAlign: "center"
+	}
+})
+
+const styles3 = (color:any, borderColor:any) => StyleSheet.create({
+	outerContainer: {
+		borderRadius: 18,
+		borderColor: borderColor,
+		margin: 10,
+		overflow: "hidden",
+		borderStyle: "solid",
+		borderWidth: 2,
+	},
+	innerContainer: {
+		backgroundColor: color,
+	},
+	textStyle: {
+		color: "black",
+		fontSize: 15,
 		textAlign: "center"
 	}
 })
