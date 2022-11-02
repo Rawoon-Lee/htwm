@@ -18,7 +18,7 @@ const initialStateRecoirdList: RecordDataList = [
 	}
 ]
 const recordListSlice = createSlice({
-	name: "recordListSlice",
+	name: "recordList",
 	initialState: initialStateRecoirdList,
 	reducers: {
 		getUserRecord: (state, action: PayloadAction<RecordData[]>) => {

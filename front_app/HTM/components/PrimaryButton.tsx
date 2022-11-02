@@ -1,5 +1,5 @@
 import * as React from "react"
-import { StyleSheet, Text, View, Pressable} from "react-native"
+import { StyleSheet, Text, View, Pressable } from "react-native"
 
 function PrimaryButton({ children, clickFunction }: any) {
 	function pressHandler() {
@@ -37,7 +37,7 @@ function SelectButton({ children, clickFunction, color, borderColor }: any) {
 	)
 }
 
-export {PrimaryButton, SelectButton}
+export { PrimaryButton, SelectButton }
 
 const styles = StyleSheet.create({
 	outerContainer: {
@@ -57,24 +57,25 @@ const styles = StyleSheet.create({
 	}
 })
 
-const styles2 = (color:any, borderColor:any) => StyleSheet.create({
-	outerContainer: {
-		borderRadius: 18,
-		borderColor: borderColor,
-		margin: 10,
-		overflow: "hidden",
-		borderStyle: "solid",
-		borderWidth: 2,
-	},
-	innerContainer: {
-		paddingHorizontal: 30,
-		paddingVertical: 4,
-		backgroundColor: color,
-		elevation: 4
-	},
-	textStyle: {
-		color: "black",
-		fontSize: 20,
-		textAlign: "center"
-	}
-})
+const styles2 = (color: any, borderColor: any) =>
+	StyleSheet.create({
+		outerContainer: {
+			borderRadius: 18,
+			borderColor: borderColor,
+			margin: 10,
+			overflow: "hidden",
+			borderStyle: "solid",
+			borderWidth: 2
+		},
+		innerContainer: {
+			paddingHorizontal: 30,
+			paddingVertical: 4,
+			backgroundColor: color,
+			elevation: 4
+		},
+		textStyle: {
+			color: "black",
+			fontSize: 20,
+			textAlign: "center"
+		}
+	})

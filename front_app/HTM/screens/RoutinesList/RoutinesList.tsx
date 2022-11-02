@@ -9,6 +9,8 @@ import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getRoutineList } from "../../store/routine"
 import { SelectButton } from "../../components/PrimaryButton"
 
+import { commonStyle } from "../../Style/commonStyle"
+
 function RoutineList({ navigation }: any) {
 	const dispatch = useAppDispatch()
 
@@ -34,7 +36,7 @@ function RoutineList({ navigation }: any) {
 	}
 
 	return (
-		<View style={styles.container}>
+		<View style={commonStyle.container}>
 			<Feather.Button
 				style={styles.buttons}
 				name="arrow-left"
