@@ -116,17 +116,22 @@ public class UserService {
         ArrayList<SearchDTO> friendInfoDTOS = new ArrayList<>();
 
         for(User user : users){
-
-            String status = "null";
+            /*
+                0 - 신청 가능한 상태
+                1 - 이미 친구임
+                2 - 내가 신청 보낸 상태
+                3 - 내가 신청 받은 상태
+             */
+            int status = 0;
 
             Optional<Notice> sentNotice = noticeRepository.findByFromIdAndToIdIfType(userRepository.findByUsername(username).getId(), user.getId(),Type.REQ_FRI.toString());
-            if(sentNotice.isPresent()) status = "친구 신청 보낸 상태";
+            if(sentNotice.isPresent()) status = 2;
 
             Optional<Notice> receivedNotice = noticeRepository.findByFromIdAndToIdIfType(user.getId(),userRepository.findByUsername(username).getId(),Type.REQ_FRI.toString());
-            if(receivedNotice.isPresent()) status = "친구가 이미 나한테 친구 신청한 상태";
+            if(receivedNotice.isPresent()) status = 3;
 
             Optional<Friend> friends = friendRepository.findByMyIdAndFriendId(userRepository.findByUsername(username).getId(), user.getId());
-            if(friends.isPresent()) status = "이미 친구임";
+            if(friends.isPresent()) status = 1;
 
             SearchDTO friendInfoDTO = SearchDTO.builder()
                     .nickname(user.getNickname())
