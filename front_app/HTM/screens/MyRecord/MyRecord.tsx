@@ -21,6 +21,7 @@ function MyRecord() {
 		// record.recordList()
 	})
 
+	function selectDay() {}
 	return (
 		<View style={styles.container}>
 			<Text>기록</Text>

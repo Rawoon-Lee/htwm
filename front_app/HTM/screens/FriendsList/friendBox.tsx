@@ -10,6 +10,7 @@ export default function FriendBox({
 	username,
 	nickname,
 	url,
+	status,
 	isSearch
 }: FriendData) {
 	const userId = useAppSelector(state => state.userId)
@@ -33,6 +34,7 @@ export default function FriendBox({
 			{isSearch ? (
 				<Pressable onPress={() => friendRequest()}>
 					<Text>친구 신청</Text>
+					<Text>{status}</Text>
 				</Pressable>
 			) : (
 				<View>
