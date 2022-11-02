@@ -37,7 +37,6 @@ function Header() {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.text}>Hello {userInfo.nickname}</Text>
 			<GoogleLogin></GoogleLogin>
 		</View>
 	)
