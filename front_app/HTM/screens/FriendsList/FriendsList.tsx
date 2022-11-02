@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Pressable } from "react-native"
+import { StyleSheet, Text, View, Pressable, FlatList } from "react-native"
 import Constants from "expo-constants"
 import * as React from "react"
-import { FlatList } from "react-native"
 
 import { user } from "../../api/userAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
