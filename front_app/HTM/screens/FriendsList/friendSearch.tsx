@@ -33,8 +33,9 @@ function FriendSearch() {
 			setFriendSearchList([])
 			return
 		}
+		let data = { nickname: input, username: userId.id }
 		user
-			.friendSearch(input)
+			.friendSearch(data)
 			.then(result => {
 				setFriendSearchList(result.data)
 			})

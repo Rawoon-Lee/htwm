@@ -54,10 +54,14 @@ const user = {
 			url: `${END_POINT}/friend?username=${data}`
 		})
 	},
-	friendSearch(data: string) {
+	friendSearch(data: any) {
 		return api({
 			method: "get",
-			url: `${END_POINT}/search?nickname=${data}`
+			params: {
+				nickname: data.nickname,
+				username: data.username
+			},
+			url: `${END_POINT}/search`
 		})
 	}
 }
