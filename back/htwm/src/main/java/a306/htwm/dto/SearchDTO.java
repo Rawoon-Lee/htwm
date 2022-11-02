@@ -11,5 +11,5 @@ public class SearchDTO {
     private String username;
     private String nickname;
     private String url;
-    private String status;
+    private int status;
 }
