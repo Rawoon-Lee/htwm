@@ -20,10 +20,6 @@ function PrimaryButton({ children, clickFunction }: any) {
 }
 
 function SelectButton({ children, clickFunction, color, borderColor }: any) {
-	function pressHandler() {
-		console.log("눌렀다!")
-	}
-
 	return (
 		<View style={styles2(color, borderColor).outerContainer}>
 			<Pressable
