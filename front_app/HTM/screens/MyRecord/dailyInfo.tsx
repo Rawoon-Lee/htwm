@@ -2,9 +2,12 @@ import { StyleSheet, Text, View } from "react-native"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getUserRecord } from "../../store/record"
 import * as React from "react"
-import { record } from "../../api/record"
 
-export default function DailyInfo() {
+import { DateData } from "../MyRecord/MyRecord"
+
+import { record } from "../../api/recordAPI"
+
+export default function DailyInfo({ year, month, date }: DateData) {
 	const userId = useAppSelector(state => state.userId)
 	const recordList = useAppSelector(state => state.recordList)
 	const dispatch = useAppDispatch()
@@ -17,11 +20,15 @@ export default function DailyInfo() {
 				dispatch(getUserRecord(result.data))
 			})
 			.catch(err => console.log(err))
-	})
+	}, [year, month, date])
 
 	return (
 		<View>
-			<Text>{recordList[0].doneSetNum}</Text>
+			{recordList.length >= 1 ? (
+				<Text>{recordList[0].doneSetNum}</Text>
+			) : (
+				<Text>아직 운동기록이 없군요</Text>
+			)}
 		</View>
 	)
 }

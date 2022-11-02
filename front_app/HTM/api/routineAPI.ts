@@ -12,7 +12,7 @@ const routine = {
 	},
 	routineDelete(data: any) {
 		return api({
-			method: "post",
+			method: "delete",
 			data: data,
 			url: `${END_POINT}/`
 		})
@@ -24,10 +24,10 @@ const routine = {
 			url: `${END_POINT}/`
 		})
 	},
-	routineList(username: string) {
+	routineList(data: string) {
 		return api({
 			method: "get",
-			url: `${END_POINT}?username=${username}`
+			url: `${END_POINT}?username=${data}`
 		})
 	},
 	exerciseList() {

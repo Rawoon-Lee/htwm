@@ -11,6 +11,7 @@ import BottomTabNav from "./components/BottomTabNav"
 import { store } from "./store/store"
 
 import CreateRoutine from "./screens/RoutinesList/createRoutine"
+import FriendSearch from "./screens/FriendsList/friendSearch"
 
 const Stack = createStackNavigator()
 export default function App() {
@@ -28,7 +29,10 @@ export default function App() {
 						<Stack.Screen
 							name="CreateRoutine"
 							component={CreateRoutine}
-							options={{ headerShown: false }}
+						></Stack.Screen>
+						<Stack.Screen
+							name="FriendSearch"
+							component={FriendSearch}
 						></Stack.Screen>
 					</Stack.Navigator>
 				</NavigationContainer>

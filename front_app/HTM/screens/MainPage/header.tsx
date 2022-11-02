@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import * as React from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { user } from "../../api/user"
+import { user } from "../../api/userAPI"
 import { getUserInfo } from "../../store/user"
 
 function Header() {
