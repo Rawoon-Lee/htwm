@@ -1,7 +1,7 @@
 import { StyleSheet, Pressable, View, Text, Image } from "react-native"
 import * as React from "react"
 
-import { FriendData } from "./friendSearch"
+import { FriendData } from "../../store/user"
 
 import { notice } from "../../api/noticeAPI"
 import { useAppSelector } from "../../store/hook"

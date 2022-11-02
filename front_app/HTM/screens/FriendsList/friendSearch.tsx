@@ -5,21 +5,17 @@ import { FlatList } from "react-native"
 
 import { user } from "../../api/userAPI"
 import { useAppSelector } from "../../store/hook"
+import { FriendData } from "../../store/user"
 
 import FriendBox from "./friendBox"
 
-export interface FriendData {
-	username: string
-	nickname: string
-	url: string
-	isSearch?: boolean
-}
 function renderItems({ item }: { item: FriendData }) {
 	return (
 		<FriendBox
 			nickname={item.nickname}
 			username={item.username}
 			url={item.url}
+			status={item.status}
 			isSearch={true}
 		/>
 	)
