@@ -24,24 +24,25 @@ let lifeQuotes = [
     "\"먹어봤자 아는 그 맛이다\"",
     "\"아는 맛이라서 먹는 것이다\""
 ]
-let RandomNumber = Math.floor(Math.random() * (lifeQuotes.length - 1)) ;
+let RandomNumber = Math.floor(Math.random() * (lifeQuotes.length - 1));
 
 function TrainingBird() {
 
     return (
-        <View style={{alignItems:"center"}}>
-            <Image style={styles.image} source={require('./../../assets/htwm_logo.png')} />
+        <View style={{ alignItems: "center" }}>
             <View style={styles.textContainer}>
                 <Text style={styles.state}>{lifeQuotes[RandomNumber]}</Text>
             </View>
+            <Image style={styles.image} source={require('./../../assets/htwm_logo.png')} />
         </View>
     )
 }
 
 let styles = StyleSheet.create({
     image: {
-        width : width * 5 / 10,
-        height : width * 5 / 10
+        width: width * 5 / 10,
+        height: width * 5 / 10,
+        marginLeft: -100
     },
     state: {
         textAlign: "center",
@@ -52,7 +53,9 @@ let styles = StyleSheet.create({
         backgroundColor: "#FFF3A9",
         borderRadius: 10,
         paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingVertical: 20,
+        marginRight: -100,
+        width: width / 2,
     },
 })
 
