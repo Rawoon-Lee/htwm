@@ -9,10 +9,8 @@ export default function RealTime(props) {
   const username = useSelector((state) => state.user.username)
   const streamingPeer = useSelector((state) => state.user.streamingPeer)
 
-  // const [client, setClient] = useState(undefined)
   const [isMuted, setIsMuted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
-  const [startTime, setStartTime] = useState('')
 
   const myVideoRef = useRef(null)
   const peerVideoRef = useRef(null)
@@ -22,60 +20,31 @@ export default function RealTime(props) {
   let client = props.client
 
   useEffect(() => {
-    myPeerConnection = new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: [
-            'stun:stun.l.google.con:19302',
-            'stun:stun1.l.google.con:19302',
-            'stun:stun2.l.google.con:19302',
-            'stun:stun3.l.google.con:19302',
-            'stun:stun4.l.google.con:19302',
-          ],
+    // RTCPeerConnection 만들어두기
+    makePeerConnection()
+    // RTC 초기 연결을 위한 socket 설정
+    if (client) {
+      client.subscribe(
+        `/sub/${UUID}`,
+        function (action) {
+          const content = JSON.parse(action.body)
+          console.log('받음', content)
+          if (!content.data) return
+          if (content.type === 1) {
+            getOfferMakeAnswer(content.data)
+          }
+          if (content.type === 2) {
+            getAnswer(content.data)
+          }
+          if (content.type === 3) {
+            getIce(content.data)
+          }
         },
-      ],
-    })
-    myPeerConnection.addEventListener('icecandidate', (data) => {
-      client.publish({
-        destination: `/pub/streaming`,
-        body: JSON.stringify({
-          from: username,
-          to: streamingPeer,
-          type: 3,
-          data: data.candidate,
-        }),
-      })
-    })
-    myPeerConnection.addEventListener('addstream', (data) => {
-      console.log('add stream', data)
-      if (peerVideoRef && peerVideoRef.current) {
-        setIsStarted(true)
-        peerVideoRef.current.srcObject = data.stream
-      }
-    })
-
-    if (client) {
-      client.subscribe(`/sub/${UUID}`, (action) => {
-        const content = JSON.parse(action.body)
-        console.log('받음', content)
-        if (content.type === 1) {
-          getOfferMakeAnswer(content.data)
-        }
-        if (content.type === 2) {
-          getAnswer(content.data)
-        }
-        if (content.type === 3) {
-          getIce(content.data)
-        }
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    if (client) {
+        {},
+      )
       getMedia()
     }
-  }, [client])
+  }, [])
 
   useEffect(() => {
     if (isMuted) {
@@ -92,7 +61,6 @@ export default function RealTime(props) {
   }, [isMuted])
 
   /*
-    0. 서버로부터 type1 받으면 해당 페이지로 이동하며 상대방에게 알려준다. 알림 받으면 상대도 해당 페이지로 이동한다.
     1. stream 내용 잡기
     2. RTCPeerConnection만들고 거기에 stream 내용 넣기.
     3. 만든 RTCPeerConnection으로 createOffer하고 offer를 다시 LocalDescription으로 넣는다.
@@ -102,11 +70,46 @@ export default function RealTime(props) {
     7. icecandidate 이벤트가 발생하면 candidate를 보낸다. candidate 받으면 addIceCandidate한다
   */
 
+  const makePeerConnection = () => {
+    myPeerConnection = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: [
+            'stun:stun.l.google.con:19302',
+            'stun:stun1.l.google.con:19302',
+            'stun:stun2.l.google.con:19302',
+            'stun:stun3.l.google.con:19302',
+            'stun:stun4.l.google.con:19302',
+          ],
+        },
+      ],
+    })
+    myPeerConnection.addEventListener('icecandidate', (data) => {
+      if (!data.candidate) return
+      client.send(
+        `/pub/streaming`,
+        {},
+        JSON.stringify({
+          from: username,
+          to: streamingPeer,
+          type: 3,
+          data: data.candidate,
+        }),
+      )
+    })
+    myPeerConnection.addEventListener('addstream', (data) => {
+      if (peerVideoRef && peerVideoRef.current) {
+        setIsStarted(true)
+        peerVideoRef.current.srcObject = data.stream
+      }
+    })
+  }
+
   const getMedia = async () => {
     try {
       myStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        // audio: true,
+        audio: true,
       })
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
         myVideoRef.current.srcObject = myStream
@@ -122,29 +125,32 @@ export default function RealTime(props) {
     const offer = await myPeerConnection.createOffer()
     myPeerConnection.setLocalDescription(offer)
 
-    client.publish({
-      destination: `/pub/streaming`,
-      body: JSON.stringify({
+    client.send(
+      `/pub/streaming`,
+      {},
+      JSON.stringify({
         from: username,
         to: streamingPeer,
         type: 1,
         data: offer,
       }),
-    })
+    )
   }
 
   const getOfferMakeAnswer = async (offer) => {
     myPeerConnection.setRemoteDescription(offer)
     const answer = await myPeerConnection.createAnswer()
-    client.publish({
-      destination: `/pub/streaming`,
-      body: JSON.stringify({
+    myPeerConnection.setLocalDescription(answer)
+    client.send(
+      `/pub/streaming`,
+      {},
+      JSON.stringify({
         from: username,
         to: streamingPeer,
         type: 2,
         data: answer,
       }),
-    })
+    )
   }
 
   const getAnswer = async (answer) => {
