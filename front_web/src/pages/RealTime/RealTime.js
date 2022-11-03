@@ -56,23 +56,25 @@ export default function RealTime(props) {
       }
     })
 
-    console.log(client)
     if (client) {
-      console.log(123456)
-      client.subscribe(`/sub/${UUID}`, function (action) {
-        const content = JSON.parse(action.body)
-        console.log('받음', content)
-        if (!content.data) return
-        if (content.type === 1) {
-          getOfferMakeAnswer(content.data)
-        }
-        if (content.type === 2) {
-          getAnswer(content.data)
-        }
-        if (content.type === 3) {
-          getIce(content.data)
-        }
-      })
+      client.subscribe(
+        `/sub/${UUID}`,
+        function (action) {
+          const content = JSON.parse(action.body)
+          console.log('받음', content)
+          if (!content.data) return
+          if (content.type === 1) {
+            getOfferMakeAnswer(content.data)
+          }
+          if (content.type === 2) {
+            getAnswer(content.data)
+          }
+          if (content.type === 3) {
+            getIce(content.data)
+          }
+        },
+        {},
+      )
     }
   }, [])
 
@@ -128,8 +130,8 @@ export default function RealTime(props) {
     myPeerConnection.setLocalDescription(offer)
 
     client.send(
-      {},
       `/pub/streaming`,
+      {},
       JSON.stringify({
         from: username,
         to: streamingPeer,
@@ -144,6 +146,7 @@ export default function RealTime(props) {
     const answer = await myPeerConnection.createAnswer()
     client.send(
       `/pub/streaming`,
+      {},
       JSON.stringify({
         from: username,
         to: streamingPeer,
@@ -164,6 +167,7 @@ export default function RealTime(props) {
   const send = () => {
     client.send(
       `/pub/streaming`,
+      {},
       JSON.stringify({
         from: username,
         to: username,
