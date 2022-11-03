@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react'
+import { useSelector } from 'react-redux'
 import { picture } from '../../actions/api/api'
 
 export default function Picture() {
-  const myVideoRef = useRef(null)
+  const videoRef = useRef(null)
+  const canvasRef = useRef(null)
+  const username = useSelector((state) => state.user.username)
 
   let myStream
 
@@ -18,18 +21,56 @@ export default function Picture() {
       myStream = await navigator.mediaDevices.getUserMedia({
         video: true,
       })
-      if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
-        myVideoRef.current.srcObject = myStream
+      if (videoRef && videoRef.current && !videoRef.current.srcObject) {
+        videoRef.current.srcObject = myStream
       }
     } catch (error) {
       console.log(error)
     }
   }
 
+  const capture = () => {
+    canvasRef.current
+      .getContext('2d')
+      .drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
+
+    let imageUrl = canvasRef.current.toDataURL('image/jpeg')
+    console.log(imageUrl)
+    submitPicture(imageUrl)
+  }
+
+  const submitPicture = async (imageUrl) => {
+    let imageBlob
+    const urlMine = imageUrl.split(',')[0].split(':')[1].split(';')[0]
+    if (imageUrl.split(',')[0].indexOf('base64') >= 0) {
+      imageBlob = atob(imageUrl.split(',')[1])
+    } else {
+      imageBlob = unescape(imageUrl.split(',')[1])
+    }
+    console.log('urlMine', urlMine)
+
+    const blobArray = []
+    for (let idx = 0; idx < imageBlob.length; idx++) {
+      blobArray.push(imageBlob.charCodeAt(idx))
+    }
+
+    const imageFile = await new Blob([blobArray], {
+      type: urlMine,
+    })
+    console.log('imageFile', imageFile)
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    formData.append('username', username)
+
+    picture.postPicture(formData).then((result) => console.log(result))
+  }
+
   return (
     <div>
       Picture
-      <video ref={myVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
+      <video ref={videoRef} height="400" width="400" autoPlay={true} playsInline={true} />
+      <canvas ref={canvasRef} height="400" width="400" />
+      <button onClick={capture}>캡처</button>
     </div>
   )
 }
