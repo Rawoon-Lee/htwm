@@ -11,7 +11,6 @@ export default function RealTime(props) {
 
   const [isMuted, setIsMuted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
-  const [cnt, setCnt] = useState(0)
 
   const myVideoRef = useRef(null)
   const peerVideoRef = useRef(null)
@@ -21,6 +20,58 @@ export default function RealTime(props) {
   let client = props.client
 
   useEffect(() => {
+    //
+    makePeerConnection()
+    // RTC 초기 연결을 위한 socket 설정
+    if (client) {
+      client.subscribe(
+        `/sub/${UUID}`,
+        function (action) {
+          const content = JSON.parse(action.body)
+          console.log('받음', content)
+          if (!content.data) return
+          if (content.type === 1) {
+            getOfferMakeAnswer(content.data)
+          }
+          if (content.type === 2) {
+            getAnswer(content.data)
+          }
+          if (content.type === 3) {
+            getIce(content.data)
+          }
+        },
+        {},
+      )
+      getMedia()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isMuted) {
+      if (!myStream) return
+      myStream.getAudioTraks().forEach((track) => {
+        track.enabled = false
+      })
+    } else {
+      if (!myStream) return
+      myStream.getAudioTraks().forEach((track) => {
+        track.enabled = true
+      })
+    }
+  }, [isMuted])
+
+  /*
+    1. stream 내용 잡기
+    2. RTCPeerConnection만들고 거기에 stream 내용 넣기.
+    3. 만든 RTCPeerConnection으로 createOffer하고 offer를 다시 LocalDescription으로 넣는다.
+    4. 소켓으로 상대방 offer 받으면 RemoteDescription으로 넣는다.
+    5. offer 받은 쪽에선 LocalDescription으로 createAnswer 내용을 넣고 answer를 보낸다.
+    6. answer를 받은 쪽에선 RemoteDescription으로 answer를 넣는다.
+    7. icecandidate 이벤트가 발생하면 candidate를 보낸다. candidate 받으면 addIceCandidate한다
+  */
+
+  // 왜 함수 const 표현식으로 썼는데, 위 useEffect에서 사용이 가능한 것인가? TDZ아닌가?
+  const makePeerConnection = () => {
     myPeerConnection = new RTCPeerConnection({
       iceServers: [
         {
@@ -48,66 +99,14 @@ export default function RealTime(props) {
       )
     })
     myPeerConnection.addEventListener('addstream', (data) => {
-      console.log('add stream', data)
       if (peerVideoRef && peerVideoRef.current) {
+        console.log('add stream', data)
         setIsStarted(true)
         peerVideoRef.current.srcObject = data.stream
-        console.log(1234, peerVideoRef.current.srcObject)
+        console.log(peerVideoRef.current.srcObject)
       }
     })
-
-    if (client) {
-      client.subscribe(
-        `/sub/${UUID}`,
-        function (action) {
-          const content = JSON.parse(action.body)
-          console.log('받음', content)
-          if (!content.data) return
-          if (content.type === 1) {
-            getOfferMakeAnswer(content.data)
-          }
-          if (content.type === 2) {
-            getAnswer(content.data)
-          }
-          if (content.type === 3) {
-            getIce(content.data)
-          }
-        },
-        {},
-      )
-    }
-  }, [])
-
-  useEffect(() => {
-    if (client) {
-      getMedia()
-    }
-  }, [client])
-
-  useEffect(() => {
-    if (isMuted) {
-      if (!myStream) return
-      myStream.getAudioTraks().forEach((track) => {
-        track.enabled = false
-      })
-    } else {
-      if (!myStream) return
-      myStream.getAudioTraks().forEach((track) => {
-        track.enabled = true
-      })
-    }
-  }, [isMuted])
-
-  /*
-    0. 서버로부터 type1 받으면 해당 페이지로 이동하며 상대방에게 알려준다. 알림 받으면 상대도 해당 페이지로 이동한다.
-    1. stream 내용 잡기
-    2. RTCPeerConnection만들고 거기에 stream 내용 넣기.
-    3. 만든 RTCPeerConnection으로 createOffer하고 offer를 다시 LocalDescription으로 넣는다.
-    4. 소켓으로 상대방 offer 받으면 RemoteDescription으로 넣는다.
-    5. offer 받은 쪽에선 LocalDescription으로 createAnswer 내용을 넣고 answer를 보낸다.
-    6. answer를 받은 쪽에선 RemoteDescription으로 answer를 넣는다.
-    7. icecandidate 이벤트가 발생하면 candidate를 보낸다. candidate 받으면 addIceCandidate한다
-  */
+  }
 
   const getMedia = async () => {
     try {
@@ -144,6 +143,7 @@ export default function RealTime(props) {
   const getOfferMakeAnswer = async (offer) => {
     myPeerConnection.setRemoteDescription(offer)
     const answer = await myPeerConnection.createAnswer()
+    myPeerConnection.setLocalDescription(answer)
     client.send(
       `/pub/streaming`,
       {},
@@ -164,29 +164,14 @@ export default function RealTime(props) {
     await myPeerConnection.addIceCandidate(ice)
   }
 
-  const send = () => {
-    client.send(
-      `/pub/streaming`,
-      {},
-      JSON.stringify({
-        from: username,
-        to: username,
-        type: 0,
-        data: 1234,
-      }),
-    )
-  }
-
   return (
     <div>
       RealTime
       <video ref={myVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
       <video ref={peerVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
-      <div className={cnt} style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
+      <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
         <Calling />
       </div>
-      <button onClick={() => setCnt(cnt + 1)}>reload{cnt}</button>
-      <button onClick={send}>send</button>
     </div>
   )
 }
