@@ -1,8 +1,6 @@
-import { StyleSheet, Text, View, Pressable } from "react-native"
+import { StyleSheet, Text, View, Pressable, FlatList } from "react-native"
 import Constants from "expo-constants"
-import { TextInput } from "react-native"
 import * as React from "react"
-import { FlatList } from "react-native"
 
 import { user } from "../../api/userAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
@@ -10,6 +8,8 @@ import { getFriendsList } from "../../store/user"
 
 import FriendBox from "./friendBox"
 import { FriendData } from "../../store/user"
+
+import { commonStyle } from "../../Style/commonStyle"
 
 function renderItems({ item }: { item: FriendData }) {
 	return (
@@ -39,7 +39,7 @@ function FriendsList({ navigation }: any) {
 		navigation.navigate("FriendSearch")
 	}
 	return (
-		<View style={styles.container}>
+		<View style={commonStyle.container}>
 			<Text>친구목록</Text>
 			<View>
 				<Pressable onPress={moveToSearch}>
@@ -61,9 +61,4 @@ function FriendsList({ navigation }: any) {
 
 export default FriendsList
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		marginTop: Constants.statusBarHeight
-	}
-})
+const styles = StyleSheet.create({})

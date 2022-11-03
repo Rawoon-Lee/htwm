@@ -33,8 +33,6 @@ const user = {
 		})
 	},
 	friendAdd(data: any) {
-		console.log("친구추가하자")
-		console.log(data)
 		return api({
 			method: "post",
 			data: data,

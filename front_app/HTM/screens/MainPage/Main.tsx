@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar"
 import { StyleSheet, Text, View } from "react-native"
 import Constants from "expo-constants"
 import GoogleLogin from "./googleLogin"
@@ -11,7 +10,6 @@ import WeightInput from "./weightInput"
 function Main() {
 	return (
 		<View style={styles.container}>
-			<StatusBar style="auto" />
 			<Header></Header>
 			<ExerciseDays></ExerciseDays>
 			<WeightInput></WeightInput>
