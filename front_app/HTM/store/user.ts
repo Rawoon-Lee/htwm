@@ -54,12 +54,22 @@ const FriendListSlice = createSlice({
 		}
 	}
 })
+const FriendSearchListSlice = createSlice({
+	name: "friendSearchList",
+	initialState: initialStateFriend,
+	reducers: {
+		getFriendsSearchList: (state, action: PayloadAction<FreindDataList>) => {
+			return action.payload
+		}
+	}
+})
 export const { getUserInfo } = userInfoSlice.actions
 export const { getUserId } = userIdSlice.actions
-
 export const { getFriendsList } = FriendListSlice.actions
+export const { getFriendsSearchList } = FriendSearchListSlice.actions
 export default {
 	userInfo: userInfoSlice.reducer,
 	userId: userIdSlice.reducer,
-	friendList: FriendListSlice.reducer
+	friendList: FriendListSlice.reducer,
+	friendSearchList: FriendSearchListSlice.reducer
 }
