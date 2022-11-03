@@ -21,7 +21,7 @@ public class PictureControiller {
 
     @PostMapping("")
     @ResponseBody
-    public ResponseEntity upload(@RequestPart("image") MultipartFile multipartFile, String username){
+    public ResponseEntity upload(@RequestPart("image") MultipartFile multipartFile,@RequestPart("username") String username){
         String uploadUrl;
         try {
             uploadUrl = s3Uploader.uploadFiles(multipartFile, "body");
