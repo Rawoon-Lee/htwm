@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { picture } from '../../actions/api/api'
+import axios from 'axios'
 
 export default function Picture() {
   const videoRef = useRef(null)
@@ -40,36 +41,44 @@ export default function Picture() {
   }
 
   const submitPicture = async (imageUrl) => {
-    let imageBlob
-    const urlMine = imageUrl.split(',')[0].split(':')[1].split(';')[0]
-    if (imageUrl.split(',')[0].indexOf('base64') >= 0) {
-      imageBlob = atob(imageUrl.split(',')[1])
-    } else {
-      imageBlob = unescape(imageUrl.split(',')[1])
+    // let imageBlob
+    // const urlMine = imageUrl.split(',')[0].split(':')[1].split(';')[0]
+    // if (imageUrl.split(',')[0].indexOf('base64') >= 0) {
+    //   imageBlob = atob(imageUrl.split(',')[1])
+    // } else {
+    //   imageBlob = unescape(imageUrl.split(',')[1])
+    // }
+    // console.log('urlMine', urlMine)
+    // const blobArray = []
+    // for (let idx = 0; idx < imageBlob.length; idx++) {
+    //   blobArray.push(imageBlob.charCodeAt(idx))
+    // }
+    // const imageFile = await new Blob([blobArray], {
+    //   type: urlMine,
+    // })
+    // console.log('imageFile', imageFile)
+
+    let response = await fetch(imageUrl)
+    let blobData = await response.blob()
+    let metadata = {
+      type: 'image/jpeg',
     }
-    console.log('urlMine', urlMine)
+    let file = new File([blobData], 'test.jpg', metadata)
 
-    const blobArray = []
-    for (let idx = 0; idx < imageBlob.length; idx++) {
-      blobArray.push(imageBlob.charCodeAt(idx))
-    }
-
-    const imageFile = await new Blob([blobArray], {
-      type: urlMine,
-    })
-    console.log('imageFile', imageFile)
-    const formData = new FormData()
-    formData.append('image', imageFile)
-    formData.append('username', username)
-
-    picture.postPicture(formData).then((result) => console.log(result))
+    const data = new FormData()
+    data.append('image', file)
+    data.append('username', username)
+    picture
+      .postPicture(formData)
+      .then((result) => console.log(result)) // 사진찍혔다는 모달 띄우고 메인페이지로
+      .catch((error) => console.log(error))
   }
 
   return (
     <div>
       Picture
-      <video ref={videoRef} height="400" width="400" autoPlay={true} playsInline={true} />
-      <canvas ref={canvasRef} height="400" width="400" />
+      <video ref={videoRef} height="300" width="400" autoPlay={true} playsInline={true} />
+      <canvas ref={canvasRef} height="300" width="400" />
       <button onClick={capture}>캡처</button>
     </div>
   )
