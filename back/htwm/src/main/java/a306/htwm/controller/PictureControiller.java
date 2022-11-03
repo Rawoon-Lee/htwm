@@ -2,6 +2,7 @@ package a306.htwm.controller;
 
 
 import a306.htwm.config.S3Uploader;
+import a306.htwm.dto.PictureDTO;
 import a306.htwm.service.PictureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/picture")
@@ -39,5 +41,14 @@ public class PictureControiller {
             throw new RuntimeException(e.getMessage());
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ArrayList<PictureDTO>> getPic(@RequestParam("username") String username, @RequestParam("date") String date){
+        try{
+            return ResponseEntity.ok().body(pictureService.getPic(username,date));
+        }catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
