@@ -44,28 +44,33 @@ export default function mainLayout(props) {
     const stompClient = Stompjs.over(socket)
 
     stompClient.connect({}, () => {
-      stompClient.subscribe(`/sub/${UUID}`, (action) => {
-        const content = JSON.parse(action.body)
-        if (content.type === 'ENTER') {
-          // 통화 시작
-          dispatch(setStreamingPeer(content.from))
-          setState(2)
-        }
-        if (content.type === 'DENY') {
-          // 상대가 거절함을 알리고 통화 종료
-          dispatch(setModalMsg('상대가 통화를 거절했습니다.'))
-          dispatch(setModalState(true))
-          setState(0)
-        }
-        if (content.type === 'END') {
-          // 통화 종료됨을 알리고 통화 종료
-          dispatch(setModalMsg('통화가 종료되었습니다.'))
-          dispatch(setModalState(true))
-          setState(0)
-        }
-      })
+      stompClient.subscribe(
+        `/sub/${UUID}`,
+        (action) => {
+          const content = JSON.parse(action.body)
+          if (content.type === 'ENTER') {
+            // 통화 시작
+            dispatch(setStreamingPeer(content.from))
+            setState(2)
+          }
+          if (content.type === 'DENY') {
+            // 상대가 거절함을 알리고 통화 종료
+            dispatch(setModalMsg('상대가 통화를 거절했습니다.'))
+            dispatch(setModalState(true))
+            setState(0)
+          }
+          if (content.type === 'END') {
+            // 통화 종료됨을 알리고 통화 종료
+            dispatch(setModalMsg('통화가 종료되었습니다.'))
+            dispatch(setModalState(true))
+            setState(0)
+          }
+        },
+        {},
+      )
     })
 
+    // stompClient.debug = null
     setClient(stompClient)
 
     return () => {
