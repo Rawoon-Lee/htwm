@@ -8,5 +8,11 @@ export const commonStyle = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		marginTop: Constants.statusBarHeight
+	},
+	containerInner: {
+		flex: 1,
+		backgroundColor: "yellow",
+		alignItems: "center",
+		justifyContent: "center"
 	}
 })
