@@ -9,7 +9,6 @@ export default function RealTime(props) {
   const username = useSelector((state) => state.user.username)
   const streamingPeer = useSelector((state) => state.user.streamingPeer)
 
-  // const [client, setClient] = useState(undefined)
   const [isMuted, setIsMuted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
   const [cnt, setCnt] = useState(0)
@@ -36,15 +35,17 @@ export default function RealTime(props) {
       ],
     })
     myPeerConnection.addEventListener('icecandidate', (data) => {
-      client.publish({
-        destination: `/pub/streaming`,
-        body: JSON.stringify({
+      if (!data.candidate) return
+      client.send(
+        `/pub/streaming`,
+        {},
+        JSON.stringify({
           from: username,
           to: streamingPeer,
           type: 3,
           data: data.candidate,
         }),
-      })
+      )
     })
     myPeerConnection.addEventListener('addstream', (data) => {
       console.log('add stream', data)
@@ -55,10 +56,13 @@ export default function RealTime(props) {
       }
     })
 
+    console.log(client)
     if (client) {
-      client.subscribe(`/sub/${UUID}`, (action) => {
+      console.log(123456)
+      client.subscribe(`/sub/${UUID}`, function (action) {
         const content = JSON.parse(action.body)
         console.log('받음', content)
+        if (!content.data) return
         if (content.type === 1) {
           getOfferMakeAnswer(content.data)
         }
@@ -123,29 +127,30 @@ export default function RealTime(props) {
     const offer = await myPeerConnection.createOffer()
     myPeerConnection.setLocalDescription(offer)
 
-    client.publish({
-      destination: `/pub/streaming`,
-      body: JSON.stringify({
+    client.send(
+      {},
+      `/pub/streaming`,
+      JSON.stringify({
         from: username,
         to: streamingPeer,
         type: 1,
         data: offer,
       }),
-    })
+    )
   }
 
   const getOfferMakeAnswer = async (offer) => {
     myPeerConnection.setRemoteDescription(offer)
     const answer = await myPeerConnection.createAnswer()
-    client.publish({
-      destination: `/pub/streaming`,
-      body: JSON.stringify({
+    client.send(
+      `/pub/streaming`,
+      JSON.stringify({
         from: username,
         to: streamingPeer,
         type: 2,
         data: answer,
       }),
-    })
+    )
   }
 
   const getAnswer = async (answer) => {
@@ -156,15 +161,28 @@ export default function RealTime(props) {
     await myPeerConnection.addIceCandidate(ice)
   }
 
+  const send = () => {
+    client.send(
+      `/pub/streaming`,
+      JSON.stringify({
+        from: username,
+        to: username,
+        type: 0,
+        data: 1234,
+      }),
+    )
+  }
+
   return (
     <div>
       RealTime
       <video ref={myVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
-      <video className="peerVideoTag" ref={peerVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
+      <video ref={peerVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
       <div className={cnt} style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
         <Calling />
       </div>
       <button onClick={() => setCnt(cnt + 1)}>reload{cnt}</button>
+      <button onClick={send}>send</button>
     </div>
   )
 }

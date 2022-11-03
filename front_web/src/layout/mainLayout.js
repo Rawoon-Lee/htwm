@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import * as Stomp from '@stomp/stompjs'
+import Stompjs from 'stompjs'
 import Sockjs from 'sockjs-client'
 
 import Home from '../pages/Home/Home'
@@ -40,14 +40,12 @@ export default function mainLayout(props) {
   ////////////////////////////////////////////////////webSocket 통신//////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    const stompClient = new Stomp.Client({
-      logRawCommunication: false,
-    })
-    stompClient.webSocketFactory = () => new Sockjs(`https://k7a306.p.ssafy.io/api/socket`)
-    stompClient.onConnect = () => {
+    const socket = new Sockjs('https://k7a306.p.ssafy.io/api/socket')
+    const stompClient = Stompjs.over(socket)
+
+    stompClient.connect({}, () => {
       stompClient.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
-        console.log(content)
         if (content.type === 'ENTER') {
           // 통화 시작
           dispatch(setStreamingPeer(content.from))
@@ -66,13 +64,13 @@ export default function mainLayout(props) {
           setState(0)
         }
       })
-    }
-    stompClient.activate()
+    })
+
     setClient(stompClient)
 
     return () => {
       if (stompClient) {
-        stompClient.deactivate()
+        stompClient.disconnect()
       }
     }
   }, [])
