@@ -20,7 +20,7 @@ export default function RealTime(props) {
   let client = props.client
 
   useEffect(() => {
-    //
+    // RTCPeerConnection 만들어두기
     makePeerConnection()
     // RTC 초기 연결을 위한 socket 설정
     if (client) {
@@ -70,7 +70,6 @@ export default function RealTime(props) {
     7. icecandidate 이벤트가 발생하면 candidate를 보낸다. candidate 받으면 addIceCandidate한다
   */
 
-  // 왜 함수 const 표현식으로 썼는데, 위 useEffect에서 사용이 가능한 것인가? TDZ아닌가?
   const makePeerConnection = () => {
     myPeerConnection = new RTCPeerConnection({
       iceServers: [
@@ -100,10 +99,8 @@ export default function RealTime(props) {
     })
     myPeerConnection.addEventListener('addstream', (data) => {
       if (peerVideoRef && peerVideoRef.current) {
-        console.log('add stream', data)
         setIsStarted(true)
         peerVideoRef.current.srcObject = data.stream
-        console.log(peerVideoRef.current.srcObject)
       }
     })
   }

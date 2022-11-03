@@ -60,17 +60,14 @@ export default function StartRoutine(props) {
   }, [])
 
   useEffect(() => {
-    const videoDiv = document.querySelector('.videoDiv')
+    const imageDiv = document.querySelector('.imageDiv')
 
-    let videoSrc = routineDetail.sets[setNo.current].url
-    let videoTag = document.createElement('video')
-    if (videoSrc) {
-      videoTag.setAttribute('class', 'videoTag')
-      videoTag.setAttribute('autoPlay', true)
-      videoTag.setAttribute('loop', true)
-      videoTag.src = videoSrc
-      videoDiv.replaceChildren(videoTag)
-      console.log(videoDiv, routineDetail.sets[setNo.current].url, videoTag)
+    let imageSrc = routineDetail.sets[setNo.current].url
+    let imageTag = document.createElement('img')
+    if (imageSrc) {
+      imageTag.src = imageSrc
+      imageDiv.replaceChildren(imageTag)
+      console.log(imageDiv, routineDetail.sets[setNo.current].url, imageTag)
     }
   }, [setNo.current])
 
@@ -113,7 +110,7 @@ export default function StartRoutine(props) {
       <button onClick={addCount}>카운트 증가</button>
       <hr />
       <p>참고 영상</p>
-      <div className="videoDiv" style={{ borderStyle: 'dotted' }}></div>
+      <div className="imageDiv" style={{ borderStyle: 'dotted' }}></div>
     </div>
   )
 }
