@@ -112,7 +112,7 @@ export default function RealTime(props) {
     try {
       myStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        // audio: true,
+        audio: true,
       })
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
         myVideoRef.current.srcObject = myStream
