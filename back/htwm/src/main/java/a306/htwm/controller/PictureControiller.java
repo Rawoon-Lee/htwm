@@ -20,8 +20,7 @@ public class PictureControiller {
     private final PictureService pictureService;
 
     @PostMapping("")
-    @ResponseBody
-    public ResponseEntity upload(@RequestPart("image") MultipartFile multipartFile,@RequestPart("username") String username){
+    public ResponseEntity upload(@RequestPart("image") MultipartFile multipartFile,@RequestParam("username") String username){
         String uploadUrl;
         try {
             uploadUrl = s3Uploader.uploadFiles(multipartFile, "body");
