@@ -17,13 +17,6 @@ const routine = {
 			url: `${END_POINT}/`
 		})
 	},
-	createRoutine(data: any) {
-		return api({
-			method: "post",
-			data: data,
-			url: `${END_POINT}/`
-		})
-	},
 	routineList(data: string) {
 		return api({
 			method: "get",
