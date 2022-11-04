@@ -7,14 +7,13 @@ import Home from '../pages/Home/Home'
 import Picture from '../pages/Picture/Picture'
 import RealTime from '../pages/RealTime/RealTime'
 import Routine from '../pages/Routine/Routine'
-import CameraTest from '../pages/cameraTest'
 
 import { user } from '../actions/api/api'
 import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/user'
 import { UUID, SEND_TEST } from '../store/constants'
 import { setModalMsg, setModalState } from '../store/modules/util'
 
-export default function mainLayout(props) {
+export default function mainLayout() {
   const dispatch = useDispatch()
   const { ipcRenderer } = window.require('electron')
 
@@ -23,10 +22,9 @@ export default function mainLayout(props) {
 
   const components = [
     <Home />,
-    <Picture />,
+    <Picture setState={setState} />,
     <RealTime client={client} />,
     <Routine setState={setState} />,
-    <CameraTest />,
   ]
 
   useEffect(() => {
@@ -121,7 +119,6 @@ export default function mainLayout(props) {
       <button onClick={() => setState(1)}>picture</button>
       <button onClick={() => setState(2)}>realTime</button>
       <button onClick={() => setState(3)}>Routine</button>
-      <button onClick={() => setState(4)}>CameraTest</button>
       <button onClick={sendMain}>ipc 테스트</button>
       {components[state]}
     </div>

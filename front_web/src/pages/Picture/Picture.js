@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux'
 import { picture } from '../../actions/api/api'
 import axios from 'axios'
 
-export default function Picture() {
+export default function Picture(props) {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const username = useSelector((state) => state.user.username)
+  const setState = props.setState
 
   let myStream
 
@@ -58,19 +59,27 @@ export default function Picture() {
     // })
     // console.log('imageFile', imageFile)
 
-    let response = await fetch(imageUrl)
-    let blobData = await response.blob()
-    let metadata = {
+    const response = await fetch(imageUrl)
+    const blobData = await response.blob()
+    const metadata = {
       type: 'image/jpeg',
     }
-    let file = new File([blobData], 'test.jpg', metadata)
+    const date = new Date()
+    const file = await new File([blobData], username + '_' + String(date.getTime()) + '.jpeg', metadata)
 
-    const data = new FormData()
+    let data = new FormData()
     data.append('image', file)
     data.append('username', username)
+
     picture
-      .postPicture(formData)
-      .then((result) => console.log(result)) // 사진찍혔다는 모달 띄우고 메인페이지로
+      .postPicture(data)
+      .then((result) => {
+        // 사진찍혔다는 모달 띄우고 메인페이지로
+        setTimeout(() => {
+          setState(0)
+        }, 3000)
+        console.log(result)
+      })
       .catch((error) => console.log(error))
   }
 
