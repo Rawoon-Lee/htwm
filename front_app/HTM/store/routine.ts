@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export type RoutineDataList = RoutineData[]
-interface RoutineData {
+export interface RoutineData {
 	color: string
 	name: string
 	username: string
 	sets: SetData[]
 }
-interface SetData {
+export interface SetData {
 	exercise_id: number
 	exercise_name: string
 	number: number
 	sec: number
-	set_cnt: number
+	set_cnt?: number
 }
 const initialStateRoutineData: RoutineDataList = [
 	{
