@@ -1,90 +1,93 @@
-import {
-	StyleSheet,
-	Text,
-	View,
-	TextInput,
-	Pressable,
-	Switch,
-	ScrollView,
-	Dimensions
-} from "react-native"
+import { StyleSheet, Text, View, TextInput, Pressable, ScrollView, Dimensions } from "react-native"
+import { Switch } from "react-native-switch"
+import { Picker } from "@react-native-picker/picker"
 import { commonStyle } from "../../Style/commonStyle"
 import * as React from "react"
+import Constants from "expo-constants"
 
 import { routine } from "../../api/routineAPI"
+import { RoutineData, SetData } from "../../store/routine"
+import { useAppSelector } from "../../store/hook"
 
 import { Feather } from "@expo/vector-icons"
-import Constants from "expo-constants"
-import { Picker } from "@react-native-picker/picker"
 
-interface ExerciseData {
+export interface ExerciseData {
 	exercise_id: number
 	name: string
 	url: string
 }
 
+interface tempSetData extends SetData {
+	id: number
+}
 export default function CreateRoutine() {
-	const [name, setName] = React.useState("")
-	const [exerciseList, setExerciseList] = React.useState<ExerciseData[] | null>(null)
-	const [index, setIndex] = React.useState(1)
-	const [selectedExercise, setSelectedExercise] = React.useState("")
-	const [isEnabled, setIsEnabled] = React.useState(false)
-	const toggleSwitch = () => setIsEnabled(previousState => !previousState)
+	const userId = useAppSelector(state => state.userId)
 
-	const [boxes, setBoxes] = React.useState([SetInfoBox(1)])
+	const [index, setIndex] = React.useState(0)
+
+	const [boxes, setBoxes] = React.useState<JSX.Element[]>([])
+	const colors = ["#00796B", "#DE5788", "#9747FF", "#8FE81E", "#E0BB95"]
+	const [selectedColor, setSelectedColor] = React.useState("D2D2FF")
+
+	const [exerciseList, setExerciseList] = React.useState<ExerciseData[] | null>(null)
+
+	// 토글 스위치용
+	const [setType, setSetType] = React.useState(true)
+	const toggleSwitch = () => setSetType(previousState => !previousState)
+	// 인풋 데이터
+	const [name, setName] = React.useState("")
+	const [selectedExercise, setSelectedExercise] = React.useState("")
+	const [time, setTime] = React.useState(0)
+	const [num, setNum] = React.useState(0)
+	const [set, setSet] = React.useState(0)
+
+	const [sets, setSets] = React.useState<SetData[]>([])
 
 	React.useEffect(() => {
 		routine
 			.exerciseList()
 			.then(result => {
 				setExerciseList(result.data)
-				console.log(result.data)
 			})
 			.catch(err => {
 				console.log(err)
 			})
 	}, [])
 
-	function SetInfoBox(keyNum: number) {
-		return (
-			<View key={keyNum}>
-				<Text>{keyNum}번 세트</Text>
-				<Switch
-					trackColor={{ false: "#767577", true: "#81b0ff" }}
-					thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-					onValueChange={toggleSwitch}
-					value={isEnabled}
-				/>
-				<Picker
-					selectedValue={selectedExercise}
-					onValueChange={(itemValue, itemIndex) => setSelectedExercise(itemValue)}
-				>
-					{exerciseList
-						? exerciseList.map((exercise, idx) => {
-								return <Picker.Item label={exercise.name} value={exercise.exercise_id} key={idx} />
-						  })
-						: null}
-				</Picker>
-				{/* disable 로 할지 alert 로 할지 고민중입니다 */}
-				<Pressable onPress={deleteSetInfoBox} disabled={keyNum === 1}>
-					<Text style={keyNum === 1 ? { color: "grey" } : { color: "black" }}>삭제</Text>
-				</Pressable>
-			</View>
-		)
-	}
 	function addSetInfoBox() {
-		let temp = index + 1
-		let tempBox = boxes
-		tempBox.push(SetInfoBox(temp))
-		setBoxes(tempBox)
-		console.log("component add")
-		setIndex(temp)
-	}
-	function deleteSetInfoBox() {
-		if (boxes.length <= 1) {
-			alert("최소한 1개의 세트는 있어야 합니다")
+		// exerciseList 없음
+		if (!exerciseList) return
+		// 먼저 값이 제대로 들어와 있는지 확인
+		console.log("확안용")
+		console.log(name, setType, selectedExercise, time, num, set)
+		if (!selectedExercise) {
+			alert("운동을 선택해주세요")
 			return
+		} else if (setType) {
+			if (num === 0 || set === 0) {
+				alert("횟수, 세트 수는 0일 수 없습니다.")
+				return
+			}
+		} else if (!setType) {
+			if (time === 0) {
+				alert("시간은 0분일 수 없습니다")
+				return
+			}
 		}
+		let temp: SetData = {
+			exercise_id: setType ? parseInt(selectedExercise) : 1,
+			exercise_name: setType ? exerciseList[parseInt(selectedExercise) - 1].name : "휴식",
+			number: setType ? num : 0,
+			sec: setType ? 0 : time,
+			set_cnt: setType ? set : 0
+		}
+		// let list = sets
+		// list.push(temp)
+		setSets(sets.concat(temp))
+		console.log(sets)
+	}
+
+	function deleteSetInfoBox() {
 		let temp = index
 		setIndex(temp)
 		let tempBox = boxes
@@ -92,22 +95,205 @@ export default function CreateRoutine() {
 		setBoxes(tempBox)
 		console.log("component delete")
 	}
+
+	function createRoutine() {
+		// 이름 비어있으면 안됨
+		if (!userId.id) {
+			alert("로그인을 먼저 진행해주세요")
+			return
+		} else if (!name) {
+			alert("루틴의 이름을 지어주세요")
+			return
+		}
+		let data: RoutineData = {
+			color: selectedColor,
+			name: name,
+			username: userId.id,
+			sets: sets
+		}
+
+		console.log(JSON.stringify(data))
+		routine
+			.routineCreate(data)
+			.then(result => {
+				console.log("생성 성공")
+				console.log(result.data)
+			})
+			.catch(err => {
+				console.log("실패했습니다")
+				console.log(err)
+			})
+	}
+	function resetRoutine() {
+		setSets([])
+	}
+	function changeTime(num: number) {
+		if (!num) return
+		if (num > 60) {
+			alert("휴식시간은 60분을 넘을 수 없습니다")
+			return
+		} else if (num == 0) {
+			alert("휴식시간은 0분일 수 없습니다.")
+			return
+		}
+		setTime(num)
+	}
 	return (
 		<View style={commonStyle.containerInner}>
 			<ScrollView style={styles.scrollView}>
-				<Text>루틴 생성 페이지 입니다</Text>
 				<TextInput
+					style={styles.textInput}
 					onChangeText={text => {
 						setName(text)
 					}}
 					placeholder="루틴의 이름을 입력해주세요"
 				></TextInput>
-				{boxes.map((box, idx) => {
-					return <View key={idx}>{box}</View>
+				<View
+					style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}
+				>
+					{colors.map((color, idx) => {
+						return (
+							<View key={idx}>
+								<Pressable
+									onPress={() => {
+										setSelectedColor(color), console.log(selectedColor)
+									}}
+								>
+									<View
+										style={[
+											styles.colorCircle,
+											color == selectedColor
+												? {
+														backgroundColor: color,
+														borderRadius: 40,
+														width: 40,
+														height: 40
+												  }
+												: {
+														backgroundColor: color
+												  }
+										]}
+									></View>
+								</Pressable>
+							</View>
+						)
+					})}
+				</View>
+				<View style={styles.exerciseInput}>
+					<Switch
+						backgroundActive={"#FAFAFA"}
+						backgroundInactive={"#FAFAFA"}
+						circleBorderWidth={0}
+						circleActiveColor={"#00BEA4"}
+						circleInActiveColor={"#CBCBCB"}
+						onValueChange={toggleSwitch}
+						value={setType}
+						activeText={"운동"}
+						inActiveText={"휴식"}
+						circleSize={30}
+						switchLeftPx={5}
+						switchRightPx={5}
+						activeTextStyle={{ color: "black", textAlign: "center" }}
+						inactiveTextStyle={{ color: "black", textAlign: "center" }}
+						changeValueImmediately={true}
+					/>
+					{setType ? (
+						<View>
+							<Text>운동종류를 골라주세요</Text>
+							<Picker
+								style={styles.picker}
+								selectedValue={selectedExercise}
+								onValueChange={(itemValue, itemIndex) => setSelectedExercise(itemValue)}
+							>
+								{exerciseList
+									? exerciseList
+											.filter(exercise => exercise.exercise_id !== 1)
+											.map((exercise, idx) => {
+												return exercise.exercise_id == 0 ? null : (
+													<Picker.Item
+														label={exercise.name}
+														value={exercise.exercise_id}
+														key={idx}
+													/>
+												)
+											})
+									: null}
+							</Picker>
+							<View style={styles.exerciseNumInput}>
+								<TextInput
+									style={styles.textInput_sm}
+									onChangeText={text => {
+										setNum(parseInt(text))
+									}}
+									// placeholder="횟수를 설정해주세요"
+									keyboardType={"numeric"}
+								></TextInput>
+								<Text>회</Text>
+								<TextInput
+									style={styles.textInput_sm}
+									onChangeText={text => {
+										setSet(parseInt(text))
+									}}
+									// placeholder="세트 수 설정해주세요"
+									keyboardType={"numeric"}
+								></TextInput>
+								<Text>세트</Text>
+							</View>
+						</View>
+					) : (
+						<View>
+							<TextInput
+								style={styles.textInput_sm}
+								onChangeText={text => {
+									changeTime(parseInt(text))
+								}}
+								// placeholder="휴식시간을 설정해주세요"
+								keyboardType={"numeric"}
+							></TextInput>
+							<Text>분</Text>
+						</View>
+					)}
+				</View>
+				<View>
+					<Pressable onPress={addSetInfoBox} style={styles.addButton}>
+						<Feather name="plus-circle" size={24} color="white" />
+						<Text style={styles.addButtonText}>추가</Text>
+					</Pressable>
+				</View>
+				{sets.map((set, idx) => {
+					return set.exercise_id === 1 ? (
+						<View key={idx}>
+							<Text>{set.exercise_name}</Text>
+							<View style={styles.exerciseInfo}>
+								<Text>휴식 시간</Text>
+								<Text>{set.sec}</Text>
+							</View>
+						</View>
+					) : (
+						<View key={idx}>
+							<View style={styles.exerciseInfo}>
+								<Text>운동이름</Text>
+								<Text>{set.exercise_name}</Text>
+							</View>
+							<View style={styles.exerciseInfo}>
+								<Text>회</Text>
+								<Text>{set.number}</Text>
+							</View>
+							<View style={styles.exerciseInfo}>
+								<Text>세트</Text>
+								<Text>{set.set_cnt}</Text>
+							</View>
+						</View>
+					)
 				})}
 				<View>
-					<Pressable onPress={addSetInfoBox}>
-						<Feather name="plus-circle" size={24} color="black" />
+					<Pressable onPress={resetRoutine} style={styles.addButton}>
+						<Text style={styles.addButtonText}>리셋</Text>
+					</Pressable>
+				</View>
+				<View>
+					<Pressable onPress={createRoutine} style={styles.addButton}>
+						<Text style={styles.addButtonText}>등록</Text>
 					</Pressable>
 				</View>
 			</ScrollView>
@@ -120,5 +306,56 @@ const styles = StyleSheet.create({
 		backgroundColor: "pink",
 		marginHorizontal: 10,
 		width: Dimensions.get("screen").width
+	},
+	addButton: {
+		borderRadius: 10,
+		borderWidth: 2,
+		borderColor: "white",
+		justifyContent: "center",
+		alignItems: "center",
+		flexDirection: "row",
+		backgroundColor: "green"
+	},
+	addButtonText: {
+		color: "white",
+		marginLeft: 10
+	},
+	textInput: {
+		backgroundColor: "#FFFFFF",
+		width: Dimensions.get("screen").width - 50,
+		borderRadius: 7,
+		borderWidth: 1,
+		borderColor: "#727272"
+	},
+	textInput_sm: {
+		backgroundColor: "#FFFFFF",
+		width: 50,
+		borderRadius: 7,
+		borderWidth: 1,
+		borderColor: "#727272"
+	},
+	picker: {
+		backgroundColor: "white",
+		borderRadius: 10
+	},
+	exerciseInput: {
+		width: Dimensions.get("screen").width,
+		borderRadius: 7,
+		borderWidth: 1,
+		borderColor: "#727272"
+	},
+	exerciseNumInput: {
+		flexDirection: "row"
+	},
+	exerciseInfo: {
+		width: Dimensions.get("screen").width,
+		borderRadius: 7,
+		flexDirection: "row"
+	},
+	colorCircle: {
+		borderRadius: 35,
+		width: 35,
+		height: 35,
+		margin: 15
 	}
 })
