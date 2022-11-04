@@ -164,8 +164,8 @@ export default function RealTime(props) {
   return (
     <div>
       RealTime
-      <video ref={myVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
-      <video ref={peerVideoRef} height="400" width="400" autoPlay={true} playsInline={true} />
+      <video ref={myVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
+      <video ref={peerVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
       <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
         <Calling />
       </div>
