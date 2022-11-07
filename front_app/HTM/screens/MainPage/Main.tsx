@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native"
+import { StatusBar } from "expo-status-bar"
 import Constants from "expo-constants"
 import GoogleLogin from "./googleLogin"
 import DeviceIntro from "./deviceIntro"
@@ -12,6 +13,8 @@ import { user } from "../../api/userAPI"
 import { getUserInfo } from "../../store/user"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import * as React from "react"
+
+import TrainingBird from "./trainingBird"
 
 function Main({ navigation }: any) {
 	// const userInfo = useAppSelector(state => state.userInfo)
@@ -56,8 +59,17 @@ function Main({ navigation }: any) {
 			<Header navigation={navigation}></Header>
 			<ExerciseDays></ExerciseDays>
 			<WeightInput></WeightInput>
+			<StatusBar style="auto" />
+			<Header></Header>
+			<TrainingBird></TrainingBird>
+			<View style={{ flexDirection: "row", marginTop: 10 }}>
+				<ExerciseDays></ExerciseDays>
+				<WeightInput></WeightInput>
+			</View>
 			<WeightGraph></WeightGraph>
-			<DeviceIntro></DeviceIntro>
+			<View style={{ backgroundColor: "#D9D9D9", borderRadius: 20 }}>
+				<DeviceIntro></DeviceIntro>
+			</View>
 		</View>
 	)
 }
