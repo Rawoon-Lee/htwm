@@ -18,18 +18,18 @@ function RoutineList({ navigation }: any) {
 	const routineList = useAppSelector(state => state.routineList)
 	console.log("루틴목록", routineList)
 
-	// React.useEffect(() => {
-	// 	routine
-	// 		.routineList(userId.id)
-	// 		.then(result => {
-	// 			console.log(result.data)
-	// 			console.log(typeof result.data)
-	// 			dispatch(getRoutineList(result.data))
-	// 		})
-	// 		.catch(err => {
-	// 			console.log(err)
-	// 		})
-	// }, [])
+	React.useEffect(() => {
+		routine
+			.routineList(userId.id)
+			.then(result => {
+				console.log(result.data)
+				console.log(typeof result.data)
+				dispatch(getRoutineList(result.data))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [])
 
 	function moveToCreate() {
 		navigation.navigate("CreateRoutine")
