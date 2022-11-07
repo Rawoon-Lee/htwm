@@ -57,10 +57,10 @@ function Main({ navigation }: any) {
 				<GoogleLogin></GoogleLogin>
 			</View> */}
 			<Header navigation={navigation}></Header>
-			<ExerciseDays></ExerciseDays>
-			<WeightInput></WeightInput>
+			{/* <ExerciseDays></ExerciseDays>
+			<WeightInput></WeightInput> */}
 			<StatusBar style="auto" />
-			<Header></Header>
+			{/* <Header></Header> */}
 			<TrainingBird></TrainingBird>
 			<View style={{ flexDirection: "row", marginTop: 10 }}>
 				<ExerciseDays></ExerciseDays>
