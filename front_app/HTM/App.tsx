@@ -9,8 +9,7 @@ import { store } from "./store/store"
 
 import CreateRoutine from "./screens/RoutinesList/createRoutine"
 import FriendSearch from "./screens/FriendsList/friendSearch"
-import MyPage from "./screens/MyPage/MyPage"
-import ProfileEdit from "./screens/MyPage/ProfileEdit"
+import ProfileEdit from "./screens/ProfileEdit/ProfileEdit"
 
 import Constants from "expo-constants"
 
@@ -44,18 +43,6 @@ export default function App() {
 							component={FriendSearch}
 							options={{
 								title: "친구 추가",
-								gestureEnabled: true,
-								headerBackTitle: "뒤로",
-								headerBackTitleVisible: true,
-								headerTitleAlign: "center",
-								headerStatusBarHeight: Constants.statusBarHeight
-							}}
-						></Stack.Screen>
-						<Stack.Screen
-							name="MyPage"
-							component={MyPage}
-							options={{
-								title: "마이페이지",
 								gestureEnabled: true,
 								headerBackTitle: "뒤로",
 								headerBackTitleVisible: true,
