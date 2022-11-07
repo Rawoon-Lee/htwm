@@ -18,7 +18,7 @@ const user = {
 			url: `${END_POINT}/info?username=${data}`
 		})
 	},
-	edit(data: any) {
+	profileEdit(data: any) {
 		return api({
 			method: "post",
 			data: data,
