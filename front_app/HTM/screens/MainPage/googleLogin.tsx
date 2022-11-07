@@ -26,12 +26,9 @@ function GoogleLogin() {
 	const [accessToken, setAccessToken] = React.useState<any | null>(null)
 
 	const [request, response, promptAsync] = Google.useAuthRequest({
-		androidClientId:
-			"440495779704-3367tl8q0m2rctutebc91ksvbt6t0dho.apps.googleusercontent.com",
-		iosClientId:
-			"440495779704-5uftm1ea7girg4j5v78cbdrjq2lcuoe7.apps.googleusercontent.com",
-		expoClientId:
-			"440495779704-ekaoouogu6bnahpkh5qka267linn8f2d.apps.googleusercontent.com"
+		androidClientId: "440495779704-3367tl8q0m2rctutebc91ksvbt6t0dho.apps.googleusercontent.com",
+		iosClientId: "440495779704-5uftm1ea7girg4j5v78cbdrjq2lcuoe7.apps.googleusercontent.com",
+		expoClientId: "440495779704-ekaoouogu6bnahpkh5qka267linn8f2d.apps.googleusercontent.com"
 	})
 
 	async function storeUserData() {
@@ -57,6 +54,22 @@ function GoogleLogin() {
 
 	React.useEffect(() => {
 		retreiveUserData()
+		if (!userInfo || typeof userInfo.email === "undefined") return
+		let data = {
+			nickname: userInfo.name,
+			url: userInfo.picture,
+			username: userInfo.email.split("@")[0]
+		}
+		user
+			.getInfo(data.username)
+			.then(result => {
+				console.log("데이터 가져와서 저장하기 시작")
+				dispatch(getUserInfo(result.data))
+			})
+			.catch(err => {
+				console.log("에러나서 가져오기 못함 ㅠ")
+				console.log(err)
+			})
 	}, [])
 
 	React.useEffect(() => {
@@ -81,6 +94,16 @@ function GoogleLogin() {
 			.then(result => {
 				console.log(result.data)
 				console.log("성공함")
+				user
+					.getInfo(data.username)
+					.then(result => {
+						console.log("데이터 가져와서 저장하기 시작")
+						dispatch(getUserInfo(result.data))
+					})
+					.catch(err => {
+						console.log("에러나서 가져오기 못함 ㅠ")
+						console.log(err)
+					})
 			})
 			.catch(err => {
 				console.log(err)
@@ -93,26 +116,10 @@ function GoogleLogin() {
 		getUserData()
 	}, [accessToken])
 
-	function showUserInfo() {
-		if (userInfo) {
-			return (
-				<View style={styles.userInfo}>
-					<Image source={{ uri: userInfo.picture }} style={styles.profilePic} />
-					<Text>Hello {userInfo.name}</Text>
-					<Text>{userInfo.email}</Text>
-					<Text>{userId.id}</Text>
-				</View>
-			)
-		}
-	}
-
 	async function getUserData() {
-		let userInfoResponse = await fetch(
-			"https://www.googleapis.com/userinfo/v2/me",
-			{
-				headers: { Authorization: `Bearer ${accessToken}` }
-			}
-		)
+		let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+			headers: { Authorization: `Bearer ${accessToken}` }
+		})
 
 		await userInfoResponse.json().then(data => {
 			// console.log(userInfo)
@@ -136,7 +143,7 @@ function GoogleLogin() {
 	}
 	return (
 		<View>
-			{userId.id ? (
+			{userInfo?.name ? (
 				<Pressable onPress={logout}>
 					<Text>로그아웃</Text>
 				</Pressable>
@@ -152,10 +159,7 @@ function GoogleLogin() {
 							  }
 					}
 				>
-					<Image
-						source={require("../../assets/g-logo.png")}
-						style={styles.profilePic}
-					/>
+					<Image source={require("../../assets/g-logo.png")} style={styles.profilePic} />
 					<Text>구글 로그인</Text>
 				</Pressable>
 			)}
