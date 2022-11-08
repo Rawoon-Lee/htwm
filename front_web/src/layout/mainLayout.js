@@ -13,6 +13,8 @@ import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/use
 import { UUID, SEND_TEST } from '../store/constants'
 import { setModalMsg, setModalState } from '../store/modules/util'
 
+import './mainLayout.css'
+
 export default function mainLayout() {
   const dispatch = useDispatch()
   const { ipcRenderer } = window.require('electron')
@@ -114,7 +116,7 @@ export default function mainLayout() {
   }
 
   return (
-    <div>
+    <div className="layout">
       <button onClick={() => setState(0)}>home</button>
       <button onClick={() => setState(1)}>picture</button>
       <button onClick={() => setState(2)}>realTime</button>

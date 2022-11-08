@@ -14,6 +14,8 @@ import heavyRain from './../../assets/heavyRain.png'
 import lightRain from './../../assets/lightRain.png'
 import snow from './../../assets/ice.png'
 
+import './Home.css'
+
 export default function Home() {
   const dispatch = useDispatch()
 
@@ -73,9 +75,9 @@ export default function Home() {
         now.near = []
         now.far = []
       }
-      // 가까운 정보는 상세내용으로 담기
+      // 가까운 정보는 상세내용
       const time = String(data.fcstTime).slice(0, 2)
-      if (!now.near.length || (now.near.length < 12 && now.near[now.near.length - 1]['시간'] != time)) {
+      if (!now.near.length || (now.near.length < 6 && now.near[now.near.length - 1]['시간'] != time)) {
         // 온도
         if (data.category === 'TMP') {
           now.near.push({ 시간: time, 온도: String(data.fcstValue) + '°C' })
@@ -111,11 +113,8 @@ export default function Home() {
           }
           now.near[now.near.length - 1]['강수형태'] = type
         }
-        // 풍속 m/s
-        if (data.category === 'WSD') {
-          now.near[now.near.length - 1]['풍속'] = String(data.fcstValue) + 'm/s'
-        }
       }
+
       // 간단내용으로 담기
       const date = String(data.fcstDate).slice(-2)
       const day = ['일', '월', '화', '수', '목', '금', '토'][
@@ -138,48 +137,63 @@ export default function Home() {
 
   return (
     <div>
-      home
       <Profile />
-      <div>
-        <div>{date.slice(4, 6)}월</div>
-        <div>{date.slice(6, 8)}일</div>
-        <div>{date.slice(8, 16)}</div>
+
+      <div className="home-date">
+        <div className="home-date-day">
+          {date.slice(0, 4)} - {date.slice(4, 6)} - {date.slice(6, 8)}
+        </div>
+        <div className="home-date-time">{date.slice(8, 16)}</div>
       </div>
-      <div>
-        {weatherData.near?.map((data) => (
-          <div key={data['시간']}>
-            시간: {data['시간']}
-            온도: {data['온도']}
-            풍속: {data['풍속']}
-            강수확률: {data['강수확률']}
-            하늘: {data['하늘']}
-            {data['하늘'] === '맑음' ? (
-              <img src={sunny} width="12px" />
-            ) : data['하늘'] === '구름많음' ? (
-              <img src={midCloudy} width="12px" />
+
+      <div className="home-weather">
+        {weatherData.near && (
+          <div className="home-weather-image">
+            <p>
+              {weatherData.near[0]['강수형태'] === '없음'
+                ? weatherData.near[0]['하늘']
+                : weatherData.near[0]['강수형태']}
+            </p>
+            {weatherData.near[0]['강수형태'] === '없음' ? (
+              weatherData.near[0]['하늘'] === '맑음' ? (
+                <img src={sunny} />
+              ) : weatherData.near[0]['하늘'] === '구름많음' ? (
+                <img src={midCloudy} />
+              ) : (
+                <img src={cloudy} />
+              )
+            ) : weatherData.near[0]['강수형태'] === '소나기' ? (
+              <img src={heavyRain} />
+            ) : weatherData.near[0]['강수형태'] === '비' ? (
+              <img src={lightRain} />
             ) : (
-              <img src={cloudy} width="12px" />
-            )}
-            {data['강수형태'] === '없음' ? null : data['강수형태']}
-            {data['강수형태'] === '없음' ? null : data['강수형태'] === '소나기' ? (
-              <img src={heavyRain} width="12px" />
-            ) : data['강수형태'] === '비' ? (
-              <img src={lightRain} width="12px" />
-            ) : (
-              <img src={snow} width="12px" />
+              <img src={snow} />
             )}
           </div>
-        ))}
-      </div>
-      <div>
-        {weatherData.far?.slice(1, 3).map((data, idx) => {
-          return (
-            <div key={data['날짜']}>
-              {idx === 0 ? '내일' : '모레'} {data['날짜'] + '일 ' + data['요일'] + '요일'}: 최고 {data['최고기온']},
-              최저 {data['최저기온']}
-            </div>
-          )
-        })}
+        )}
+
+        <div>
+          <table className="home-weather-near">
+            <thead>
+              <tr>
+                {weatherData.near && weatherData.near.map((data) => <th key={data['시간']}>{data['시간']}시</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>{weatherData.near && weatherData.near.map((data) => <td key={data['시간']}>{data['온도']}</td>)}</tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="home-weather-far">
+          {weatherData.far?.slice(1, 3).map((data, idx) => {
+            return (
+              <div key={data['날짜']}>
+                {idx === 0 ? '내일' : '모레'} {data['최저기온']}~{data['최고기온']}
+              </div>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
