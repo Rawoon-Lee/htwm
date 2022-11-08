@@ -112,7 +112,7 @@ export default function RealTime(props) {
         audio: true,
       })
       if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
-        myVideoRef.current.srcObject = myStream
+        // myVideoRef.current.srcObject = myStream
         await makeOffer()
       }
     } catch (error) {
@@ -164,7 +164,7 @@ export default function RealTime(props) {
   return (
     <div>
       RealTime
-      <video ref={myVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
+      {/* <video ref={myVideoRef} height="300" width="400" autoPlay={true} playsInline={true} /> */}
       <video ref={peerVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
       <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
         <Calling />
