@@ -1,13 +1,20 @@
 package a306.htwm.service;
 
+import a306.htwm.dto.Dates;
 import a306.htwm.dto.RecordRoutineDTO;
+import a306.htwm.dto.UsernameAndDateDTO;
 import a306.htwm.entity.Record;
 import a306.htwm.repository.RecordRepository;
 import a306.htwm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 
 @Service
@@ -49,5 +56,36 @@ public class RecordService {
             recordRoutineDTOS.add(recordRoutineDTO);
         }
         return recordRoutineDTOS;
+    }
+
+    public Integer count(String username, String date) {
+        if(userRepository.findByUsername(username)== null) throw new RuntimeException("no such username");
+        ArrayList<String> dates = recordRepository.getDates(userRepository.findByUsername(username).getId());
+
+        boolean start = false;
+        LocalDate bef = LocalDate.now();
+        LocalDate startDate = LocalDate.parse(date);
+        LocalDate endDate = startDate;
+
+        for(String day : dates){
+//            String date = onedate.getDate();
+            LocalDate ymd = LocalDate.parse(day);
+            if(!start){
+                if(day.equals(date)) start = true;
+                bef = ymd;
+            }else{
+                if(bef.minusDays(1).equals(ymd)) {
+                    bef = ymd;
+                    endDate = bef;
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        if(!start) return 0;
+        Period period = Period.between(endDate,startDate);
+        return period.getDays() + 1;
     }
 }
