@@ -18,10 +18,5 @@ export default function Routine(props) {
 
   // 운동 중단 요청오면 setState 변경
 
-  return (
-    <div>
-      routine
-      {components[routineState]}
-    </div>
-  )
+  return <div>{components[routineState]}</div>
 }

@@ -12,7 +12,6 @@ export default function RealTime(props) {
   const [isMuted, setIsMuted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
 
-  const myVideoRef = useRef(null)
   const peerVideoRef = useRef(null)
 
   let myStream
@@ -44,31 +43,25 @@ export default function RealTime(props) {
       )
       getMedia()
     }
+    return () => {
+      if (myStream) {
+        myStream.getTracks().map((stream) => stream.stop())
+      }
+    }
   }, [])
 
   useEffect(() => {
+    if (!myStream) return
     if (isMuted) {
-      if (!myStream) return
       myStream.getAudioTraks().forEach((track) => {
         track.enabled = false
       })
     } else {
-      if (!myStream) return
       myStream.getAudioTraks().forEach((track) => {
         track.enabled = true
       })
     }
   }, [isMuted])
-
-  /*
-    1. stream 내용 잡기
-    2. RTCPeerConnection만들고 거기에 stream 내용 넣기.
-    3. 만든 RTCPeerConnection으로 createOffer하고 offer를 다시 LocalDescription으로 넣는다.
-    4. 소켓으로 상대방 offer 받으면 RemoteDescription으로 넣는다.
-    5. offer 받은 쪽에선 LocalDescription으로 createAnswer 내용을 넣고 answer를 보낸다.
-    6. answer를 받은 쪽에선 RemoteDescription으로 answer를 넣는다.
-    7. icecandidate 이벤트가 발생하면 candidate를 보낸다. candidate 받으면 addIceCandidate한다
-  */
 
   const makePeerConnection = () => {
     myPeerConnection = new RTCPeerConnection({
@@ -111,10 +104,7 @@ export default function RealTime(props) {
         video: true,
         audio: true,
       })
-      if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
-        // myVideoRef.current.srcObject = myStream
-        await makeOffer()
-      }
+      makeOffer()
     } catch (error) {
       console.log(error)
     }
@@ -163,8 +153,6 @@ export default function RealTime(props) {
 
   return (
     <div>
-      RealTime
-      {/* <video ref={myVideoRef} height="300" width="400" autoPlay={true} playsInline={true} /> */}
       <video ref={peerVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
       <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
         <Calling />
