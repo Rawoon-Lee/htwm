@@ -28,4 +28,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             "and type = :type " +
             "order by create_time desc limit 1")
     Notice findTimeByLastType(@Param("fromId") Long fromId, @Param("toId") Long toId, @Param("type") String type);
+
+    @Query(nativeQuery = true, value = "select * from notice where notice_id = :noticeId")
+    Notice findOneById(@Param("noticeId") Long noticeId);
 }
