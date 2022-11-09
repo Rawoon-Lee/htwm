@@ -92,6 +92,7 @@ public class NoticeService {
         ArrayList<NoticeDTO> noticeDTOS = new ArrayList<>();
         for(Notice notice : notices){
             NoticeDTO noticeDTO = NoticeDTO.builder()
+                    .notice_id(notice.getId())
                     .createTime(notice.getCreateTime())
                     .fromUsername(notice.getFromId().getUsername())
                     .toUsername(notice.getToId().getUsername())
@@ -103,5 +104,12 @@ public class NoticeService {
             noticeDTOS.add(noticeDTO);
         }
         return noticeDTOS;
+    }
+
+    @Transactional
+    public void readNoticeId(Long noticeId) {
+        Notice notice = noticeRepository.findOneById(noticeId);
+        if(notice == null) throw new RuntimeException("no such notice");
+        notice.setIsread(true);
     }
 }
