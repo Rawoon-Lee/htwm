@@ -4,15 +4,21 @@ import { picture } from '../../actions/api/api'
 import axios from 'axios'
 
 export default function Picture(props) {
+  const username = useSelector((state) => state.user.username)
+
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
-  const username = useSelector((state) => state.user.username)
-  const setState = props.setState
 
+  const setState = props.setState
   let myStream
 
   useEffect(() => {
     getMedia()
+    return () => {
+      if (myStream) {
+        myStream.getTracks().map((stream) => stream.stop())
+      }
+    }
   }, [])
 
   const getMedia = async () => {
@@ -39,23 +45,6 @@ export default function Picture(props) {
   }
 
   const submitPicture = async (imageUrl) => {
-    // let imageBlob
-    // const urlMine = imageUrl.split(',')[0].split(':')[1].split(';')[0]
-    // if (imageUrl.split(',')[0].indexOf('base64') >= 0) {
-    //   imageBlob = atob(imageUrl.split(',')[1])
-    // } else {
-    //   imageBlob = unescape(imageUrl.split(',')[1])
-    // }
-    // console.log('urlMine', urlMine)
-    // const blobArray = []
-    // for (let idx = 0; idx < imageBlob.length; idx++) {
-    //   blobArray.push(imageBlob.charCodeAt(idx))
-    // }
-    // const imageFile = await new Blob([blobArray], {
-    //   type: urlMine,
-    // })
-    // console.log('imageFile', imageFile)
-
     const response = await fetch(imageUrl)
     const blobData = await response.blob()
     const metadata = {
@@ -82,7 +71,6 @@ export default function Picture(props) {
 
   return (
     <div>
-      Picture
       <video ref={videoRef} height="300" width="400" autoPlay={true} playsInline={true} />
       <canvas ref={canvasRef} height="300" width="400" />
       <button onClick={capture}>캡처</button>
