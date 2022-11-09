@@ -8,5 +8,6 @@ import lombok.Setter;
 public class EditDTO {
     private String username;
     private String nickname;
+    private String url;
     private double height;
 }
