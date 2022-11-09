@@ -84,7 +84,7 @@ export default function RealTime(props) {
         {},
         JSON.stringify({
           from: username,
-          to: streamingPeer,
+          to: streamingPeer.username,
           type: 3,
           data: data.candidate,
         }),
@@ -120,7 +120,7 @@ export default function RealTime(props) {
       {},
       JSON.stringify({
         from: username,
-        to: streamingPeer,
+        to: streamingPeer.username,
         type: 1,
         data: offer,
       }),
@@ -136,7 +136,7 @@ export default function RealTime(props) {
       {},
       JSON.stringify({
         from: username,
-        to: streamingPeer,
+        to: streamingPeer.username,
         type: 2,
         data: answer,
       }),

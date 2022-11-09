@@ -1,10 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { picture } from '../../actions/api/api'
-import axios from 'axios'
+
+import './Picture.css'
 
 export default function Picture(props) {
   const username = useSelector((state) => state.user.username)
+
+  const [pictureMsg, setPictureMsg] = useState('')
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
@@ -34,13 +37,27 @@ export default function Picture(props) {
     }
   }
 
+  const startCapture = async () => {
+    let time = 5
+    setPictureMsg(`${time}초 후 사진이 찍힙니다.`)
+    const interval = setInterval(() => {
+      if (time > 1) {
+        time--
+        setPictureMsg(`${time}초 후 사진이 찍힙니다.`)
+      } else {
+        capture()
+        setPictureMsg('사진이 촬영되었습니다.')
+        clearInterval(interval)
+      }
+    }, 1000)
+  }
+
   const capture = () => {
     canvasRef.current
       .getContext('2d')
       .drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
 
     let imageUrl = canvasRef.current.toDataURL('image/jpeg')
-    console.log(imageUrl)
     submitPicture(imageUrl)
   }
 
@@ -70,10 +87,11 @@ export default function Picture(props) {
   }
 
   return (
-    <div>
+    <div className="picture">
+      <button onClick={startCapture}>캡처</button>
+      <div className="picture-message">{pictureMsg}</div>
+      <canvas className="picture-canvas" ref={canvasRef} height="300" width="400" />
       <video ref={videoRef} height="300" width="400" autoPlay={true} playsInline={true} />
-      <canvas ref={canvasRef} height="300" width="400" />
-      <button onClick={capture}>캡처</button>
     </div>
   )
 }

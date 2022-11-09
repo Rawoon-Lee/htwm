@@ -5,11 +5,14 @@ const userSlice = createSlice({
   initialState: {
     username: 'a',
     userInfo: {
-      height: 178,
-      nickname: 'MoCCo',
+      height: 0,
+      nickname: '',
       url: '',
     },
-    streamingPeer: 'b',
+    streamingPeer: {
+      username: 'b',
+      url: '',
+    },
   },
   reducers: {
     setUsername(state, action) {
