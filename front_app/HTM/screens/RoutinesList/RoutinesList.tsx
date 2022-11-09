@@ -36,18 +36,19 @@ function RoutineList({ navigation }: any) {
 	}
 
 	return (
-		<View style={commonStyle.container}>
+		<View style={styles.container}>
+			<Text
+				style={{
+					fontSize: 30,
+					paddingBottom: 5,
+					paddingLeft: 20,
+				}}
+			>
+				루틴
+			</Text>
 			{routineList.length >= 1 ? (
 				<View style={{ justifyContent: "space-between" }}>
-					<Text
-						style={{
-							flexDirection: "row",
-							justifyContent: "flex-start",
-							fontSize: 30
-						}}
-					>
-						루틴
-					</Text>
+
 					<View style={{ alignItems: "center" }}>
 						{routineList.map((cur, idx) => {
 							return <RoutineBox key={idx} routine={routineList[idx]}></RoutineBox>
