@@ -14,40 +14,41 @@ function AlarmList() {
 	let [alarmData, setAlarmData] = useState([])
 
 	React.useEffect(() => {
-		notice.getAlarms(userId.id)
+		notice
+			.getAlarms(userId.id)
 			.then(result => {
-				console.log(result.data);
+				console.log(result.data)
 				setAlarmData(result.data)
 			})
 			.catch(err => {
-				console.log(err);
+				console.log(err)
 			})
 	}, [])
 	return (
 		<View style={styles.container}>
-			<View style={{
-				width: width,
-			}}>
+			<View
+				style={{
+					width: width
+				}}
+			>
 				<Text
 					style={{
 						fontSize: 30,
 						paddingBottom: 5,
-						paddingLeft: 20,
+						paddingLeft: 20
 					}}
 				>
 					알림
 				</Text>
 			</View>
-			{alarmData.length >= 1 ?
+			{alarmData.length >= 1 ? (
 				alarmData.map((cur, idx) => {
-					return (
-						<AlarmBox key={idx} alarmData={alarmData}></AlarmBox>
-					)
-				}):
+					return <AlarmBox key={idx} alarmData={alarmData}></AlarmBox>
+				})
+			) : (
 				<Text> 알람이 없습니다. </Text>
-			}
-
-		</View >
+			)}
+		</View>
 	)
 }
 
@@ -56,6 +57,6 @@ export default AlarmList
 const styles = StyleSheet.create({
 	container: {
 		marginTop: Constants.statusBarHeight,
-		alignItems: "center",
+		alignItems: "center"
 	}
 })

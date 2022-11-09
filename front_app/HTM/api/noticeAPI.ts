@@ -15,7 +15,9 @@ const notice = {
 	getAlarms(data: any) {
 		return api({
 			method: "get",
-			data: data,
+			params: {
+				username: data
+			},
 			url: `${END_POINT}`
 		})
 	},
