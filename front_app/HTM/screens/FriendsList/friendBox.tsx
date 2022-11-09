@@ -10,13 +10,7 @@ import { getFriendsList } from "../../store/user"
 
 import { Feather } from "@expo/vector-icons"
 
-export default function FriendBox({
-	username,
-	nickname,
-	url,
-	status,
-	isSearch
-}: FriendData) {
+export default function FriendBox({ username, nickname, url, status, isSearch }: FriendData) {
 	function Button0() {
 		return (
 			<View style={styles.button0}>
@@ -105,6 +99,19 @@ export default function FriendBox({
 			})
 	}
 
+	function streamingRequest() {
+		let data = { friendname: username, username: userId.id }
+		notice
+			.requestStreaming(data)
+			.then(result => {
+				alert("스트리밍 신청 완료!")
+			})
+			.catch(err => {
+				alert("예기치 못한 이유로 스트리밍 신청이 실패했습니다.")
+				console.log(err)
+			})
+	}
+
 	return (
 		<View>
 			<Text>{username}</Text>
@@ -119,7 +126,7 @@ export default function FriendBox({
 					</Pressable>
 					<Pressable
 						onPress={() => {
-							console.log("같이 플레이하자")
+							streamingRequest()
 						}}
 					>
 						<Text>플레이</Text>
