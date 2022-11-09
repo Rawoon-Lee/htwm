@@ -90,10 +90,22 @@ public class UserController {
         }
     }
 
+    //get username by uuid
     @PostMapping("uuid")
     public ResponseEntity<String> getUsername(@RequestBody UuidDTO uuid){
         return ResponseEntity.ok().body(userService.getUsernameByUuid(uuid.getUuid()));
     }
+
+    //get uuid by username
+    @PostMapping("username")
+    public ResponseEntity<String> getUuid(@RequestBody UsernameDTO usernameDTO){
+        try {
+            return ResponseEntity.ok().body(userService.getUuid(usernameDTO.getUsername()));
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().body("null");
+        }
+    }
+
 
     @PostMapping("login")
     public ResponseEntity login(@RequestBody LoginDTO loginDTO){
