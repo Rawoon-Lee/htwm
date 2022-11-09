@@ -43,7 +43,7 @@ function AlarmList() {
 			</View>
 			{alarmData.length >= 1 ? (
 				alarmData.map((cur, idx) => {
-					return <AlarmBox key={idx} alarmData={alarmData}></AlarmBox>
+					return <AlarmBox key={idx} alarmData={cur}></AlarmBox>
 				})
 			) : (
 				<Text> 알람이 없습니다. </Text>

@@ -20,7 +20,7 @@ function AlarmBox(props: any) {
 
 				<AlarmMessage
 					fromName={props.alarmData.fromNickname}
-					type={props.alarmData[0].type}
+					type={props.alarmData.type}
 				></AlarmMessage>
 				<View style={{}}>
 					<AlarmButton
