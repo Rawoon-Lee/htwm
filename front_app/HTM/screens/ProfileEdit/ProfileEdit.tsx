@@ -4,6 +4,7 @@ import * as ImagePicker from "expo-image-picker"
 
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { user } from "../../api/userAPI"
+import { picture } from "../../api/pictureAPI"
 import { getUserInfo } from "../../store/user"
 
 function ProfileEdit() {
@@ -65,15 +66,16 @@ function ProfileEdit() {
 	}
 
 	function updateProfile() {
-		if (!newNickname || newHeight < 0 || newHeight > 250) {
-			alert("값을 다시 확인해주세요")
-			return
-		}
+		// if (!newNickname || newHeight < 0 || newHeight > 250) {
+		// 	alert("값을 다시 확인해주세요")
+		// 	return
+		// }
 		const data = {
 			height: newHeight,
 			nickname: newNickname,
 			username: userId.id
 		}
+
 		user
 			.profileEdit(data)
 			.then(result => {
@@ -91,6 +93,19 @@ function ProfileEdit() {
 			})
 			.catch(err => {
 				console.log("실패함")
+				console.log(err)
+			})
+		if (!imageUrl) return
+		const formData = new FormData()
+		formData.append("files", imageUrl)
+		picture
+			.changeProfile(formData)
+			.then(result => {
+				console.log("프로필 이미지 업로드 성공")
+				console.log(result.data)
+			})
+			.catch(err => {
+				console.log("프로필 못 바꿈")
 				console.log(err)
 			})
 	}

@@ -26,6 +26,16 @@ const picture = {
 			},
 			url: `${END_POINT}`
 		})
+	},
+	changeProfile(data: FormData) {
+		return api({
+			method: "post",
+			data: data,
+			headers: {
+				"Content-Type": "multipart/form-data"
+			},
+			url: `${END_POINT}/profile`
+		})
 	}
 }
 
