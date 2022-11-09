@@ -85,7 +85,7 @@ export default function Home() {
       } else {
         // 강수확률 %
         if (data.category === 'POP') {
-          now.near[now.near.length - 1]['강수확률'] = String(data.fcstValue) + '%'
+          now.near[now.near.length - 1]['강수확률'] = data.fcstValue
         }
         // 하늘
         if (data.category === 'SKY') {
@@ -181,6 +181,18 @@ export default function Home() {
             </thead>
             <tbody>
               <tr>{weatherData.near && weatherData.near.map((data) => <td key={data['시간']}>{data['온도']}</td>)}</tr>
+            </tbody>
+            <tbody>
+              <tr>
+                {weatherData.near &&
+                  weatherData.near.map((data) => {
+                    if (data['강수확률'] !== 0) {
+                      return <td key={data['시간']}>{data['강수확률']}%</td>
+                    } else {
+                      return <td key={data['시간']}></td>
+                    }
+                  })}
+              </tr>
             </tbody>
           </table>
         </div>
