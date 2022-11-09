@@ -16,5 +16,17 @@ const picture = {
 			data: data,
 			url: `${END_POINT}/`
 		})
+	},
+	pictureList(data: any) {
+		return api({
+			method: "get",
+			params: {
+				username: data.username,
+				date: data.date
+			},
+			url: `${END_POINT}`
+		})
 	}
 }
+
+export { picture }

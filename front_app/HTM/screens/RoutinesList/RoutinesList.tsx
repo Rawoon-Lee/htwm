@@ -6,7 +6,7 @@ import { Feather } from "@expo/vector-icons"
 import RoutineBox from "./routineBox"
 import { routine } from "../../api/routineAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
-import { getRoutineList } from "../../store/routine"
+import { getRoutineList, initRoutineList } from "../../store/routine"
 import { SelectButton } from "../../components/PrimaryButton"
 
 import { commonStyle } from "../../Style/commonStyle"
@@ -19,17 +19,20 @@ function RoutineList({ navigation }: any) {
 	console.log("루틴목록", routineList)
 
 	React.useEffect(() => {
+		if (!userId.id) {
+			dispatch(initRoutineList())
+			return
+		}
 		routine
 			.routineList(userId.id)
 			.then(result => {
 				console.log(result.data)
-				console.log(typeof result.data)
 				dispatch(getRoutineList(result.data))
 			})
 			.catch(err => {
 				console.log(err)
 			})
-	}, [])
+	}, [userId.id])
 
 	function moveToCreate() {
 		navigation.navigate("CreateRoutine")

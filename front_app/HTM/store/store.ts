@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import userInfoReducer from "./user"
 import recordReducer from "./record"
 import routineReducer from "./routine"
+import pictureReducer from "./picture"
 
 export const store = configureStore({
 	reducer: {
@@ -10,7 +11,8 @@ export const store = configureStore({
 		friendList: userInfoReducer.friendList,
 		friendSearchList: userInfoReducer.friendSearchList,
 		recordList: recordReducer,
-		routineList: routineReducer.routineList
+		routineList: routineReducer.routineList,
+		picList: pictureReducer.picList
 	}
 })
 
