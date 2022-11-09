@@ -60,7 +60,6 @@ export default function Home() {
       String(newDate.getMonth() + 1).padStart(2, '0') +
       String(newDate.getDate()).padStart(2, '0')
     weather(date, time).then((res) => {
-      console.log(res)
       const data = getWeatherDetail(res.data.response.body.items.item)
       dispatch(setWeatherData(data))
     })

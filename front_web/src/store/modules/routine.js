@@ -5,31 +5,31 @@ const routineSlice = createSlice({
   initialState: {
     routineList: [
       {
-        name: 'string',
+        name: '',
         sets: [
           {
             exercise_id: 0,
-            exercise_name: 'string',
+            exercise_name: '',
             number: 0,
             sec: 0,
             set_cnt: 0,
           },
         ],
-        username: 'string',
+        username: '',
       },
     ],
     routineDetail: {
-      name: 'string',
+      name: '',
       sets: [
         {
           exercise_id: 0,
-          exercise_name: 'string',
+          exercise_name: '',
           number: 0,
           sec: 0,
           set_cnt: 0,
         },
       ],
-      username: 'string',
+      username: '',
     },
     routineResult: {},
   },
@@ -47,7 +47,6 @@ const routineSlice = createSlice({
           newRoutine.sets.push(copy)
         })
       }
-      console.log(newRoutine)
       state.routineDetail = newRoutine
     },
     setRoutineResult(state, action) {
