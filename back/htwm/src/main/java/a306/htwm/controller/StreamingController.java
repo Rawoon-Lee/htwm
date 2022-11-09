@@ -49,6 +49,8 @@ public class StreamingController {
     @MessageMapping("/socket")
     public void socket(Message message, String type){
         message.setType(type);
+        message.setNickname(userService.getUser(message.getFrom()).getNickname());
+        message.setUrl(userService.getUser(message.getFrom()).getImgUrl());
         String friendUuid = userService.getUuid(message.getTo());
         simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
     }
@@ -110,4 +112,5 @@ public class StreamingController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
 }
