@@ -11,6 +11,29 @@ const notice = {
 			data: data,
 			url: `${END_POINT}/friend`
 		})
+	},
+	getAlarms(data: any) {
+		return api({
+			method: "get",
+			params: {
+				username: data
+			},
+			url: `${END_POINT}`
+		})
+	},
+	readAlarms(data: any) {
+		return api({
+			method: "post",
+			data: data,
+			url: `${END_POINT}`
+		})
+	},
+	requestStreaming(data: any) {
+		return api({
+			method: "post",
+			data: data,
+			url: `${END_POINT}/streaming`
+		})
 	}
 }
 
