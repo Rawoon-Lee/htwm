@@ -50,4 +50,15 @@ public class PictureControiller {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @PostMapping("/profile")
+    public ResponseEntity<String> upload(@RequestPart("image") MultipartFile multipartFile){
+        String uploadUrl;
+        try {
+            uploadUrl = s3Uploader.uploadFiles(multipartFile, "body");
+        } catch (Exception e) {
+            throw new RuntimeException("파일을 읽을 수 없습니다.");
+        }
+        return ResponseEntity.ok().body(uploadUrl);
+    }
 }

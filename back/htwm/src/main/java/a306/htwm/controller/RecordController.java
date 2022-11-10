@@ -2,6 +2,7 @@ package a306.htwm.controller;
 
 
 import a306.htwm.dto.RecordRoutineDTO;
+import a306.htwm.dto.UsernameAndDateDTO;
 import a306.htwm.dto.UsernameDTO;
 import a306.htwm.entity.User;
 import a306.htwm.service.RecordService;
@@ -38,4 +39,12 @@ public class RecordController {
         }
     }
 
+    @GetMapping("/days")
+    public ResponseEntity getDays(@RequestParam String username, @RequestParam String date) {
+        try {
+            return ResponseEntity.ok().body(recordService.count(username,date));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

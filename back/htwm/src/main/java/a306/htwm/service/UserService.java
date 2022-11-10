@@ -39,6 +39,7 @@ public class UserService {
     @Transactional
     public void edit(EditDTO editDTO) {
         User user = userRepository.findByUsername(editDTO.getUsername());
+        user.setImgUrl(editDTO.getUrl());
         user.setNickname(editDTO.getNickname());
         user.setHeight(editDTO.getHeight());
     }
@@ -184,5 +185,9 @@ public class UserService {
                 .nickname(user.getNickname())
                 .build();
         return ret;
+    }
+
+    public User getUser(String username){
+        return userRepository.findByUsername(username);
     }
 }

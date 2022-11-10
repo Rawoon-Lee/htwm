@@ -9,5 +9,7 @@ public class Message {
     private String type;
     private String from;
     private String to;
+    private String nickname;
+    private String url;
     private String data;
 }

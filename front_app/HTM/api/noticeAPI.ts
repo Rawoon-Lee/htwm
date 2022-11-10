@@ -10,8 +10,23 @@ const notice = {
 			url: `${END_POINT}/friend`
 		})
 	},
+	getAlarms(data: any) {
+		return api({
+			method: "get",
+			params: {
+				username: data
+			},
+			url: `${END_POINT}`
+		})
+	},
+	readAlarms(data: any) {
+		return api({
+			method: "post",
+			data: data,
+			url: `${END_POINT}`
+		})
+	},
 	requestStreaming(data: any) {
-		console.log("스트리밍 신청")
 		return api({
 			method: "post",
 			data: data,
