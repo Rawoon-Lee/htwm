@@ -65,6 +65,7 @@ export default AlarmList
 const styles = StyleSheet.create({
 	container: {
 		marginTop: Constants.statusBarHeight,
-		alignItems: "center"
+		alignItems: "center",
+		marginBottom: 45
 	}
 })
