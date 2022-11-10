@@ -3,6 +3,8 @@ import { StatusBar } from "expo-status-bar"
 import Constants from "expo-constants"
 import * as React from "react"
 
+import { useAppSelector } from "../../store/hook"
+
 import DeviceIntro from "./deviceIntro"
 import ExerciseDays from "./exerciseDays"
 import WeightGraph from "./weightGraph"
@@ -12,6 +14,7 @@ import Header from "./header"
 import TrainingBird from "./trainingBird"
 
 function Main({ navigation }: any) {
+	const userUuid = useAppSelector(state => state.userUuid)
 	return (
 		<View style={styles.container}>
 			<Header navigation={navigation}></Header>
@@ -22,9 +25,7 @@ function Main({ navigation }: any) {
 				<WeightInput></WeightInput>
 			</View>
 			<WeightGraph></WeightGraph>
-			<View style={{ backgroundColor: "#D9D9D9", borderRadius: 20 }}>
-				<DeviceIntro></DeviceIntro>
-			</View>
+			{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
 		</View>
 	)
 }
@@ -37,14 +38,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		alignItems: "center",
 		justifyContent: "center",
-		marginTop: Constants.statusBarHeight
+		marginTop: Constants.statusBarHeight,
+		margin: 0
 	},
 	text: {
 		fontSize: 40
-	},
-	profilePic: {
-		width: 20,
-		height: 20,
-		marginRight: 12
 	}
 })

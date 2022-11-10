@@ -1,14 +1,36 @@
-import { buildCodeAsync } from "expo-auth-session/build/PKCE"
 import { StyleSheet, Text, View, Dimensions } from "react-native"
-import {PrimaryButton} from "../../components/PrimaryButton"
+import * as React from "react"
+
+import { record } from "../../api/recordAPI"
+import { useAppSelector } from "../../store/hook"
 
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 function ExerciseDays() {
+	const userId = useAppSelector(state => state.userId)
+	const [daysCont, setDaysCont] = React.useState(0)
+
+	React.useEffect(() => {
+		let today = new Date()
+		let year = today.getFullYear()
+		let month = ("0" + (today.getMonth() + 1)).slice(-2)
+		let day = ("0" + today.getDate()).slice(-2)
+		let dateString = year + "-" + month + "-" + day
+		let data = {
+			username: userId.id,
+			date: dateString
+		}
+		record
+			.recordDays(data)
+			.then(result => {})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [])
 	return (
 		<View style={styles.container}>
-			<Text style={{fontSize:12, color:"#727272"}}>연속 운동 일자</Text>
-			<Text style={styles.text}>31연속</Text>
+			<Text style={{ fontSize: 12, color: "#727272" }}>연속 운동 일자</Text>
+			<Text style={styles.text}>{daysCont}</Text>
 		</View>
 	)
 }
@@ -22,13 +44,13 @@ const styles = StyleSheet.create({
 		paddingTop: 10,
 		backgroundColor: `rgba(0,190,164,0.2)`,
 		borderRadius: 10,
-		width: width * 2 / 7, 
+		width: (width * 2) / 7,
 		height: height / 10,
-		marginRight: 10,
+		marginRight: 10
 	},
 	text: {
 		fontSize: 24,
-		color: '#373737',
+		color: "#373737"
 	}
 })
 

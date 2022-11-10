@@ -14,8 +14,13 @@ function ProfileEdit() {
 	const userInfo = useAppSelector(state => state.userInfo)
 	const [newNickname, setNewNickname] = React.useState(userInfo.nickname)
 	const [newHeight, setNewHeight] = React.useState<number | 0>(userInfo.height)
+	const [uuid, setUuid] = React.useState("")
 	const [imageUrl, setImageUrl] = React.useState("")
 	const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
+
+	React.useEffect(() => {
+		setImageUrl(userInfo.url)
+	}, [])
 
 	async function uploadImage() {
 		if (!status?.granted) {
@@ -85,10 +90,6 @@ function ProfileEdit() {
 	}
 
 	function updateProfile() {
-		// if (!newNickname || newHeight < 0 || newHeight > 250) {
-		// 	alert("값을 다시 확인해주세요")
-		// 	return
-		// }
 		const data = {
 			height: newHeight,
 			nickname: newNickname,
@@ -101,6 +102,7 @@ function ProfileEdit() {
 			.then(result => {
 				console.log("유저 정보 변경 성공")
 				console.log(result.data)
+				alert("유저 정보가 성공적으로 변경되었습니다")
 				user
 					.getInfo(userId.id)
 					.then(result => {
@@ -114,6 +116,25 @@ function ProfileEdit() {
 			.catch(err => {
 				console.log("실패함")
 				console.log(err)
+			})
+	}
+
+	function registerUuid() {
+		if (!uuid) return
+		const data = {
+			username: userId.id,
+			uuid: uuid
+		}
+		user
+			.registerUuid(data)
+			.then(result => {
+				console.log("등록됨")
+				alert("기기 등록이 완료되었습니다")
+			})
+			.catch(err => {
+				if (err.response.data == "uuid 가 존재하지 않습니다.") {
+					alert(err.response.data)
+				}
 			})
 	}
 
@@ -144,7 +165,13 @@ function ProfileEdit() {
 				defaultValue={String(userInfo.height)}
 				maxLength={3}
 			></TextInput>
-			<TextInput placeholder="기기의 번호를 등록해주세요"></TextInput>
+			<TextInput
+				placeholder="기기의 번호를 등록해주세요"
+				onChangeText={text => setUuid(text)}
+			></TextInput>
+			<Pressable onPress={registerUuid}>
+				<Text>기기 등록</Text>
+			</Pressable>
 			<Pressable onPress={updateProfile}>
 				<Text>수정 완료</Text>
 			</Pressable>

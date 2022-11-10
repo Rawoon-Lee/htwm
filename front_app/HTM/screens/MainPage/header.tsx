@@ -62,9 +62,8 @@ const styles = StyleSheet.create({
 		fontSize: 40
 	},
 	profilePic: {
-		width: 20,
-		height: 20,
-		marginRight: 12
+		width: 40,
+		height: 40
 	}
 })
 
