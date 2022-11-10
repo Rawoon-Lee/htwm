@@ -61,6 +61,20 @@ const user = {
 			},
 			url: `${END_POINT}/search`
 		})
+	},
+	getUuid(data: any) {
+		return api({
+			method: "post",
+			data: data,
+			url: `${END_POINT}/username`
+		})
+	},
+	registerUuid(data: any) {
+		return api({
+			method: "post",
+			data: data,
+			url: `${END_POINT}/register`
+		})
 	}
 }
 

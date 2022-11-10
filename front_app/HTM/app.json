@@ -26,7 +26,9 @@
 				"backgroundColor": "#FFFFFF"
 			},
 			"package": "com.phorest.htm",
-			"googleServicesFile": "./google-services.json"
+			"googleServicesFile": "./google-services.json",
+			"useNextNotificationsApi": true,
+			"permissions": []
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"
