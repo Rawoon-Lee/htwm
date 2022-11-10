@@ -34,6 +34,12 @@ const notice = {
 			data: data,
 			url: `${END_POINT}/streaming`
 		})
+	},
+	readAlarm(data: any) {
+		return api({
+			method: "post",
+			url: `${END_POINT}/${data}`
+		})
 	}
 }
 

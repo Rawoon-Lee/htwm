@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native"
+import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native"
 import Constants from "expo-constants"
 import { TextInput } from "react-native"
 import { notice } from "../../api/noticeAPI"
@@ -10,12 +10,13 @@ let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 
 function AlarmList() {
-	const userId = useAppSelector(state => state.userId)
+	// const userId = useAppSelector(state => state.userId)
+	const userId = "xofkdqkqh"
 	let [alarmData, setAlarmData] = useState([])
 
 	React.useEffect(() => {
 		notice
-			.getAlarms(userId.id)
+			.getAlarms(userId)
 			.then(result => {
 				console.log(result.data)
 				setAlarmData(result.data)
@@ -41,13 +42,20 @@ function AlarmList() {
 					알림
 				</Text>
 			</View>
-			{alarmData.length >= 1 ? (
-				alarmData.map((cur, idx) => {
-					return <AlarmBox key={idx} alarmData={cur}></AlarmBox>
-				})
-			) : (
-				<Text> 알람이 없습니다. </Text>
-			)}
+			<ScrollView>
+				{alarmData.length >= 1 ? (
+					alarmData.map((cur, idx) => {
+						return (
+							<View key={idx} style={{ marginVertical: 7 }}>
+								<AlarmBox alarmData={cur}></AlarmBox>
+							</View>
+						)
+					})
+				) : (
+					<Text> 알람이 없습니다. </Text>
+				)}
+			</ScrollView>
+
 		</View>
 	)
 }
