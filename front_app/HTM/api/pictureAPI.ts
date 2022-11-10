@@ -1,4 +1,5 @@
 import api from "./api"
+import FormData from "form-data"
 
 const END_POINT = "picture"
 
@@ -28,6 +29,7 @@ const picture = {
 		})
 	},
 	changeProfile(data: FormData) {
+		console.log(data)
 		return api({
 			method: "post",
 			data: data,
