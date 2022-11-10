@@ -1,25 +1,26 @@
 import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native"
 import Constants from "expo-constants"
-import { TextInput } from "react-native"
 import { notice } from "../../api/noticeAPI"
 import AlarmBox from "./alarmBox"
 import React, { useState } from "react"
-import { useAppSelector } from "../../store/hook"
+
+import { useAppSelector, useAppDispatch } from "../../store/hook"
+import { getAlarmList, initAlarmList } from "../../store/notice"
 
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 
 function AlarmList() {
-	// const userId = useAppSelector(state => state.userId)
-	const userId = "xofkdqkqh"
-	let [alarmData, setAlarmData] = useState([])
+	const dispatch = useAppDispatch()
+
+	const userId = useAppSelector(state => state.userId)
+	const alarmList = useAppSelector(state => state.alarmList)
 
 	React.useEffect(() => {
 		notice
-			.getAlarms(userId)
+			.getAlarms(userId.id)
 			.then(result => {
-				console.log(result.data)
-				setAlarmData(result.data)
+				dispatch(getAlarmList(result.data))
 			})
 			.catch(err => {
 				console.log(err)
@@ -43,8 +44,8 @@ function AlarmList() {
 				</Text>
 			</View>
 			<ScrollView>
-				{alarmData.length >= 1 ? (
-					alarmData.map((cur, idx) => {
+				{alarmList.length >= 1 ? (
+					alarmList.map((cur, idx) => {
 						return (
 							<View key={idx} style={{ marginVertical: 7 }}>
 								<AlarmBox alarmData={cur}></AlarmBox>
@@ -55,7 +56,6 @@ function AlarmList() {
 					<Text> 알람이 없습니다. </Text>
 				)}
 			</ScrollView>
-
 		</View>
 	)
 }
