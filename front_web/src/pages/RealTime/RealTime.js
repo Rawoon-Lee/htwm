@@ -1,32 +1,49 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
-import Calling from './calling'
+import Profile from '../../components/profile'
 
 import { UUID } from '../../store/constants'
 
+import './RealTime.css'
+
 export default function RealTime(props) {
   const username = useSelector((state) => state.user.username)
+  const userInfo = useSelector((state) => state.user.userInfo)
   const streamingPeer = useSelector((state) => state.user.streamingPeer)
 
   const [isMuted, setIsMuted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
+  const [isEnded, setIsEnded] = useState(false)
+  const [endOpacity, setEndopacity] = useState(true)
+  const [timeView, setTimeView] = useState('')
 
-  const myVideoRef = useRef(null)
   const peerVideoRef = useRef(null)
+  const timeRef = useRef(0)
 
   let myStream
   let myPeerConnection
-  let client = props.client
+  const client = props.client
+  const setState = props.setState
 
   useEffect(() => {
     // RTCPeerConnection 만들어두기
     makePeerConnection()
     // RTC 초기 연결을 위한 socket 설정
     if (client) {
+      client.send(
+        `/pub/streaming`,
+        {},
+        JSON.stringify({
+          from: username,
+          to: streamingPeer.username,
+          type: 'ENTER',
+          url: userInfo.url,
+        }),
+      )
       client.subscribe(
         `/sub/${UUID}`,
-        function (action) {
+        (action) => {
           const content = JSON.parse(action.body)
           console.log('받음', content)
           if (!content.data) return
@@ -39,36 +56,62 @@ export default function RealTime(props) {
           if (content.type === 3) {
             getIce(content.data)
           }
+          if (content.type === 'END') {
+            peerVideoRef.current.srcObject = data.stream
+            setIsStarted(false)
+            setIsEnded(true)
+            setTimeout(() => {
+              setState(0)
+            }, 3000)
+          }
         },
         {},
       )
       getMedia()
     }
+    return () => {
+      if (myStream) {
+        myStream.getTracks().map((stream) => stream.stop())
+      }
+    }
   }, [])
 
   useEffect(() => {
+    if (!myStream) return
     if (isMuted) {
-      if (!myStream) return
       myStream.getAudioTraks().forEach((track) => {
         track.enabled = false
       })
     } else {
-      if (!myStream) return
       myStream.getAudioTraks().forEach((track) => {
         track.enabled = true
       })
     }
   }, [isMuted])
 
-  /*
-    1. stream 내용 잡기
-    2. RTCPeerConnection만들고 거기에 stream 내용 넣기.
-    3. 만든 RTCPeerConnection으로 createOffer하고 offer를 다시 LocalDescription으로 넣는다.
-    4. 소켓으로 상대방 offer 받으면 RemoteDescription으로 넣는다.
-    5. offer 받은 쪽에선 LocalDescription으로 createAnswer 내용을 넣고 answer를 보낸다.
-    6. answer를 받은 쪽에선 RemoteDescription으로 answer를 넣는다.
-    7. icecandidate 이벤트가 발생하면 candidate를 보낸다. candidate 받으면 addIceCandidate한다
-  */
+  let interval
+  useEffect(() => {
+    if (isStarted) {
+      interval = setInterval(() => {
+        timeRef.current++
+        const min = String(Math.floor(timeRef.current / 60)).padStart(2, '0')
+        const sec = String(Math.floor(timeRef.current % 60)).padStart(2, '0')
+        setTimeView(min + ':' + sec)
+      }, 1000)
+    }
+    return () => {
+      clearInterval(interval)
+    }
+  }, [isStarted])
+
+  useEffect(() => {
+    if (isEnded) {
+      clearInterval(isEnded)
+      setTimeout(() => {
+        setEndopacity(!endOpacity)
+      }, 700)
+    }
+  }, [isEnded, endOpacity])
 
   const makePeerConnection = () => {
     myPeerConnection = new RTCPeerConnection({
@@ -91,7 +134,7 @@ export default function RealTime(props) {
         {},
         JSON.stringify({
           from: username,
-          to: streamingPeer,
+          to: streamingPeer.username,
           type: 3,
           data: data.candidate,
         }),
@@ -111,10 +154,7 @@ export default function RealTime(props) {
         video: true,
         audio: true,
       })
-      if (myVideoRef && myVideoRef.current && !myVideoRef.current.srcObject) {
-        myVideoRef.current.srcObject = myStream
-        await makeOffer()
-      }
+      makeOffer()
     } catch (error) {
       console.log(error)
     }
@@ -124,13 +164,12 @@ export default function RealTime(props) {
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream))
     const offer = await myPeerConnection.createOffer()
     myPeerConnection.setLocalDescription(offer)
-
     client.send(
       `/pub/streaming`,
       {},
       JSON.stringify({
         from: username,
-        to: streamingPeer,
+        to: streamingPeer.username,
         type: 1,
         data: offer,
       }),
@@ -146,7 +185,7 @@ export default function RealTime(props) {
       {},
       JSON.stringify({
         from: username,
-        to: streamingPeer,
+        to: streamingPeer.username,
         type: 2,
         data: answer,
       }),
@@ -162,12 +201,27 @@ export default function RealTime(props) {
   }
 
   return (
-    <div>
-      RealTime
-      <video ref={myVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
-      <video ref={peerVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
-      <div style={{ visibility: isStarted ? 'hidden' : 'visible' }}>
-        <Calling />
+    <div className="realtime">
+      <div className="realtime-video">
+        <video ref={peerVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
+        <div className="realtime-video-profile" style={{ opacity: isStarted ? 1 : 0 }}>
+          <Profile nickname={streamingPeer.nickname} url={streamingPeer.url} />
+        </div>
+      </div>
+      <div className="realtime-calling">
+        {!isStarted && !isEnded ? (
+          <div>{streamingPeer.nickname}에게 전화를 거는 중입니다.</div>
+        ) : (
+          <div style={{ opacity: endOpacity ? 1 : 0 }}>
+            {timeView}
+            {isEnded && (
+              <>
+                <br />
+                통화가 종료되었습니다.
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

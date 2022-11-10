@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setModalMsg, setModalState } from '../store/modules/util'
 
+import './modal.css'
+
 export default function Modal(props) {
   const dispatch = useDispatch()
 
@@ -18,8 +20,8 @@ export default function Modal(props) {
   }, [modalState])
 
   return (
-    <div>
-      <p>{modalState && modalMsg}</p>
+    <div className="modal">
+      {modalState && <div className="modal-msg">{modalMsg}</div>}
       {props.children}
     </div>
   )

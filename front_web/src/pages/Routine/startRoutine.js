@@ -3,12 +3,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { routine } from '../../actions/api/api'
 import { setRoutineDetail, setRoutineResult } from '../../store/modules/routine'
 
+import './startRoutine.css'
+
 export default function StartRoutine(props) {
   const dispatch = useDispatch()
 
   const setRoutineState = props.setRoutineState
   const username = useSelector((state) => state.user.username)
   const routineDetail = useSelector((state) => state.routine.routineDetail)
+
+  const [isSetInterval, setIsSetInterval] = useState(false)
+  const isSetIntervalRef = useRef(false)
+  const [intervalMsg, setIntervalMsg] = useState('')
 
   const setNo = useRef(0) // 진행중인 세트번호
   const totSet = routineDetail.sets.length // 전체 세트 수
@@ -29,9 +35,8 @@ export default function StartRoutine(props) {
       const date = new Date()
       const endDateTime = date.toISOString()
 
-      console.log({ startDateTime, endDateTime, routineJson, doneSetNum, username })
       dispatch(setRoutineResult({ startDateTime, endDateTime, routineJson, doneSetNum, username }))
-      if (doneSetNum > 3) {
+      if (doneSetNum >= 5) {
         routine
           .recordRoutine({ startDateTime, endDateTime, routineJson, doneSetNum, username })
           .then((result) => {
@@ -49,10 +54,12 @@ export default function StartRoutine(props) {
     const interval = setInterval(() => {
       if (time.current > 0) {
         time.current = time.current - 1
+        setViewTime(time.current)
       } else {
-        nextSet()
+        if (!isSetIntervalRef.current) {
+          nextSet()
+        }
       }
-      setViewTime(time.current)
     }, 1000)
     return () => {
       clearInterval(interval)
@@ -60,20 +67,19 @@ export default function StartRoutine(props) {
   }, [])
 
   useEffect(() => {
-    const imageDiv = document.querySelector('.imageDiv')
+    const imageDiv = document.querySelector('#imageDiv')
 
-    let imageSrc = routineDetail.sets[setNo.current].url
-    let imageTag = document.createElement('img')
+    const imageSrc = routineDetail.sets[setNo.current].url
+    const imageTag = document.createElement('img')
     if (imageSrc) {
       imageTag.src = imageSrc
       imageDiv.replaceChildren(imageTag)
-      console.log(imageDiv, routineDetail.sets[setNo.current].url, imageTag)
     }
   }, [setNo.current])
 
   // 다음 세트로 넘어가는 함수
-  const nextSet = () => {
-    // 휴식시간 처리
+  const nextSet = async () => {
+    // 휴식시간 (cnt 0 일 때) 처리하기
     const addRate =
       (1 / totSet) *
       Math.min(
@@ -81,15 +87,41 @@ export default function StartRoutine(props) {
         1,
       )
     progressRate.current += addRate
+
     count.current = 0
     setViewCount(0)
-    if (setNo.current === totSet - 1) {
-      setRoutineState(3)
-      console.log('운동 끝')
+    if (setNo.current === totSet - 1) return setRoutineState(3)
+
+    await handlingInterval()
+    time.current = routineDetail.sets[setNo.current].sec
+    setViewTime(time.current)
+    setNo.current++
+  }
+
+  const handlingInterval = async () => {
+    // if (routineDetail.sets[setNo.current].exercise_name === routineDetail.sets[setNo.current + 1].exercise_name) return
+    const imageTag = document.querySelector('img')
+    imageTag.src = ''
+
+    setIsSetInterval(true)
+    isSetIntervalRef.current = true
+    if (routineDetail.sets[setNo.current].exercise_name !== '휴식') {
+      setIntervalMsg(
+        ['잘 하셨어요!', '좀 더 힘내봐요!', '거의 다 왔습니다', '다음 세트도 열정있게!'][Math.floor(Math.random() * 3)],
+      )
     } else {
-      setNo.current++
-      time.current = routineDetail.sets[setNo.current].sec
+      setIntervalMsg(['푹 쉬셨나요?', '숨 좀 고르셨나요?', '다시 힘내봅시다!'][Math.floor(Math.random() * 3)])
     }
+
+    await sleep(2000)
+    setIsSetInterval(false)
+    isSetIntervalRef.current = false
+  }
+
+  const sleep = (t) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, t)
+    })
   }
 
   const addCount = () => {
@@ -98,19 +130,38 @@ export default function StartRoutine(props) {
   }
 
   return (
-    <div>
-      <p>
-        남은시간 - {String(Math.floor(viewTime / 60)).padStart(2, '0')}:{String(viewTime % 60).padStart(2, '0')}
-      </p>
-      <p>
-        남은 세트 - {setNo.current + 1}/{totSet}
-      </p>
-      <p>카운트 - {viewCount}</p>
-      <p>진행중인 운동 - {routineDetail.sets[setNo.current].exercise_name}</p>
-      <button onClick={addCount}>카운트 증가</button>
-      <hr />
-      <p>참고 영상</p>
-      <div className="imageDiv" style={{ borderStyle: 'dotted' }}></div>
+    <div className="start">
+      {!isSetInterval ? (
+        <div className="start-header">
+          <div className="start-time">
+            <div className="start-time-title">남은시간</div>
+            <div className="start-time-time">
+              {String(Math.floor(viewTime / 60)).padStart(2, '0')}:{String(viewTime % 60).padStart(2, '0')}
+            </div>
+          </div>
+          {routineDetail.sets[setNo.current].exercise_name !== '휴식' ? (
+            <div className="start-exercise">
+              <div className="start-exercise-name">{routineDetail.sets[setNo.current].exercise_name}</div>
+              <div className="start-exercise-count">
+                {viewCount} / {routineDetail.sets[setNo.current].number}
+              </div>
+              <button onClick={addCount}>카운트 증가</button>
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        <div className="start-header">
+          <div className="start-header-interval">{intervalMsg}</div>
+        </div>
+      )}
+      <div className="start-left">
+        {setNo.current !== totSet - 1 ? (
+          <div>next: {routineDetail.sets[setNo.current + 1].exercise_name}</div>
+        ) : (
+          <div>마지막 세트입니다.</div>
+        )}
+      </div>
+      <div id="imageDiv" className="start-image"></div>
     </div>
   )
 }

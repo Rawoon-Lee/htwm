@@ -1,0 +1,29 @@
+.show-routine {
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.show-routine-alert {
+  align-self: center;
+  font-size: 5vw;
+}
+
+.show-routine-break {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+
+  padding: 3vw;
+  border-left: 1vw solid gray;
+}
+
+.show-routine-exercise {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+
+  padding: 3vw;
+  border-left: 1vw solid rgba(0, 0, 255, 0.724);
+}
