@@ -6,6 +6,7 @@ import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { user } from "../../api/userAPI"
 import { picture } from "../../api/pictureAPI"
 import { getUserInfo } from "../../store/user"
+import FormData from "form-data"
 
 function ProfileEdit() {
 	const dispatch = useAppDispatch()
@@ -36,7 +37,25 @@ function ProfileEdit() {
 		}
 		// 이미지 업로드 결과 및 이미지 경로 업데이트
 		console.log(result)
-		setImageUrl(result.uri)
+
+		const localUri = result.uri
+		const fileName = localUri.split("/").pop()
+		const match = /\.(\w+)$/.exec(fileName ?? "")
+		const type = match ? `image/${match[1]}` : "image"
+
+		const formData = new FormData()
+		formData.append("image", { uri: localUri, name: fileName, type })
+		picture
+			.changeProfile(formData)
+			.then(result => {
+				console.log("프로필 이미지 업로드 성공")
+				setImageUrl(result.data)
+			})
+			.catch(err => {
+				console.log("프로필 못 바꿈")
+				console.log(err)
+				alert("예기치 못한 이유로 업로드가 실패했습니다")
+			})
 	}
 
 	function cancelUpload() {
@@ -73,7 +92,8 @@ function ProfileEdit() {
 		const data = {
 			height: newHeight,
 			nickname: newNickname,
-			username: userId.id
+			username: userId.id,
+			url: imageUrl
 		}
 
 		user
@@ -93,19 +113,6 @@ function ProfileEdit() {
 			})
 			.catch(err => {
 				console.log("실패함")
-				console.log(err)
-			})
-		if (!imageUrl) return
-		const formData = new FormData()
-		formData.append("files", imageUrl)
-		picture
-			.changeProfile(formData)
-			.then(result => {
-				console.log("프로필 이미지 업로드 성공")
-				console.log(result.data)
-			})
-			.catch(err => {
-				console.log("프로필 못 바꿈")
 				console.log(err)
 			})
 	}
