@@ -20,6 +20,7 @@ public interface WeightRepository extends JpaRepository<Weight, Long> {
     @Query(nativeQuery = true, value = "select * from weight w " +
             "join user u " +
             "on w.user_id = u.user_id " +
-            "where u.username = :username")
-    ArrayList<Weight> findByUsername(@Param("username") String username);
+            "where u.username = :username " +
+            "order by w.date")
+    ArrayList<Weight> findByUsernameOrderByDate(@Param("username") String username);
 }
