@@ -100,6 +100,7 @@ public class NoticeService {
                     .type(notice.getType())
                     .fromNickname(notice.getFromId().getNickname())
                     .toNickname(notice.getToId().getNickname())
+                    .fromUrl(notice.getFromId().getImgUrl())
                     .build();
             noticeDTOS.add(noticeDTO);
         }

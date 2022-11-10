@@ -18,4 +18,6 @@ public class NoticeDTO {
 
     private String fromNickname;
     private String toNickname;
+
+    private String fromUrl;
 }
