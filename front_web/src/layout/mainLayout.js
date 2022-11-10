@@ -13,6 +13,8 @@ import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/use
 import { UUID, SEND_TEST } from '../store/constants'
 import { setModalMsg, setModalState } from '../store/modules/util'
 
+import './mainLayout.css'
+
 export default function mainLayout() {
   const dispatch = useDispatch()
   const { ipcRenderer } = window.require('electron')
@@ -23,7 +25,7 @@ export default function mainLayout() {
   const components = [
     <Home />,
     <Picture setState={setState} />,
-    <RealTime client={client} />,
+    <RealTime client={client} setState={setState} />,
     <Routine setState={setState} />,
   ]
 
@@ -33,6 +35,25 @@ export default function mainLayout() {
     return () => {
       clearInterval(getInfoInterval)
     }
+  }, [])
+
+  useEffect(() => {
+    const eventListener = window.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case '1':
+          setState(0)
+          break
+        case '2':
+          setState(1)
+          break
+        case '3':
+          setState(2)
+          break
+        case '4':
+          setState(3)
+          break
+      }
+    })
   }, [])
 
   ////////////////////////////////////////////////////webSocket 통신//////////////////////////////////////////////////////////////
@@ -48,20 +69,9 @@ export default function mainLayout() {
           const content = JSON.parse(action.body)
           if (content.type === 'ENTER') {
             // 통화 시작
-            dispatch(setStreamingPeer(content.from))
+            const peerInfo = { username: content.from, url: content.url, nickname: content.nickname }
+            dispatch(setStreamingPeer(peerInfo))
             setState(2)
-          }
-          if (content.type === 'DENY') {
-            // 상대가 거절함을 알리고 통화 종료
-            dispatch(setModalMsg('상대가 통화를 거절했습니다.'))
-            dispatch(setModalState(true))
-            setState(0)
-          }
-          if (content.type === 'END') {
-            // 통화 종료됨을 알리고 통화 종료
-            dispatch(setModalMsg('통화가 종료되었습니다.'))
-            dispatch(setModalState(true))
-            setState(0)
           }
         },
         {},
@@ -78,7 +88,7 @@ export default function mainLayout() {
     }
   }, [])
 
-  // SLL에 따라 state 변경
+  // stt에 따라 state 변경
   // 무슨 루틴을 진행 할 지
 
   const getUserInfos = () => {
@@ -113,14 +123,5 @@ export default function mainLayout() {
     ipcRenderer.send(SEND_TEST, 'hello')
   }
 
-  return (
-    <div>
-      <button onClick={() => setState(0)}>home</button>
-      <button onClick={() => setState(1)}>picture</button>
-      <button onClick={() => setState(2)}>realTime</button>
-      <button onClick={() => setState(3)}>Routine</button>
-      <button onClick={sendMain}>ipc 테스트</button>
-      {components[state]}
-    </div>
-  )
+  return <div className="layout">{components[state]}</div>
 }
