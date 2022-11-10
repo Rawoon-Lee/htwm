@@ -8,6 +8,7 @@ export const store = configureStore({
 	reducer: {
 		userInfo: userInfoReducer.userInfo,
 		userId: userInfoReducer.userId,
+		userUuid: userInfoReducer.userUuid,
 		friendList: userInfoReducer.friendList,
 		friendSearchList: userInfoReducer.friendSearchList,
 		recordList: recordReducer,

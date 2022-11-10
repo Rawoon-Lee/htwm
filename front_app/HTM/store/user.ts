@@ -41,11 +41,19 @@ const userIdSlice = createSlice({
 	},
 	reducers: {
 		getUserId: (state, action: PayloadAction<string>) => {
-			console.log("나나나나 아이디 들어옴?")
 			state.id = action.payload
 		},
 		initUserId: state => {
 			state.id = ""
+		}
+	}
+})
+const userUuidSlice = createSlice({
+	name: "userUuid",
+	initialState: "",
+	reducers: {
+		getUserUuid: (state, action: PayloadAction<string>) => {
+			return action.payload
 		}
 	}
 })
@@ -72,11 +80,13 @@ const FriendSearchListSlice = createSlice({
 })
 export const { getUserInfo } = userInfoSlice.actions
 export const { getUserId, initUserId } = userIdSlice.actions
+export const { getUserUuid } = userUuidSlice.actions
 export const { getFriendsList, initFriendList } = FriendListSlice.actions
 export const { getFriendsSearchList } = FriendSearchListSlice.actions
 export default {
 	userInfo: userInfoSlice.reducer,
 	userId: userIdSlice.reducer,
+	userUuid: userUuidSlice.reducer,
 	friendList: FriendListSlice.reducer,
 	friendSearchList: FriendSearchListSlice.reducer
 }

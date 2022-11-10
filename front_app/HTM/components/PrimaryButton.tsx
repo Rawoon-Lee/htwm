@@ -54,8 +54,21 @@ function SmallButton({ children, clickFunction, color, borderColor }: any) {
 		</View>
 	)
 }
+function BigButton({ children, clickFunction, color, borderColor }: any) {
+	return (
+		<View style={styles4(color, borderColor).outerContainer}>
+			<Pressable
+				style={styles4(color, borderColor).innerContainer}
+				onPress={clickFunction}
+				android_ripple={{ color: "yellow" }}
+			>
+				<Text style={styles4(color, borderColor).textStyle}>{children}</Text>
+			</Pressable>
+		</View>
+	)
+}
 
-export { PrimaryButton, SelectButton, SmallButton }
+export { PrimaryButton, SelectButton, SmallButton, BigButton }
 
 const styles = StyleSheet.create({
 	outerContainer: {
@@ -113,6 +126,26 @@ const styles3 = (color: any, borderColor: any) =>
 		textStyle: {
 			color: "black",
 			fontSize: 15,
+			textAlign: "center"
+		}
+	})
+
+const styles4 = (color: any, borderColor: any) =>
+	StyleSheet.create({
+		outerContainer: {
+			borderRadius: 18,
+			borderColor: borderColor,
+			margin: 10,
+			overflow: "hidden",
+			borderStyle: "solid",
+			borderWidth: 2
+		},
+		innerContainer: {
+			backgroundColor: color
+		},
+		textStyle: {
+			color: "black",
+			fontSize: 20,
 			textAlign: "center"
 		}
 	})
