@@ -169,7 +169,7 @@ const alarmStyle = (color: any) =>
 	StyleSheet.create({
 		outerContainer: {
 			borderRadius: 18,
-			margin: 10,
+			margin: 5,
 			overflow: "hidden"
 		},
 		innerContainer: {
