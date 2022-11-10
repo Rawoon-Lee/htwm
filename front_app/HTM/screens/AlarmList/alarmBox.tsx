@@ -80,7 +80,7 @@ function AlarmMessage(props: any) {
 					</Text>
 				</View>
 				{props.alarmData.read == false ? (
-					<View style={{}}>
+					<View style={{ flexDirection: "row", marginLeft: -30, justifyContent: "center" }}>
 						<AlarmButton
 							children={"수락"}
 							color={"skyblue"}
@@ -103,6 +103,7 @@ function AlarmMessage(props: any) {
 									})
 							}}
 						/>
+						<AlarmButton children={"거절"} color={"pink"} clickFunction={readAlarm} />
 					</View>
 				) : null}
 			</View>
