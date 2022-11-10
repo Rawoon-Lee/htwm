@@ -28,22 +28,19 @@ function Header({ navigation }: any) {
 		user
 			.getInfo(userId.id)
 			.then(result => {
-				// console.log(result.data)
 				dispatch(getUserInfo(result.data))
 			})
 			.catch(err => console.log(err))
-	}, [userInfo.nickname])
+	}, [userId.id])
 
 	function moveToEdit() {
 		navigation.navigate("ProfileEdit")
 	}
 
-	// console.log(userId.id)
-	// console.log(userInfo)
 	return (
 		<View style={styles.container}>
-			<Text style={styles.text}>Hello {userInfo.nickname}</Text>
-			{userInfo.url ? (
+			<Text style={styles.text}>{userInfo.nickname}</Text>
+			{userId.id ? (
 				<View>
 					<Pressable onPress={moveToEdit}>
 						<Image source={{ uri: userInfo.url }} style={styles.profilePic} />
@@ -65,9 +62,8 @@ const styles = StyleSheet.create({
 		fontSize: 40
 	},
 	profilePic: {
-		width: 20,
-		height: 20,
-		marginRight: 12
+		width: 40,
+		height: 40
 	}
 })
 

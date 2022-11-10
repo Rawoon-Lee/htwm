@@ -54,8 +54,21 @@ function SmallButton({ children, clickFunction, color, borderColor }: any) {
 		</View>
 	)
 }
+function BigButton({ children, clickFunction, color, borderColor }: any) {
+	return (
+		<View style={styles4(color, borderColor).outerContainer}>
+			<Pressable
+				style={styles4(color, borderColor).innerContainer}
+				onPress={clickFunction}
+				android_ripple={{ color: "yellow" }}
+			>
+				<Text style={styles4(color, borderColor).textStyle}>{children}</Text>
+			</Pressable>
+		</View>
+	)
+}
 
-function AlarmButton({children, clickFunction, color} : any){
+function AlarmButton({ children, clickFunction, color }: any) {
 	return (
 		<View style={alarmStyle(color).outerContainer}>
 			<Pressable
@@ -69,7 +82,7 @@ function AlarmButton({children, clickFunction, color} : any){
 	)
 }
 
-export { PrimaryButton, SelectButton, SmallButton, AlarmButton }
+export { PrimaryButton, SelectButton, SmallButton, AlarmButton, BigButton }
 
 const styles = StyleSheet.create({
 	outerContainer: {
@@ -131,12 +144,33 @@ const styles3 = (color: any, borderColor: any) =>
 		}
 	})
 
+const styles4 = (color: any, borderColor: any) =>
+	StyleSheet.create({
+		outerContainer: {
+			borderRadius: 18,
+			borderColor: borderColor,
+			margin: 10,
+			overflow: "hidden",
+			borderStyle: "solid",
+			borderWidth: 2
+		},
+		innerContainer: {
+			paddingHorizontal: 10,
+			paddingVertical: 4,
+			backgroundColor: color
+		},
+		textStyle: {
+			color: "black",
+			fontSize: 20,
+			textAlign: "center"
+		}
+	})
 const alarmStyle = (color: any) =>
 	StyleSheet.create({
 		outerContainer: {
 			borderRadius: 18,
 			margin: 10,
-			overflow: "hidden",
+			overflow: "hidden"
 		},
 		innerContainer: {
 			paddingHorizontal: 10,

@@ -9,6 +9,17 @@ const record = {
 			data: data,
 			url: `${END_POINT}/routine?username=${data}`
 		})
+	},
+	recordDays(data: any) {
+		console.log(data)
+		return api({
+			method: "get",
+			params: {
+				username: data.username,
+				date: data.date
+			},
+			url: `${END_POINT}/days`
+		})
 	}
 }
 

@@ -14,28 +14,16 @@ export interface SetData {
 	sec: number
 	set_cnt?: number
 }
-const initialStateRoutineData: RoutineDataList = [
-	{
-		color: "#E0BB95",
-		name: "",
-		username: "",
-		sets: [
-			{
-				exercise_id: 0,
-				exercise_name: "스쿼트",
-				number: 0,
-				sec: 0,
-				set_cnt: 0
-			}
-		]
-	}
-]
+const initialStateRoutineData: RoutineDataList = []
 const RoutineListSlice = createSlice({
 	name: "userInfo",
 	initialState: initialStateRoutineData,
 	reducers: {
 		getRoutineList: (state, action: PayloadAction<RoutineDataList>) => {
 			return action.payload
+		},
+		initRoutineList: state => {
+			return initialStateRoutineData
 		}
 	}
 })
@@ -52,5 +40,5 @@ const RoutineListSlice = createSlice({
 //     }
 // })
 
-export const { getRoutineList } = RoutineListSlice.actions
+export const { getRoutineList, initRoutineList } = RoutineListSlice.actions
 export default { routineList: RoutineListSlice.reducer }

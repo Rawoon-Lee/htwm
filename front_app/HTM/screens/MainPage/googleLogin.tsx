@@ -4,7 +4,7 @@ import { StyleSheet, View, Pressable, Image, Text } from "react-native"
 import * as Google from "expo-auth-session/providers/google"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { user } from "../../api/userAPI"
-import { getUserId, getUserInfo } from "../../store/user"
+import { getUserId, getUserInfo, initUserId } from "../../store/user"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 
 WebBrowser.maybeCompleteAuthSession()
@@ -60,6 +60,7 @@ function GoogleLogin() {
 			url: userInfo.picture,
 			username: userInfo.email.split("@")[0]
 		}
+		dispatch(getUserId(data.username))
 		user
 			.getInfo(data.username)
 			.then(result => {
@@ -89,6 +90,7 @@ function GoogleLogin() {
 			url: userInfo.picture,
 			username: userInfo.email.split("@")[0]
 		}
+		dispatch(getUserId(data.username))
 		user
 			.login(data)
 			.then(result => {
@@ -139,11 +141,14 @@ function GoogleLogin() {
 			height: 0
 		}
 		dispatch(getUserInfo(data))
-		dispatch(getUserId(""))
+		dispatch(initUserId())
+		console.log("왜 안바뀜?", userId.id)
+		console.log("유저정보 파기됐나?", userInfo)
 	}
+
 	return (
 		<View>
-			{userInfo?.name ? (
+			{userId.id ? (
 				<Pressable onPress={logout}>
 					<Text>로그아웃</Text>
 				</Pressable>

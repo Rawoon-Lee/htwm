@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { user } from "../../api/userAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
-import { getFriendsList } from "../../store/user"
+import { getFriendsList, initFriendList } from "../../store/user"
 
 import FriendBox from "./friendBox"
 import { FriendData } from "../../store/user"
@@ -13,12 +13,7 @@ import { commonStyle } from "../../Style/commonStyle"
 
 function renderItems({ item }: { item: FriendData }) {
 	return (
-		<FriendBox
-			nickname={item.nickname}
-			username={item.username}
-			url={item.url}
-			isSearch={false}
-		/>
+		<FriendBox nickname={item.nickname} username={item.username} url={item.url} isSearch={false} />
 	)
 }
 function FriendsList({ navigation }: any) {
@@ -27,13 +22,17 @@ function FriendsList({ navigation }: any) {
 	const dispatch = useAppDispatch()
 
 	React.useEffect(() => {
+		if (!userId.id) {
+			dispatch(initFriendList())
+			return
+		}
 		user
 			.friendList(userId.id)
 			.then(result => {
 				dispatch(getFriendsList(result.data))
 			})
 			.catch(err => console.log(err))
-	}, [])
+	}, [userId.id])
 
 	function moveToSearch() {
 		navigation.navigate("FriendSearch")
@@ -46,7 +45,7 @@ function FriendsList({ navigation }: any) {
 					<Text>친구추가</Text>
 				</Pressable>
 			</View>
-			{friendList ? (
+			{friendList.length >= 1 ? (
 				<FlatList
 					data={friendList}
 					keyExtractor={item => item.username}
