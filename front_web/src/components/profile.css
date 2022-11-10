@@ -1,16 +1,18 @@
 .profile-div {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  height: 100%;
 }
 
 .profile-image {
   aspect-ratio: 1/1;
-  width: 30vw;
+  max-height: 80%;
+  max-width: 80%;
   border-radius: 100%;
 }
 
 .profile-nickname {
-  font-size: 5vw;
+  font-size: 1em;
 }

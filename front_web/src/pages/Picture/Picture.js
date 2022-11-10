@@ -46,7 +46,6 @@ export default function Picture(props) {
         setPictureMsg(`${time}초 후 사진이 찍힙니다.`)
       } else {
         capture()
-        setPictureMsg('사진이 촬영되었습니다.')
         clearInterval(interval)
       }
     }, 1000)
@@ -77,11 +76,10 @@ export default function Picture(props) {
     picture
       .postPicture(data)
       .then((result) => {
-        // 사진찍혔다는 모달 띄우고 메인페이지로
+        setPictureMsg('사진이 촬영되었습니다.')
         setTimeout(() => {
           setState(0)
         }, 3000)
-        console.log(result)
       })
       .catch((error) => console.log(error))
   }
@@ -90,8 +88,8 @@ export default function Picture(props) {
     <div className="picture">
       <button onClick={startCapture}>캡처</button>
       <div className="picture-message">{pictureMsg}</div>
-      <canvas className="picture-canvas" ref={canvasRef} height="300" width="400" />
       <video ref={videoRef} height="300" width="400" autoPlay={true} playsInline={true} />
+      <canvas className="picture-canvas" ref={canvasRef} height="300" width="400" />
     </div>
   )
 }

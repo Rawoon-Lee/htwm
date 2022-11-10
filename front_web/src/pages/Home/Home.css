@@ -1,3 +1,7 @@
+.home-profile {
+  height: 20vh;
+}
+
 .home-date {
   display: flex;
   flex-direction: column;
@@ -23,12 +27,12 @@
   align-items: center;
 }
 .home-weather-image p {
-  font-size: 5vw;
+  font-size: 7vw;
 }
 .home-weather-image img {
   aspect-ratio: 1/1;
-  height: 5vw;
-  width: 5vw;
+  height: 7vw;
+  width: 7vw;
   padding: 0 1vw;
 }
 

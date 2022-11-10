@@ -6,13 +6,13 @@ import Profile from '../../components/profile'
 import { weather } from '../../actions/api/api'
 import { setWeatherData } from '../../store/modules/util'
 
-import cloudy from './../../assets/cloudy.png'
-import midCloudy from './../../assets/midCloudy.png'
-import sunny from './../../assets/sunny.png'
+import cloudy from './../../assets/cloudy.webp'
+import midCloudy from './../../assets/midCloudy.webp'
+import sunny from './../../assets/sunny.webp'
 
-import heavyRain from './../../assets/heavyRain.png'
-import lightRain from './../../assets/lightRain.png'
-import snow from './../../assets/ice.png'
+import heavyRain from './../../assets/heavyRain.webp'
+import lightRain from './../../assets/lightRain.webp'
+import snow from './../../assets/ice.webp'
 
 import './Home.css'
 
@@ -20,6 +20,7 @@ export default function Home() {
   const dispatch = useDispatch()
 
   const weatherData = useSelector((state) => state.util.weatherData)
+  const userInfo = useSelector((state) => state.user.userInfo)
   const [date, setDate] = useState('')
 
   useEffect(() => {
@@ -136,8 +137,9 @@ export default function Home() {
 
   return (
     <div>
-      <Profile />
-
+      <div className="home-profile">
+        <Profile nickname={userInfo.nickname} url={userInfo.url} />
+      </div>
       <div className="home-date">
         <div className="home-date-day">
           {date.slice(0, 4)} - {date.slice(4, 6)} - {date.slice(6, 8)}

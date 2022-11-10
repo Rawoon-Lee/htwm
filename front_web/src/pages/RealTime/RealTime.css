@@ -1,0 +1,15 @@
+.realtime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.realtime video {
+  width: 100vw;
+}
+
+.realtime-video-profile {
+  position: absolute;
+  left: 10px;
+  top: 10vw;
+  height: 10vw;
+}
