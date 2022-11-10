@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NoticeDTO {
+    private Long notice_id;
     private LocalDateTime createTime;
     private String fromUsername;
     private String toUsername;
@@ -17,4 +18,6 @@ public class NoticeDTO {
 
     private String fromNickname;
     private String toNickname;
+
+    private String fromUrl;
 }

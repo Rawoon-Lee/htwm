@@ -132,9 +132,10 @@ function ProfileEdit() {
 				alert("기기 등록이 완료되었습니다")
 			})
 			.catch(err => {
-				if (err.response.data == "uuid 가 존재하지 않습니다.") {
-					alert(err.response.data)
-				}
+				alert(err.response.data)
+				// if (err.response.data == "uuid 가 존재하지 않습니다.") {
+				// 	alert(err.response.data)
+				// }
 			})
 	}
 

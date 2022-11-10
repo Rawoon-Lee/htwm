@@ -49,6 +49,16 @@ public class NoticeController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("{noticeId}")
+    public ResponseEntity readNoticeId(@PathVariable("noticeId") Long noticeId) {
+        try{
+            noticeService.readNoticeId(noticeId);
+        } catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("")
     public ResponseEntity<ArrayList<NoticeDTO>> getNotice(@RequestParam String username){
         try{
