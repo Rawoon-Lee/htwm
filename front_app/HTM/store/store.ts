@@ -3,6 +3,7 @@ import userInfoReducer from "./user"
 import recordReducer from "./record"
 import routineReducer from "./routine"
 import pictureReducer from "./picture"
+import alarmReducer from "./notice"
 
 export const store = configureStore({
 	reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
 		friendSearchList: userInfoReducer.friendSearchList,
 		recordList: recordReducer,
 		routineList: routineReducer.routineList,
-		picList: pictureReducer.picList
+		picList: pictureReducer.picList,
+		alarmList: alarmReducer.alarmList
 	}
 })
 
