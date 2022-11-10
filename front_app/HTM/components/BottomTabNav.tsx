@@ -4,7 +4,7 @@ import { Feather } from "@expo/vector-icons"
 
 import Main from "../screens/MainPage/Main"
 import RoutineList from "../screens/RoutinesList/RoutinesList"
-import AlarmList from "../screens/AlarmLsit/AlarmList"
+import AlarmList from "../screens/AlarmList/AlarmList"
 import FriendsList from "../screens/FriendsList/FriendsList"
 import MyRecord from "../screens/MyRecord/MyRecord"
 
