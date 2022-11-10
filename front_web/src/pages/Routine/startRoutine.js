@@ -161,7 +161,6 @@ export default function StartRoutine(props) {
           <div>마지막 세트입니다.</div>
         )}
       </div>
-      <hr />
       <div id="imageDiv" className="start-image"></div>
     </div>
   )
