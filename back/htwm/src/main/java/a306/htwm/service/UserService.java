@@ -193,7 +193,7 @@ public class UserService {
     }
 
     public ArrayList<WeightAndDateDTO> getWeight(String username) {
-        ArrayList<Weight> weights = weightRepository.findByUsername(username);
+        ArrayList<Weight> weights = weightRepository.findByUsernameOrderByDate(username);
         ArrayList<WeightAndDateDTO> weightAndDateDTOS = new ArrayList<>();
         for(Weight weight : weights){
             WeightAndDateDTO weightAndDateDTO = WeightAndDateDTO.builder()
