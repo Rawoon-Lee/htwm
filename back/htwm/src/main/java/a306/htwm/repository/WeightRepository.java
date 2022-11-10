@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public interface WeightRepository extends JpaRepository<Weight, Long> {
@@ -15,4 +16,10 @@ public interface WeightRepository extends JpaRepository<Weight, Long> {
             "on w.user_id = u.user_id " +
             "where w.date = :date and u.username = :username")
     Optional<Weight> findByUsernameAndDate(@Param("username") String username, @Param("date") String date);
+
+    @Query(nativeQuery = true, value = "select * from weight w " +
+            "join user u " +
+            "on w.user_id = u.user_id " +
+            "where u.username = :username")
+    ArrayList<Weight> findByUsername(@Param("username") String username);
 }

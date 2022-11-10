@@ -51,6 +51,15 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/weight")
+    public ResponseEntity<ArrayList<WeightAndDateDTO>> getWeight(@RequestParam("username") String username){
+        try{
+            return ResponseEntity.ok().body(userService.getWeight(username));
+        } catch(RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/friend")
     public ResponseEntity acceptFriend(@RequestBody UsernameAndFriendDTO usernameAndFriendDTO){
         try{

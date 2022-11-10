@@ -4,6 +4,7 @@ import a306.htwm.dto.*;
 import a306.htwm.entity.*;
 import a306.htwm.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -189,5 +190,18 @@ public class UserService {
 
     public User getUser(String username){
         return userRepository.findByUsername(username);
+    }
+
+    public ArrayList<WeightAndDateDTO> getWeight(String username) {
+        ArrayList<Weight> weights = weightRepository.findByUsername(username);
+        ArrayList<WeightAndDateDTO> weightAndDateDTOS = new ArrayList<>();
+        for(Weight weight : weights){
+            WeightAndDateDTO weightAndDateDTO = WeightAndDateDTO.builder()
+                    .date(weight.getDate())
+                    .weight(weight.getWeight())
+                    .build();
+            weightAndDateDTOS.add(weightAndDateDTO);
+        }
+        return weightAndDateDTOS;
     }
 }
