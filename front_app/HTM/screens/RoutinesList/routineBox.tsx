@@ -10,6 +10,7 @@ function RoutineBox(props: any) {
 	for (let i = 0; i < props.routine.sets.length; i++) {
 		sec += props.routine.sets[i].sec
 	}
+	let sets = props.routine.sets.filter((set:any) => set.exercise_name != "휴식" )
 	let min = sec / 60
 	sec = sec % 60
 	return (
@@ -49,8 +50,8 @@ function RoutineBox(props: any) {
 				}}
 			>
 				<Text style={{ marginTop: 20 }}>
-					{props.routine.sets.map((cur: any, idx: number) => {
-						return cur.exercise_name + ", "
+					{sets.map((cur: any, idx: number) => {
+						return cur.exercise_name + " "
 					})}
 				</Text>
 				<View style={{ marginRight: -20 }}>
@@ -93,6 +94,7 @@ const boxStyle = (color: any) =>
 			borderRadius: 10,
 			width: (width * 9) / 10,
 			height: height / 8.5,
+			marginVertical: 7,
 			justifyContent: "space-between"
 		}
 	})
