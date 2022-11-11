@@ -38,16 +38,25 @@ const routineSlice = createSlice({
       state.routineList = action.payload
     },
     setRoutineDetail(state, action) {
-      const newRoutine = { ...action.payload }
-      newRoutine.sets = []
+      const newDetail = {}
+      newDetail.name = action.payload.name
+      newDetail.username = action.payload.username
+      newDetail.sets = []
+
       if (action.payload.sets?.length) {
         action.payload.sets.map((set) => {
-          const copy = { ...set }
-          copy.set_cnt = 0
-          newRoutine.sets.push(copy)
+          if (set.set_cnt !== 0) {
+            for (let i = 0; i < set.set_cnt; i++) {
+              const newSet = { ...set }
+              newSet.set_cnt = 0
+              newDetail.sets.push(newSet)
+            }
+          } else {
+            newDetail.sets.push(set)
+          }
         })
       }
-      state.routineDetail = newRoutine
+      state.routineDetail = newDetail
     },
     setRoutineResult(state, action) {
       state.routineResult = action.payload

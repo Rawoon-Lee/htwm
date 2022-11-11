@@ -18,21 +18,7 @@ export default function RoutineList(props) {
   }, [])
 
   const selectRoutine = (idx) => {
-    let routineDetail = {}
-    routineDetail.name = routineList[idx].name
-    routineDetail.username = routineList[idx].username
-    routineDetail.sets = []
-
-    routineList[idx].sets.map((set) => {
-      if (set.set_cnt !== 0) {
-        for (let i = 0; i < set.set_cnt; i++) {
-          routineDetail.sets.push(set)
-        }
-      } else {
-        routineDetail.sets.push(set)
-      }
-    })
-    dispatch(setRoutineDetail(routineDetail))
+    dispatch(setRoutineDetail(routineList[idx]))
     setRoutineState(1)
   }
 
