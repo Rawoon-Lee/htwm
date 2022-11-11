@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Stompjs from 'stompjs'
 import Sockjs from 'sockjs-client'
 
@@ -10,14 +10,18 @@ import Routine from '../pages/Routine/Routine'
 
 import { user } from '../actions/api/api'
 import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/user'
-import { UUID, SEND_TEST } from '../store/constants'
+import { setRoutineDetail } from '../store/modules/routine'
 import { setModalMsg, setModalState } from '../store/modules/util'
+import { UUID, SEND_TEST } from '../store/constants'
 
 import './mainLayout.css'
 
 export default function mainLayout() {
   const dispatch = useDispatch()
   const { ipcRenderer } = window.require('electron')
+
+  const routineList = useSelector((state) => state.routine.routineList)
+  const userStore = useSelector((state) => state.user)
 
   const [client, setClient] = useState(undefined)
   const [state, setState] = useState(0)
@@ -61,12 +65,14 @@ export default function mainLayout() {
   useEffect(() => {
     const socket = new Sockjs('https://k7a306.p.ssafy.io/api/socket')
     const stompClient = Stompjs.over(socket)
+    stompClient.reconnect_delay = 5000
 
     stompClient.connect({}, () => {
       stompClient.subscribe(
         `/sub/${UUID}`,
         (action) => {
           const content = JSON.parse(action.body)
+          console.log(content)
           if (content.type === 'ENTER') {
             // 통화 시작
             const peerInfo = { username: content.from, url: content.url, nickname: content.nickname }
@@ -88,8 +94,32 @@ export default function mainLayout() {
     }
   }, [])
 
-  // stt에 따라 state 변경
-  // 무슨 루틴을 진행 할 지
+  // 사진 시작
+  // setState(1)
+  // 운동 시작
+  // setState(3)
+  // idx번 운동 시작
+  // dispatch(setRoutineDetail(routineList[idx - 1]))
+  // 통화 종료해줘
+  // client.send(
+  //   `/pub/streaming`,
+  //   {},
+  //   JSON.stringify({
+  //     from: userStore.username,
+  //     to: userStore.username,
+  //     type: 'END',
+  //     url: userStore.userInfo.url,
+  //   }),
+  // )
+
+  ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    ipcRenderer.on(SEND_TEST, getMsg)
+    return () => {
+      ipcRenderer.removeListener(SEND_TEST, getMsg)
+    }
+  }, [])
 
   const getUserInfos = () => {
     user
@@ -105,15 +135,6 @@ export default function mainLayout() {
       })
       .catch((error) => console.log(error))
   }
-
-  ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
-
-  useEffect(() => {
-    ipcRenderer.on(SEND_TEST, getMsg)
-    return () => {
-      ipcRenderer.removeListener(SEND_TEST, getMsg)
-    }
-  }, [])
 
   const getMsg = (event, arg) => {
     console.log(event, arg, '받음')

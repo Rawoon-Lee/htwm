@@ -27,9 +27,6 @@ export default function RealTime(props) {
   const setState = props.setState
 
   useEffect(() => {
-    // RTCPeerConnection 만들어두기
-    makePeerConnection()
-    // RTC 초기 연결을 위한 socket 설정
     if (client) {
       client.send(
         `/pub/streaming`,
@@ -67,8 +64,12 @@ export default function RealTime(props) {
         },
         {},
       )
-      getMedia()
     }
+  }, [])
+
+  useEffect(() => {
+    makePeerConnection()
+    getMedia()
     return () => {
       if (myStream) {
         myStream.getTracks().map((stream) => stream.stop())
