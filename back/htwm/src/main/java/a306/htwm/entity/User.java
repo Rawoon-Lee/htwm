@@ -32,6 +32,9 @@ public class User {
     @Column(name = "img_url")
     private String imgUrl;
 
+    @Column(name="phone_id")
+    private String phoneId;
+
     /* 연관관계 매핑 */
 
     //mirror

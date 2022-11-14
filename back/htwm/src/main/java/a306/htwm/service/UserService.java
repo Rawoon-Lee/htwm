@@ -107,6 +107,7 @@ public class UserService {
                     .username(friend.getOtherId().getUsername())
                     .nickname(friend.getOtherId().getNickname())
                     .url(friend.getOtherId().getImgUrl())
+                    .phoneId(friend.getOtherId().getPhoneId())
                     .build();
             friendDTOS.add(friendDTO);
         }
@@ -162,10 +163,12 @@ public class UserService {
             newUser.setUsername(loginDTO.getUsername());
             newUser.setNickname(loginDTO.getNickname());
             newUser.setImgUrl(loginDTO.getUrl());
+            newUser.setPhoneId(loginDTO.getPhoneId());
             userRepository.save(newUser);
             return "new user";
         }
         else{
+            user.setPhoneId(loginDTO.getPhoneId());
             return "login";
         }
     }

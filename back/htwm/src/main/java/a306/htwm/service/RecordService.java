@@ -1,17 +1,12 @@
 package a306.htwm.service;
 
-import a306.htwm.dto.Dates;
 import a306.htwm.dto.RecordRoutineDTO;
-import a306.htwm.dto.UsernameAndDateDTO;
 import a306.htwm.entity.Record;
 import a306.htwm.repository.RecordRepository;
 import a306.htwm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.asm.Advice;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.Period;

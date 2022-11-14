@@ -101,6 +101,7 @@ public class NoticeService {
                     .fromNickname(notice.getFromId().getNickname())
                     .toNickname(notice.getToId().getNickname())
                     .fromUrl(notice.getFromId().getImgUrl())
+                    .fromPhoneId(notice.getFromId().getPhoneId())
                     .build();
             noticeDTOS.add(noticeDTO);
         }

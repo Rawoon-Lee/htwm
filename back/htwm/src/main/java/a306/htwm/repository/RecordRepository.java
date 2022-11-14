@@ -1,7 +1,5 @@
 package a306.htwm.repository;
 
-import a306.htwm.dto.Dates;
-import a306.htwm.entity.Picture;
 import a306.htwm.entity.Record;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
