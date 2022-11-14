@@ -1,0 +1,21 @@
+.routine-list {
+  overflow: hidden;
+}
+
+.routine-list-box {
+  overflow: hidden;
+
+  min-height: 12vh;
+  border-left: 1vw solid white;
+  margin-bottom: 5vw;
+  padding: 5vw;
+}
+
+.routine-list-title {
+  font-size: 5vw;
+  padding: 2vw 0;
+}
+
+.routine-list-content {
+  font-size: 3vw;
+}
