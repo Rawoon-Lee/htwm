@@ -88,8 +88,8 @@ export default function Picture(props) {
     <div className="picture">
       <button onClick={startCapture}>캡처</button>
       <div className="picture-message">{pictureMsg}</div>
-      <video ref={videoRef} height="300" width="400" autoPlay={true} playsInline={true} />
-      <canvas className="picture-canvas" ref={canvasRef} height="300" width="400" />
+      {!pictureMsg && <video className="picture-video" ref={videoRef} autoPlay={true} playsInline={true} />}
+      <canvas className="picture-canvas" ref={canvasRef} />
     </div>
   )
 }

@@ -15,6 +15,14 @@
   font-size: 5vw;
 }
 
+.picture-video {
+  width: 100vw;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
 .picture-canvas {
   width: 100vw;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
