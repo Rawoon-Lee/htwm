@@ -8,7 +8,7 @@ import { getWeightList, WeightData, getWeightListWeek } from "../../store/user"
 import { Dimensions } from "react-native"
 const screenWidth = Dimensions.get("window").width
 
-function WeightGraph() {
+export default function WeightGraph() {
 	const dispatch = useAppDispatch()
 
 	const userId = useAppSelector(state => state.userId)
