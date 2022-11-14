@@ -21,8 +21,15 @@ export interface FriendData {
 	status?: string
 	isSearch?: boolean
 }
-
 const initialStateFriend: FreindDataList = []
+
+export interface WeightData {
+	weight: number
+	date: string
+}
+
+type WeightDataList = WeightData[]
+const initialWeightDataList: WeightDataList = []
 
 const userInfoSlice = createSlice({
 	name: "userInfo",
@@ -78,15 +85,37 @@ const FriendSearchListSlice = createSlice({
 		}
 	}
 })
+const WeightDataListSlice = createSlice({
+	name: "weightList",
+	initialState: initialWeightDataList,
+	reducers: {
+		getWeightList: (state, action: PayloadAction<WeightDataList>) => {
+			return action.payload
+		}
+	}
+})
+const WeightDataListWeekSlice = createSlice({
+	name: "weightListWeek",
+	initialState: initialWeightDataList,
+	reducers: {
+		getWeightListWeek: (state, action: PayloadAction<WeightDataList>) => {
+			return action.payload
+		}
+	}
+})
 export const { getUserInfo } = userInfoSlice.actions
 export const { getUserId, initUserId } = userIdSlice.actions
 export const { getUserUuid } = userUuidSlice.actions
 export const { getFriendsList, initFriendList } = FriendListSlice.actions
 export const { getFriendsSearchList } = FriendSearchListSlice.actions
+export const { getWeightList } = WeightDataListSlice.actions
+export const { getWeightListWeek } = WeightDataListWeekSlice.actions
 export default {
 	userInfo: userInfoSlice.reducer,
 	userId: userIdSlice.reducer,
 	userUuid: userUuidSlice.reducer,
 	friendList: FriendListSlice.reducer,
-	friendSearchList: FriendSearchListSlice.reducer
+	friendSearchList: FriendSearchListSlice.reducer,
+	weightList: WeightDataListSlice.reducer,
+	weightListWeek: WeightDataListWeekSlice.reducer
 }

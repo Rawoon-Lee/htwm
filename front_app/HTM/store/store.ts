@@ -12,6 +12,8 @@ export const store = configureStore({
 		userUuid: userInfoReducer.userUuid,
 		friendList: userInfoReducer.friendList,
 		friendSearchList: userInfoReducer.friendSearchList,
+		weightList: userInfoReducer.weightList,
+		weightListWeek: userInfoReducer.weightListWeek,
 		recordList: recordReducer,
 		routineList: routineReducer.routineList,
 		picList: pictureReducer.picList,
