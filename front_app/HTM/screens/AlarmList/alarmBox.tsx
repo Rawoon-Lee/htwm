@@ -96,6 +96,24 @@ function AlarmMessage(props: any) {
 									.then(result => {
 										console.log(result)
 										readAlarm()
+										let alarmData = {
+											to: "ExponentPushToken[OO8ZhAEFzIuU3Y9GOznTSi]",
+											title: "허브의 Expo Push Notification 구현기",
+											body: "이야 이게 되네~~",
+											sound: "default"
+										}
+
+										fetch("https://exp.host/--/api/v2/push/send", {
+											method: "POST", // *GET, POST, PUT, DELETE 등
+											headers: {
+											  "Content-Type": "application/json",
+											  // 'Content-Type': 'application/x-www-form-urlencoded',
+											},
+											body: JSON.stringify(alarmData), // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
+										  }).then((res) => {
+											console.log(JSON.stringify(res))
+										  })
+
 									})
 									.catch(err => {
 										console.log(err.response.data)
