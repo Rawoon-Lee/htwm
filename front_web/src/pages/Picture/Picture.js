@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { picture } from '../../actions/api/api'
+import html2canvas from 'html2canvas'
 
 import './Picture.css'
 
@@ -8,6 +9,7 @@ export default function Picture(props) {
   const username = useSelector((state) => state.user.username)
 
   const [pictureMsg, setPictureMsg] = useState('')
+  const [isEnd, setIsEnd] = useState(false)
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
@@ -51,10 +53,16 @@ export default function Picture(props) {
     }, 1000)
   }
 
-  const capture = () => {
-    canvasRef.current
-      .getContext('2d')
-      .drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
+  const capture = async () => {
+    await html2canvas(document.querySelector('.picture-video')).then((canvas) => {
+      setIsEnd(true)
+      const resultDiv = document.querySelector('.picture-result')
+      resultDiv.appendChild(canvas)
+      canvasRef.current = canvas
+    })
+    // canvasRef.current
+    //   .getContext('2d')
+    //   .drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
 
     let imageUrl = canvasRef.current.toDataURL('image/jpeg')
     submitPicture(imageUrl)
@@ -88,10 +96,8 @@ export default function Picture(props) {
     <div className="picture">
       <button onClick={startCapture}>캡처</button>
       <div className="picture-message">{pictureMsg}</div>
-      {pictureMsg !== '사진이 촬영되었습니다.' && (
-        <video className="picture-video" ref={videoRef} autoPlay={true} playsInline={true} />
-      )}
-      <canvas className="picture-canvas" ref={canvasRef} />
+      {!isEnd && <video className="picture-video" ref={videoRef} autoPlay={true} playsInline={true} />}
+      <div className="picture-result"></div>
     </div>
   )
 }

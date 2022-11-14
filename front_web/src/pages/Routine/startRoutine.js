@@ -17,7 +17,7 @@ export default function StartRoutine(props) {
   const [intervalMsg, setIntervalMsg] = useState('')
 
   const setNo = useRef(0) // 진행중인 세트번호
-  const totSet = routineDetail.sets.length // 전체 세트 수
+  const totSet = 6 // routineDetail.sets.length // 전체 세트 수
   const count = useRef(0) // 운동 카운트
   const [viewCount, setViewCount] = useState(0)
   const progressRate = useRef(0) // 진행률
@@ -26,15 +26,14 @@ export default function StartRoutine(props) {
   const time = useRef(0)
 
   useEffect(() => {
-    let startDateTime = new Date()
-    startDateTime = startDateTime.toISOString()
+    const date = new Date()
+    const startDateTime = date.toISOString()
     return () => {
       // 루틴 끝낸 결과 보내기
       const doneSetNum = parseInt(Math.round(progressRate.current * 100))
       const routineJson = String(JSON.stringify(routineDetail))
       const date = new Date()
       const endDateTime = date.toISOString()
-
       dispatch(setRoutineResult({ startDateTime, endDateTime, routineJson, doneSetNum, username }))
       if (doneSetNum >= 5) {
         routine
@@ -67,17 +66,14 @@ export default function StartRoutine(props) {
   }, [])
 
   useEffect(() => {
-    const imageDiv = document.querySelector('#imageDiv')
-
-    const imageSrc = routineDetail.sets[setNo.current].url
     const imageTag = document.createElement('img')
+    const imageDiv = document.querySelector('#imageDiv')
+    const imageSrc = routineDetail.sets[setNo.current].url
     imageTag.src = imageSrc
     imageDiv.replaceChildren(imageTag)
   }, [setNo.current])
 
-  // 다음 세트로 넘어가는 함수
   const nextSet = async () => {
-    // 휴식시간 (cnt 0 일 때) 처리하기
     const addRate =
       (1 / totSet) *
       Math.min(
@@ -91,7 +87,7 @@ export default function StartRoutine(props) {
     if (setNo.current === totSet - 1) return setRoutineState(3)
 
     await handlingInterval()
-    time.current = routineDetail.sets[setNo.current].sec
+    time.current = routineDetail.sets[setNo.current + 1].sec
     setViewTime(time.current)
     setNo.current++
   }
@@ -111,15 +107,11 @@ export default function StartRoutine(props) {
       setIntervalMsg(['푹 쉬셨나요?', '숨 좀 고르셨나요?', '다시 힘내봅시다!'][Math.floor(Math.random() * 3)])
     }
 
-    await sleep(2000)
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000)
+    })
     setIsSetInterval(false)
     isSetIntervalRef.current = false
-  }
-
-  const sleep = (t) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, t)
-    })
   }
 
   const addCount = () => {
@@ -137,15 +129,14 @@ export default function StartRoutine(props) {
               {String(Math.floor(viewTime / 60)).padStart(2, '0')}:{String(viewTime % 60).padStart(2, '0')}
             </div>
           </div>
-          {routineDetail.sets[setNo.current].exercise_name !== '휴식' ? (
-            <div className="start-exercise">
-              <div className="start-exercise-name">{routineDetail.sets[setNo.current].exercise_name}</div>
+          <div className="start-exercise">
+            <div className="start-exercise-name">{routineDetail.sets[setNo.current]?.exercise_name}</div>
+            {routineDetail.sets[setNo.current]?.exercise_name !== '휴식' ? (
               <div className="start-exercise-count">
-                {viewCount} / {routineDetail.sets[setNo.current].number}
+                {viewCount} / {routineDetail.sets[setNo.current]?.number}
               </div>
-              <button onClick={addCount}>카운트 증가</button>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
         </div>
       ) : (
         <div className="start-header">

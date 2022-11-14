@@ -6,12 +6,11 @@
 .start-header {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 
   height: 25vh;
 }
-
 .start-header-interval {
   font-size: 7vw;
 }
@@ -28,11 +27,11 @@
 }
 .start-time-title {
   padding: 0;
-  font-size: 4vw;
+  font-size: 3vh;
 }
 .start-time-time {
   padding: 0;
-  font-size: 4vw;
+  font-size: 3vh;
 }
 
 .start-exercise {
@@ -46,11 +45,11 @@
 }
 .start-exercise-name {
   padding: 0;
-  font-size: 6vw;
+  font-size: 6vh;
 }
 .start-exercise-count {
   padding: 0;
-  font-size: 6vw;
+  font-size: 6vh;
 }
 
 .start-left {
@@ -60,6 +59,7 @@
 
   height: 4vh;
   overflow: hidden;
+  font-size: 3vh;
 }
 
 .start-image {

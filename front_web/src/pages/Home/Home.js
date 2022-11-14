@@ -39,6 +39,12 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!weatherData.near) {
+      setTimeout(getWeather, 10000)
+    }
+  }, [weatherData])
+
   const getTime = () => {
     const t = new Date()
     setDate(
@@ -51,16 +57,22 @@ export default function Home() {
   }
 
   const getWeather = () => {
-    const newDate = new Date()
+    let newDate = new Date()
     let time = newDate.getHours() - 2 >= 0 ? newDate.getHours() - 2 : newDate.getHours() + 22
     time = String(Math.floor(time / 3) * 3 + 2)
       .padStart(2, '0')
       .padEnd(4, '0')
+
+    if (newDate.getHours() - 2 > 0) {
+      newDate = new Date(newDate.getDate() - 1)
+    }
     const date =
       String(newDate.getFullYear()) +
       String(newDate.getMonth() + 1).padStart(2, '0') +
-      String(newDate.getDate()).padStart(2, '0')
+      String(newDate.getHours() - 2 >= 0 ? newDate.getDate() : newDate.getDate() - 1).padStart(2, '0')
+    console.log(date, time)
     weather(date, time).then((res) => {
+      console.log(res.data)
       const data = getWeatherDetail(res.data.response.body.items.item)
       dispatch(setWeatherData(data))
     })

@@ -6,7 +6,9 @@
 }
 
 .result-alert {
-  height: 350vh;
+  height: 32vh;
+  margin-top: 3vh;
+
   font-size: 8vw;
   text-align: center;
 }
