@@ -28,42 +28,47 @@ export default function RealTime(props) {
 
   useEffect(() => {
     if (client) {
-      client.send(
-        `/pub/streaming`,
-        {},
-        JSON.stringify({
+      // client.send(
+      //   `/pub/streaming`,
+      //   {},
+      //   JSON.stringify({
+      //     from: username,
+      //     to: streamingPeer.username,
+      //     type: 'ENTER',
+      //     url: userInfo.url,
+      //   }),
+      // )
+      client.publish({
+        destination: '/pub/streaming',
+        body: JSON.stringify({
           from: username,
           to: streamingPeer.username,
           type: 'ENTER',
           url: userInfo.url,
         }),
-      )
-      client.subscribe(
-        `/sub/${UUID}`,
-        (action) => {
-          const content = JSON.parse(action.body)
-          console.log('받음', content)
-          if (!content.data) return
-          if (content.type === 1) {
-            getOfferMakeAnswer(content.data)
-          }
-          if (content.type === 2) {
-            getAnswer(content.data)
-          }
-          if (content.type === 3) {
-            getIce(content.data)
-          }
-          if (content.type === 'END') {
-            peerVideoRef.current.srcObject = data.stream
-            setIsStarted(false)
-            setIsEnded(true)
-            setTimeout(() => {
-              setState(0)
-            }, 3000)
-          }
-        },
-        {},
-      )
+      })
+      client.subscribe(`/sub/${UUID}`, (action) => {
+        const content = JSON.parse(action.body)
+        console.log('받음', content)
+        if (!content.data) return
+        if (content.type === 1) {
+          getOfferMakeAnswer(content.data)
+        }
+        if (content.type === 2) {
+          getAnswer(content.data)
+        }
+        if (content.type === 3) {
+          getIce(content.data)
+        }
+        if (content.type === 'END') {
+          peerVideoRef.current.srcObject = data.stream
+          setIsStarted(false)
+          setIsEnded(true)
+          setTimeout(() => {
+            setState(0)
+          }, 3000)
+        }
+      })
     }
   }, [])
 
@@ -130,16 +135,15 @@ export default function RealTime(props) {
     })
     myPeerConnection.addEventListener('icecandidate', (data) => {
       if (!data.candidate) return
-      client.send(
-        `/pub/streaming`,
-        {},
-        JSON.stringify({
+      client.publish({
+        destination: `/pub/streaming`,
+        body: JSON.stringify({
           from: username,
           to: streamingPeer.username,
           type: 3,
           data: data.candidate,
         }),
-      )
+      })
     })
     myPeerConnection.addEventListener('addstream', (data) => {
       if (peerVideoRef && peerVideoRef.current) {
@@ -165,32 +169,30 @@ export default function RealTime(props) {
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream))
     const offer = await myPeerConnection.createOffer()
     myPeerConnection.setLocalDescription(offer)
-    client.send(
-      `/pub/streaming`,
-      {},
-      JSON.stringify({
+    client.publish({
+      destination: '/pub/streaming',
+      body: JSON.stringify({
         from: username,
         to: streamingPeer.username,
         type: 1,
         data: offer,
       }),
-    )
+    })
   }
 
   const getOfferMakeAnswer = async (offer) => {
     myPeerConnection.setRemoteDescription(offer)
     const answer = await myPeerConnection.createAnswer()
     myPeerConnection.setLocalDescription(answer)
-    client.send(
-      `/pub/streaming`,
-      {},
-      JSON.stringify({
+    client.publish({
+      destination: `/pub/streaming`,
+      body: JSON.stringify({
         from: username,
         to: streamingPeer.username,
         type: 2,
         data: answer,
       }),
-    )
+    })
   }
 
   const getAnswer = async (answer) => {
