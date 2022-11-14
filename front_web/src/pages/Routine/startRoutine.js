@@ -71,10 +71,8 @@ export default function StartRoutine(props) {
 
     const imageSrc = routineDetail.sets[setNo.current].url
     const imageTag = document.createElement('img')
-    if (imageSrc) {
-      imageTag.src = imageSrc
-      imageDiv.replaceChildren(imageTag)
-    }
+    imageTag.src = imageSrc
+    imageDiv.replaceChildren(imageTag)
   }, [setNo.current])
 
   // 다음 세트로 넘어가는 함수

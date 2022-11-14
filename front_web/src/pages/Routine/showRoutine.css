@@ -3,11 +3,12 @@
   flex-direction: column;
 
   overflow: hidden;
+  font-size: 100px;
 }
 
 .show-routine-alert {
   align-self: center;
-  font-size: 5vw;
+  font-size: 120px;
 }
 
 .show-routine-break {
@@ -15,8 +16,8 @@
   justify-content: space-between;
   overflow: hidden;
 
-  padding: 3vw;
-  border-left: 1vw solid gray;
+  padding: 5vw;
+  border-left: 2vw solid gray;
 }
 
 .show-routine-exercise {
@@ -24,6 +25,6 @@
   justify-content: space-between;
   overflow: hidden;
 
-  padding: 3vw;
-  border-left: 1vw solid rgba(0, 0, 255, 0.724);
+  padding: 5vw;
+  border-left: 2vw solid rgba(0, 0, 255, 0.724);
 }

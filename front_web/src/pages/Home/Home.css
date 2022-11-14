@@ -8,7 +8,7 @@
   align-items: center;
 
   width: 100%;
-  font-size: 5vw;
+  font-size: 8vw;
   margin: 3vh 0;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .home-date-time {
-  font-size: 4vw;
+  font-size: 7vw;
 }
 
 .home-weather-image {
@@ -27,18 +27,20 @@
   align-items: center;
 }
 .home-weather-image p {
-  font-size: 7vw;
+  font-size: 9vw;
 }
 .home-weather-image img {
   aspect-ratio: 1/1;
-  height: 7vw;
-  width: 7vw;
+  height: 9vw;
+  width: 9vw;
   padding: 0 1vw;
 }
 
 .home-weather-near {
   border-spacing: 1vw;
+  font-size: 5vw;
 }
 
 .home-weather-far {
+  font-size: 5vw;
 }

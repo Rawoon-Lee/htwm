@@ -88,7 +88,9 @@ export default function Picture(props) {
     <div className="picture">
       <button onClick={startCapture}>캡처</button>
       <div className="picture-message">{pictureMsg}</div>
-      {!pictureMsg && <video className="picture-video" ref={videoRef} autoPlay={true} playsInline={true} />}
+      {pictureMsg !== '사진이 촬영되었습니다.' && (
+        <video className="picture-video" ref={videoRef} autoPlay={true} playsInline={true} />
+      )}
       <canvas className="picture-canvas" ref={canvasRef} />
     </div>
   )

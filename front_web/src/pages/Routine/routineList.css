@@ -6,16 +6,16 @@
   overflow: hidden;
 
   min-height: 12vh;
-  border-left: 1vw solid white;
+  border-left: 2vw solid white;
   margin-bottom: 5vw;
   padding: 5vw;
 }
 
 .routine-list-title {
-  font-size: 5vw;
+  font-size: 100px;
   padding: 2vw 0;
 }
 
 .routine-list-content {
-  font-size: 3vw;
+  font-size: 60px;
 }
