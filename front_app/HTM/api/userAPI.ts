@@ -25,10 +25,19 @@ const user = {
 			url: `${END_POINT}/edit`
 		})
 	},
-	weight(data: any) {
+	weightRecord(data: any) {
 		return api({
 			method: "post",
 			data: data,
+			url: `${END_POINT}/weight`
+		})
+	},
+	weightList(userId: string) {
+		return api({
+			method: "get",
+			params: {
+				username: userId
+			},
 			url: `${END_POINT}/weight`
 		})
 	},
