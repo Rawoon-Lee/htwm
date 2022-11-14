@@ -13,6 +13,7 @@ export default function RoutineList(props) {
 
   useEffect(() => {
     routine.getRoutine({ username }).then((result) => {
+      console.log(result.data)
       dispatch(setRoutineList(result.data))
     })
   }, [])
@@ -26,7 +27,15 @@ export default function RoutineList(props) {
     <div className="routine-list">
       {routineList?.length &&
         routineList.map((routine, idx) => (
-          <div className="routine-list-box" key={routine.name} onClick={() => selectRoutine(idx)}>
+          <div
+            className="routine-list-box"
+            key={routine.name}
+            onClick={() => selectRoutine(idx)}
+            style={{
+              maxHeight: `${80 / routineList.length}vh`,
+              borderLeft: `2vw solid ${routine.color[0] === '#' ? routine.color : 'white'}`,
+            }}
+          >
             <div className="routine-list-title">
               {idx + 1}번: {routine.name}
             </div>

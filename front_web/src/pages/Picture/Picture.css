@@ -17,14 +17,14 @@
 
 .picture-video {
   width: 100vw;
-  height: 67vw;
+  height: 75vw;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
 }
 
-.picture-canvas {
+.picture-result {
   width: 100vw;
-  height: 67vw;
+  height: 75vw;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
 }

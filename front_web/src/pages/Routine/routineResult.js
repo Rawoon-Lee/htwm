@@ -15,6 +15,8 @@ export default function RoutineResult(props) {
     }
   }, [setState])
 
+  console.log(routineResult)
+
   return (
     <div className="result">
       <div className="result-alert">
