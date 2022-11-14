@@ -6,7 +6,7 @@
 }
 
 .result-alert {
-  height: 20vh;
+  height: 350vh;
   font-size: 8vw;
   text-align: center;
 }
@@ -15,11 +15,11 @@
   display: flex;
   align-items: center;
 
-  height: 30vh;
+  height: 40vh;
   font-size: 5vw;
 }
 
 .result-progress {
-  height: 20vh;
+  height: 35vh;
   font-size: 10vw;
 }
