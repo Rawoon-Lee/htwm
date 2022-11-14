@@ -1,0 +1,20 @@
+.picture {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  height: 100%;
+}
+
+.picture-message {
+  display: flex;
+  align-items: center;
+
+  height: 20vh;
+  font-size: 5vw;
+}
+
+.picture-canvas {
+  width: 100vw;
+}
