@@ -63,6 +63,11 @@ public class StreamingController {
         simpMessageSendingOperations.convertAndSend("/sub/"+friendUuid,message);
     }
 
+    @MessageMapping("/pose")
+    public void pose(String message){
+        simpMessageSendingOperations.convertAndSend("/sub/pose",message);
+    }
+
     /*
     json 으로 sub 하는 코드 
     @MessageMapping("/streaming2")
