@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Stompjs from 'stompjs'
+import * as Stompjs from '@stomp/stompjs'
 import Sockjs from 'sockjs-client'
 
 import Home from '../pages/Home/Home'
@@ -63,28 +63,26 @@ export default function mainLayout() {
   ////////////////////////////////////////////////////webSocket 통신//////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    const socket = new Sockjs('https://k7a306.p.ssafy.io/api/socket')
-    const stompClient = Stompjs.over(socket)
-    stompClient.reconnect_delay = 5000
+    // const socket = new Sockjs('https://k7a306.p.ssafy.io/api/socket')
+    // const stompClient = Stompjs.over(socket)
+    // stompClient.reconnect_delay = 5000
 
-    stompClient.connect({}, () => {
-      stompClient.subscribe(
-        `/sub/${UUID}`,
-        (action) => {
-          const content = JSON.parse(action.body)
-          console.log(content)
-          if (content.type === 'ENTER') {
-            // 통화 시작
-            const peerInfo = { username: content.from, url: content.url, nickname: content.nickname }
-            dispatch(setStreamingPeer(peerInfo))
-            setState(2)
-          }
-        },
-        {},
-      )
-    })
+    const stompClient = new Stompjs.Client({})
+    stompClient.webSocketFactory = () => new Sockjs('https://k7a306.p.ssafy.io/api/socket')
 
-    // stompClient.debug = null
+    stompClient.onConnect = () => {
+      stompClient.subscribe(`/sub/${UUID}`, (action) => {
+        const content = JSON.parse(action.body)
+        console.log(content)
+        if (content.type === 'ENTER') {
+          // 통화 시작
+          const peerInfo = { username: content.from, url: content.url, nickname: content.nickname }
+          dispatch(setStreamingPeer(peerInfo))
+          setState(2)
+        }
+      })
+    }
+    stompClient.activate()
     setClient(stompClient)
 
     return () => {
