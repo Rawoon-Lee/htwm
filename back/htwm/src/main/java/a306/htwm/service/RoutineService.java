@@ -57,11 +57,12 @@ public class RoutineService {
             if(exerciseRepository.findById(setDTO.getExercise_id()).isEmpty()) throw new RuntimeException("no such exercise id, start from 1");
             Sets set = new Sets();
             Long exerciseId = setDTO.getExercise_id();
-            if(exerciseId == 0f) set.setExercise(null); // 0 일때 휴식으로 예외 처리
-            else set.setExercise(exerciseRepository.findById(exerciseId).get());
+//            if(exerciseId == 0f) set.setExercise(null); // 0 일때 휴식으로 예외 처리
+//            else\
+            set.setExercise(exerciseRepository.findById(exerciseId).get());
             set.setSet_cnt(setDTO.getSet_cnt());
             set.setNumber(setDTO.getNumber());
-            set.setTime(set.getTime());
+            set.setTime(setDTO.getSec());
             set.setRoutine(routine);
             setRepository.save(set);
         }

@@ -20,4 +20,5 @@ public class NoticeDTO {
     private String toNickname;
 
     private String fromUrl;
+    private String fromPhoneId;
 }
