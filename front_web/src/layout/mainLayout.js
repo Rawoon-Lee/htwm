@@ -63,10 +63,6 @@ export default function mainLayout() {
   ////////////////////////////////////////////////////webSocket 통신//////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    // const socket = new Sockjs('https://k7a306.p.ssafy.io/api/socket')
-    // const stompClient = Stompjs.over(socket)
-    // stompClient.reconnect_delay = 5000
-
     const stompClient = new Stompjs.Client({})
     stompClient.webSocketFactory = () => new Sockjs('https://k7a306.p.ssafy.io/api/socket')
 
@@ -99,16 +95,15 @@ export default function mainLayout() {
   // idx번 운동 시작
   // dispatch(setRoutineDetail(routineList[idx - 1]))
   // 통화 종료해줘
-  // client.send(
-  //   `/pub/streaming`,
-  //   {},
-  //   JSON.stringify({
+  // client.publish({
+  //   destination: `/pub/streaming`,
+  //   body: JSON.stringify({
   //     from: userStore.username,
   //     to: userStore.username,
   //     type: 'END',
   //     url: userStore.userInfo.url,
   //   }),
-  // )
+  // })
 
   ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
 

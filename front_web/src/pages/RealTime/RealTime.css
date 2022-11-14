@@ -5,6 +5,8 @@
 }
 .realtime video {
   width: 100vw;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
 
 .realtime-video-profile {
