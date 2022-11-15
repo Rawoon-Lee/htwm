@@ -103,11 +103,25 @@ const WeightDataListWeekSlice = createSlice({
 		}
 	}
 })
+const PushTokenSlice = createSlice({
+	name: "pushToken",
+	initialState: "",
+	reducers: {
+		getPushToken: (state, action: PayloadAction<string>) => {
+			return action.payload
+		},
+		initPushToken: state => {
+			return ""
+		}
+	}
+})
+
 export const { getUserInfo } = userInfoSlice.actions
 export const { getUserId, initUserId } = userIdSlice.actions
 export const { getUserUuid } = userUuidSlice.actions
 export const { getFriendsList, initFriendList } = FriendListSlice.actions
 export const { getFriendsSearchList } = FriendSearchListSlice.actions
+export const { getPushToken, initPushToken } = PushTokenSlice.actions
 export const { getWeightList } = WeightDataListSlice.actions
 export const { getWeightListWeek } = WeightDataListWeekSlice.actions
 export default {
@@ -116,6 +130,7 @@ export default {
 	userUuid: userUuidSlice.reducer,
 	friendList: FriendListSlice.reducer,
 	friendSearchList: FriendSearchListSlice.reducer,
+	pushToken: PushTokenSlice.reducer,
 	weightList: WeightDataListSlice.reducer,
 	weightListWeek: WeightDataListWeekSlice.reducer
 }
