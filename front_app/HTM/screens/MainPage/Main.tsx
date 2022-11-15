@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Image, Pressable } from "react-native"
+import { StyleSheet, Text, View, Image, Pressable, Platform } from "react-native"
 import { StatusBar } from "expo-status-bar"
 import Constants from "expo-constants"
 import * as React from "react"
 
-import { useAppSelector } from "../../store/hook"
+import { useAppSelector, useAppDispatch } from "../../store/hook"
 
 import DeviceIntro from "./deviceIntro"
 import ExerciseDays from "./exerciseDays"
@@ -12,9 +12,73 @@ import WeightInput from "./weightInput"
 import Header from "./header"
 
 import TrainingBird from "./trainingBird"
+import { getPushToken } from "../../store/user"
+import * as Notifications from "expo-notifications"
+import { Subscription } from 'expo-modules-core';
+import * as Device from "expo-device"
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: true,
+	}),
+});
 
 function Main({ navigation }: any) {
 	const userUuid = useAppSelector(state => state.userUuid)
+	const [notification, setNotification] = React.useState<Notifications.Notification>();
+	const notificationListener = React.useRef<Subscription>();
+	const responseListener = React.useRef<Subscription>();
+	const dispatch = useAppDispatch()
+
+	React.useEffect(() => {
+		async function configurePushNotification() {
+			if (Device.isDevice) {
+				const { status: existingStatus } = await Notifications.getPermissionsAsync()
+				let finalStatus = existingStatus
+				if (existingStatus !== "granted") {
+					const { status } = await Notifications.requestPermissionsAsync()
+					finalStatus = status
+				}
+				if (finalStatus !== "granted") {
+					alert("Failed to get push token for push notification!")
+					return
+				}
+				const token = (await Notifications.getExpoPushTokenAsync()).data
+				console.log(token)
+				dispatch(getPushToken(token))
+				if (Platform.OS === "android") {
+					Notifications.setNotificationChannelAsync("default", {
+						name: "default",
+						importance: Notifications.AndroidImportance.DEFAULT,
+						vibrationPattern: [0, 250, 250, 250],
+						lightColor: "#FF231F7C"
+					})
+				}
+			} else {
+				alert("Must use physical device for Push Notifications")
+			}
+		}
+
+		configurePushNotification()
+	}, [])
+	React.useEffect(()=>{
+		notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+			setNotification(notification);
+		});
+	
+		responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+			console.log(response);
+		});
+	
+		return () => {
+			if(typeof notificationListener.current !== 'undefined' && typeof responseListener.current !== 'undefined'){
+				Notifications.removeNotificationSubscription(notificationListener.current);
+				Notifications.removeNotificationSubscription(responseListener.current);
+			}
+		};
+	})
 	return (
 		<View style={styles.container}>
 			<Header navigation={navigation}></Header>
