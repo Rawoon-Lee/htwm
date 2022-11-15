@@ -33,7 +33,6 @@ function FriendSearch() {
 	const userId = useAppSelector(state => state.userId)
 	const friendSearchList = useAppSelector(state => state.friendSearchList)
 	const [input, setInput] = React.useState("")
-	// const [friendSearchList, setFriendSearchList] = React.useState<FriendData[] | []>([])
 
 	React.useEffect(() => {
 		if (!input) {
