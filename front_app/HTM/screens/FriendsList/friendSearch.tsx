@@ -11,13 +11,15 @@ import FriendBox from "./friendBox"
 
 function renderItems({ item }: { item: FriendData }) {
 	return (
-		<FriendBox
-			nickname={item.nickname}
-			username={item.username}
-			url={item.url}
-			status={item.status}
-			isSearch={true}
-		/>
+		<View style={{alignItems:"center"}}>
+			<FriendBox
+				nickname={item.nickname}
+				username={item.username}
+				url={item.url}
+				status={item.status}
+				isSearch={true}
+			/>
+		</View>
 	)
 }
 
@@ -44,12 +46,20 @@ function FriendSearch() {
 
 	return (
 		<View style={styles.container}>
-			<Text>친구검색</Text>
+			<Text style={{margin: 10}}>친구검색</Text>
 			<TextInput
 				onChangeText={text => {
 					setInput(text)
 				}}
 				placeholder="닉네임을 입력해주세요"
+				style={{
+                    backgroundColor: "#d2d2d2",
+                    padding: 10,
+                    borderRadius: 10,
+                    margin: 10,
+                    fontFamily: "line-rg",
+                    fontSize: 20
+                }}
 			></TextInput>
 			<FlatList
 				data={friendSearchList}
