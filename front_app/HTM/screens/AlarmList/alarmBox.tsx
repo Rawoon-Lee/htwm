@@ -67,8 +67,7 @@ function AlarmMessage(props: any) {
 	function sendNotice(data: any) {
 		readAlarm()
 		let alarmData = {
-			to: "ExponentPushToken[OO8ZhAEFzIuU3Y9GOznTSi]",
-			// to: props.alarmData.fromPhoneId,
+			to: props.alarmData.fromPhoneId,
 			title: data,
 			body: data,
 			sound: "default"
