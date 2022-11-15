@@ -22,7 +22,10 @@ export interface DateData {
 
 function MyRecord() {
 	const recordList = useAppSelector(state => state.recordList)
-	const userId = useAppSelector(state => state.userId)
+	// const userId = useAppSelector(state => state.userId)
+	const userId = {
+		id: "b"
+	}
 	const dispatch = useAppDispatch()
 
 	const [dayInfo, setDayInfo] = React.useState<DateData | null>(null)
@@ -45,13 +48,13 @@ function MyRecord() {
 		// 나중에 test 이후에 주석풀어야 됨
 		// 실수로라도 지우지마삼
 		// 그러면 조금 슬플 것 같음
-		// record
-		// 	.recordList(userId.id)
-		// 	.then(result => {
-		// 		console.log("레코드 결과", result.data)
-		// 		dispatch(getUserRecord(result.data))
-		// 	})
-		// 	.catch(err => console.log(err))
+		record
+			.recordList(userId.id)
+			.then(result => {
+				console.log("레코드 결과", result.data)
+				dispatch(getUserRecord(result.data))
+			})
+			.catch(err => console.log(err))
 		markDates()
 	}, [])
 
@@ -74,7 +77,7 @@ function MyRecord() {
 		setMarkedDates(marked)
 	}
 	return (
-		<View style={commonStyle.container}>
+		<View style={styles.container}>
 			<Calendar
 				// Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
 				minDate={"2022-01-01"}
@@ -159,15 +162,7 @@ LocaleConfig.locales["kr"] = {
 		"Nov.",
 		"Déc."
 	],
-	dayNames: [
-		"일요일",
-		"월요일",
-		"화요일",
-		"수요일",
-		"목요일",
-		"금요일",
-		"토요일"
-	],
+	dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
 	dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
 	today: "오늘"
 }
