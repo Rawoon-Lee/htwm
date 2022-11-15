@@ -30,7 +30,7 @@ function RoutineBox(props: any) {
 	for (let i = 0; i < props.routine.sets.length; i++) {
 		sec += props.routine.sets[i].sec
 	}
-	let min = sec / 60
+	let min = sec % 60
 	sec = sec % 60
 	return (
 		<View style={boxStyle(props.routine.color).container}>
