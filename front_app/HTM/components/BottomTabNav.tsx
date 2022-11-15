@@ -15,10 +15,11 @@ export default function BottomTabNav({ navigation }: any) {
 		<>
 			<BottomTab.Navigator
 				screenOptions={{
-					tabBarActiveTintColor: "#FFA500",
+					tabBarActiveTintColor: "#9A9FE6",
 					tabBarLabelStyle: {
 						fontSize: 13
-					}
+					},
+					tabBarInactiveTintColor: "#bebebe"
 				}}
 				initialRouteName={"Home"}
 			>
@@ -30,9 +31,9 @@ export default function BottomTabNav({ navigation }: any) {
 						tabBarLabel: "루틴",
 						tabBarIcon: ({ focused }) =>
 							focused ? (
-								<Feather name="list" size={24} color="#FFA500" />
+								<Feather name="list" size={24} color="#9A9FE6" />
 							) : (
-								<Feather name="list" size={24} color="#b4b4b4" />
+								<Feather name="list" size={24} color="#bebebe" />
 							)
 					}}
 				/>
@@ -44,9 +45,9 @@ export default function BottomTabNav({ navigation }: any) {
 						tabBarLabel: "기록",
 						tabBarIcon: ({ focused }) =>
 							focused ? (
-								<Feather name="calendar" size={24} color="#FFA500" />
+								<Feather name="calendar" size={24} color="#9A9FE6" />
 							) : (
-								<Feather name="calendar" size={24} color="#b4b4b4" />
+								<Feather name="calendar" size={24} color="#bebebe" />
 							)
 					}}
 				/>
@@ -58,9 +59,9 @@ export default function BottomTabNav({ navigation }: any) {
 						tabBarLabel: "홈",
 						tabBarIcon: ({ focused }) =>
 							focused ? (
-								<Feather name="home" size={24} color="#FFA500" />
+								<Feather name="home" size={24} color="#9A9FE6" />
 							) : (
-								<Feather name="home" size={24} color="#b4b4b4" />
+								<Feather name="home" size={24} color="#bebebe" />
 							)
 					}}
 				/>
@@ -72,9 +73,9 @@ export default function BottomTabNav({ navigation }: any) {
 						tabBarLabel: "친구",
 						tabBarIcon: ({ focused }) =>
 							focused ? (
-								<Feather name="users" size={24} color="#FFA500" />
+								<Feather name="users" size={24} color="#9A9FE6" />
 							) : (
-								<Feather name="users" size={24} color="#b4b4b4" />
+								<Feather name="users" size={24} color="#bebebe" />
 							)
 					}}
 				/>
@@ -86,9 +87,9 @@ export default function BottomTabNav({ navigation }: any) {
 						tabBarLabel: "알림",
 						tabBarIcon: ({ focused }) =>
 							focused ? (
-								<Feather name="bell" size={24} color="#FFA500" />
+								<Feather name="bell" size={24} color="#9A9FE6" />
 							) : (
-								<Feather name="bell" size={24} color="#b4b4b4" />
+								<Feather name="bell" size={24} color="#bebebe" />
 							)
 					}}
 				/>
