@@ -9,6 +9,8 @@ import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getRoutineList, initRoutineList } from "../../store/routine"
 import { SelectButton } from "../../components/PrimaryButton"
 
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
 import { commonStyle } from "../../Style/commonStyle"
 
 function RoutineList({ navigation }: any) {
@@ -16,8 +18,15 @@ function RoutineList({ navigation }: any) {
 
 	const userId = useAppSelector(state => state.userId)
 	const routineList = useAppSelector(state => state.routineList)
-
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf")
+	})
 	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
 		if (!userId.id) {
 			dispatch(initRoutineList())
 			return
@@ -36,8 +45,18 @@ function RoutineList({ navigation }: any) {
 		navigation.navigate("CreateRoutine")
 	}
 
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
+
 	return (
-		<View style={styles.container}>
+		<View style={styles.container} onLayout={onLayoutRootView}>
 			<Text
 				style={{
 					fontSize: 30,
@@ -56,7 +75,9 @@ function RoutineList({ navigation }: any) {
 					</View>
 				</View>
 			) : (
-				<Text>아직 루틴이 없군요</Text>
+				<Text style={{ fontFamily: "line-rg", fontSize: 20, textAlign: "center" }}>
+					아직 루틴이 없군요
+				</Text>
 			)}
 
 			<View
