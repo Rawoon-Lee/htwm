@@ -4,6 +4,8 @@ const END_POINT = "streaming"
 
 const streaming = {
 	acceptStreaming(data: any) {
+		console.log("스트리밍 수락 진행중")
+
 		return api({
 			method: "post",
 			data: data,
