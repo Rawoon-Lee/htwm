@@ -4,6 +4,7 @@ import { picture } from '../../actions/api/api'
 import html2canvas from 'html2canvas'
 
 import './Picture.css'
+import cameraSound from './../../assets/camera.mp3'
 
 export default function Picture(props) {
   const username = useSelector((state) => state.user.username)
@@ -54,6 +55,8 @@ export default function Picture(props) {
   }
 
   const capture = async () => {
+    const sound = new Audio(cameraSound)
+    sound.play()
     await html2canvas(document.querySelector('.picture-video')).then((canvas) => {
       setIsEnd(true)
       const resultDiv = document.querySelector('.picture-result')

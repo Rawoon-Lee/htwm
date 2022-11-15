@@ -4,6 +4,7 @@ import { routine } from '../../actions/api/api'
 import { setRoutineDetail, setRoutineResult } from '../../store/modules/routine'
 
 import './startRoutine.css'
+import countDown from './../../assets/count_down.mp3'
 
 export default function StartRoutine(props) {
   const dispatch = useDispatch()
@@ -53,6 +54,10 @@ export default function StartRoutine(props) {
     const interval = setInterval(() => {
       if (time.current > 0) {
         time.current = time.current - 1
+        if (time.current === 3) {
+          const sound = new Audio(countDown)
+          sound.play()
+        }
         setViewTime(time.current)
       } else {
         if (!isSetIntervalRef.current) {

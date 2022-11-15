@@ -63,16 +63,14 @@ export default function Home() {
       .padStart(2, '0')
       .padEnd(4, '0')
 
-    if (newDate.getHours() - 2 > 0) {
-      newDate = new Date(newDate.getDate() - 1)
+    if (newDate.getHours() - 2 < 0) {
+      newDate = new Date(newDate.setDate(newDate.getDate() - 1))
     }
     const date =
       String(newDate.getFullYear()) +
       String(newDate.getMonth() + 1).padStart(2, '0') +
       String(newDate.getHours() - 2 >= 0 ? newDate.getDate() : newDate.getDate() - 1).padStart(2, '0')
-    console.log(date, time)
     weather(date, time).then((res) => {
-      console.log(res.data)
       const data = getWeatherDetail(res.data.response.body.items.item)
       dispatch(setWeatherData(data))
     })
