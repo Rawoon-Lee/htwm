@@ -21,6 +21,7 @@ function GoogleLogin() {
 	}
 	const dispatch = useAppDispatch()
 	const userId = useAppSelector(state => state.userId)
+	const pushToken = useAppSelector(state => state.pushToken)
 	const [userInfo, setUserInfo] = React.useState<UserData | null>(null)
 	// any할거면 interface 왜 만드나
 	const [accessToken, setAccessToken] = React.useState<any | null>(null)
@@ -88,7 +89,8 @@ function GoogleLogin() {
 		let data = {
 			nickname: userInfo.name,
 			url: userInfo.picture,
-			username: userInfo.email.split("@")[0]
+			username: userInfo.email.split("@")[0],
+			phoneId: pushToken
 		}
 		dispatch(getUserId(data.username))
 		user
