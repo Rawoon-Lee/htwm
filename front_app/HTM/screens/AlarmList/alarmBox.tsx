@@ -64,6 +64,27 @@ function AlarmMessage(props: any) {
 			})
 	}
 
+	function sendNotice(data:any) {
+		readAlarm()
+		let alarmData = {
+			to: props.alarmData.fromPhoneId,
+			title: data,
+			body: data,
+			sound: "default"
+		}
+
+		fetch("https://exp.host/--/api/v2/push/send", {
+			method: "POST", // *GET, POST, PUT, DELETE 등
+			headers: {
+			  "Content-Type": "application/json",
+			  // 'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: JSON.stringify(alarmData), // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
+		  }).then((res) => {
+			console.log(JSON.stringify(res))
+		  })
+	}
+
 	if (props.alarmData.type == "REQ_FRI") {
 		return (
 			<View
@@ -95,28 +116,12 @@ function AlarmMessage(props: any) {
 									.friendAdd(data)
 									.then(result => {
 										console.log(result)
-										readAlarm()
-										let alarmData = {
-											to: "ExponentPushToken[OO8ZhAEFzIuU3Y9GOznTSi]",
-											title: "허브의 Expo Push Notification 구현기",
-											body: "이야 이게 되네~~",
-											sound: "default"
-										}
-
-										fetch("https://exp.host/--/api/v2/push/send", {
-											method: "POST", // *GET, POST, PUT, DELETE 등
-											headers: {
-											  "Content-Type": "application/json",
-											  // 'Content-Type': 'application/x-www-form-urlencoded',
-											},
-											body: JSON.stringify(alarmData), // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
-										  }).then((res) => {
-											console.log(JSON.stringify(res))
-										  })
+										sendNotice(props.toUsername + "님이 친구가 되었습니다.")
 
 									})
 									.catch(err => {
 										console.log(err.response.data)
+										readAlarm()
 										if (err.response.data == "이미 친구입니다.") alert("이미 친구입니다!!")
 									})
 							}}
@@ -153,6 +158,7 @@ function AlarmMessage(props: any) {
 									.then(result => {
 										console.log(result)
 										readAlarm()
+										sendNotice(props.toUsername + "님이 플레이를 수락하셨습니다.")
 									})
 									.catch(err => {
 										console.log(err.response.data)
@@ -169,6 +175,7 @@ function AlarmMessage(props: any) {
 									.then(result => {
 										console.log(result)
 										readAlarm()
+										sendNotice(props.toUsername + "님이 플레이를 거절하였습니다.")
 									})
 									.catch(err => {
 										console.log(err.response.data)
@@ -191,7 +198,7 @@ function AlarmMessage(props: any) {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
 				<Text style={{ fontSize: 14, marginLeft: -100 }}>
-					{fromName}님이{"\n"}플레이를 받아들였습니다.
+					{fromName}님이{"\n"}플레이를 수락하였습니다.
 				</Text>
 			</View>
 		)
