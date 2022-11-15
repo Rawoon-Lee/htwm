@@ -130,7 +130,7 @@ export default function mainLayout() {
   }
 
   const getMsg = (event, arg) => {
-    console.log(event, arg, '받음')
+    console.log(event, arg)
   }
 
   const sendMain = () => {
