@@ -16,6 +16,8 @@ import ProfileEdit from "./screens/ProfileEdit/ProfileEdit"
 
 import Constants from "expo-constants"
 import { Subscription } from 'expo-modules-core';
+import { getPushToken } from "./store/user"
+import { useAppSelector, useAppDispatch } from "./store/hook"
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -26,11 +28,11 @@ Notifications.setNotificationHandler({
 });
 
 const Stack = createStackNavigator()
-let devicetoken = ''
 export default function App() {
 	const [notification, setNotification] = React.useState<Notifications.Notification>();
 	const notificationListener = React.useRef<Subscription>();
 	const responseListener = React.useRef<Subscription>();
+	const dispatch = useAppDispatch()
 
 	React.useEffect(() => {
 		async function configurePushNotification() {
@@ -47,7 +49,7 @@ export default function App() {
 				}
 				const token = (await Notifications.getExpoPushTokenAsync()).data
 				console.log(token)
-				devicetoken = token
+				dispatch(getPushToken(token))
 				if (Platform.OS === "android") {
 					Notifications.setNotificationChannelAsync("default", {
 						name: "default",
