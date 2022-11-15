@@ -14,7 +14,7 @@ export default function ShowRoutine(props) {
   }, [])
 
   return (
-    <div className="show-routine" style={{ fontSize: `${50 / routineDetail.sets?.length}vh` }}>
+    <div className="show-routine" style={{ fontSize: `${Math.min(50 / routineDetail.sets?.length, 5)}vh` }}>
       <p className="show-routine-alert">잠시 후 운동이 시작됩니다.</p>
       {routineDetail?.sets.length &&
         routineDetail.sets.map((set, idx) => {

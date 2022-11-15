@@ -98,7 +98,6 @@ export default function StartRoutine(props) {
   }
 
   const handlingInterval = async () => {
-    // if (routineDetail.sets[setNo.current].exercise_name === routineDetail.sets[setNo.current + 1].exercise_name) return
     const imageTag = document.querySelector('img')
     imageTag.src = ''
 
@@ -113,7 +112,11 @@ export default function StartRoutine(props) {
     }
 
     await new Promise((resolve) => {
-      setTimeout(resolve, 2000)
+      if (routineDetail.sets[setNo.current].exercise_name === routineDetail.sets[setNo.current + 1].exercise_name) {
+        setTimeout(resolve, 15000)
+      } else {
+        setTimeout(resolve, 2000)
+      }
     })
     setIsSetInterval(false)
     isSetIntervalRef.current = false
