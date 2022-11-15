@@ -151,11 +151,15 @@ function AlarmMessage(props: any) {
 							children={"수락"}
 							color={"skyblue"}
 							clickFunction={() => {
-								let data = { from: props.alarmData.fromUsername, to: props.alarmData.toUsername }
+								let data = {
+									friendname: props.alarmData.fromUsername,
+									username: props.alarmData.toUsername
+								}
+
 								streaming
 									.acceptStreaming(data)
 									.then(result => {
-										console.log(result)
+										console.log("스트리밍 수락 성공")
 										readAlarm()
 										sendNotice(props.alarmData.toUsername + "님이 플레이를 수락하셨습니다.")
 									})
@@ -219,7 +223,7 @@ const styles = StyleSheet.create({
 	profile: {
 		width: height / 15,
 		height: height / 15,
-		borderRadius: 30,
+		borderRadius: 30
 	},
 	message: {
 		width: (width * 5) / 12,
