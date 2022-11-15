@@ -16,7 +16,6 @@ function RoutineList({ navigation }: any) {
 
 	const userId = useAppSelector(state => state.userId)
 	const routineList = useAppSelector(state => state.routineList)
-	console.log("루틴목록", routineList)
 
 	React.useEffect(() => {
 		if (!userId.id) {
@@ -26,13 +25,12 @@ function RoutineList({ navigation }: any) {
 		routine
 			.routineList(userId.id)
 			.then(result => {
-				console.log(result.data)
 				dispatch(getRoutineList(result.data))
 			})
 			.catch(err => {
 				console.log(err)
 			})
-	}, [userId.id])
+	}, [])
 
 	function moveToCreate() {
 		navigation.navigate("CreateRoutine")
@@ -44,14 +42,13 @@ function RoutineList({ navigation }: any) {
 				style={{
 					fontSize: 30,
 					paddingBottom: 5,
-					paddingLeft: 20,
+					paddingLeft: 20
 				}}
 			>
 				루틴
 			</Text>
 			{routineList.length >= 1 ? (
 				<View style={{ justifyContent: "space-between" }}>
-
 					<View style={{ alignItems: "center" }}>
 						{routineList.map((cur, idx) => {
 							return <RoutineBox key={idx} routine={routineList[idx]}></RoutineBox>
