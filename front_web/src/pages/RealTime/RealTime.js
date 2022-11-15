@@ -6,6 +6,7 @@ import Profile from '../../components/profile'
 import { UUID } from '../../store/constants'
 
 import './RealTime.css'
+import loading from './../../assets/loading.gif'
 
 export default function RealTime(props) {
   const username = useSelector((state) => state.user.username)
@@ -213,7 +214,11 @@ export default function RealTime(props) {
       </div>
       <div className="realtime-calling">
         {!isStarted && !isEnded ? (
-          <div>{streamingPeer.nickname}에게 전화를 거는 중입니다.</div>
+          <div>
+            {streamingPeer.nickname}에게 전화를 거는 중입니다.
+            <br />
+            <img src={loading}></img>
+          </div>
         ) : (
           <div style={{ opacity: endOpacity ? 1 : 0 }}>
             {timeView}
