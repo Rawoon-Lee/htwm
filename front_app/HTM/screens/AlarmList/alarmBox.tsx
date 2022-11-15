@@ -218,7 +218,8 @@ export default AlarmBox
 const styles = StyleSheet.create({
 	profile: {
 		width: height / 15,
-		height: height / 15
+		height: height / 15,
+		borderRadius: 30,
 	},
 	message: {
 		width: (width * 5) / 12,
