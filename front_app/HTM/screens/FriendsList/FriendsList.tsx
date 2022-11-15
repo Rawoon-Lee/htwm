@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, FlatList } from "react-native"
+import { StyleSheet, Text, View, Pressable, FlatList, ScrollView, Dimensions } from "react-native"
 import Constants from "expo-constants"
 import * as React from "react"
 
@@ -9,7 +9,8 @@ import { getFriendsList, initFriendList } from "../../store/user"
 import FriendBox from "./friendBox"
 import { FriendData } from "../../store/user"
 
-import { commonStyle } from "../../Style/commonStyle"
+let height = Dimensions.get("screen").height
+let width = Dimensions.get("screen").width
 
 function renderItems({ item }: { item: FriendData }) {
 	return (
@@ -38,10 +39,25 @@ function FriendsList({ navigation }: any) {
 		navigation.navigate("FriendSearch")
 	}
 	return (
-		<View style={commonStyle.container}>
-			<Text>친구목록</Text>
-			<View>
-				<Pressable onPress={moveToSearch}>
+		<View style={styles.container}>
+			<View
+				style={{
+					width: width,
+				}}
+			>
+				<Text
+					style={{
+						fontSize: 30,
+						paddingBottom: 5,
+						paddingLeft: 20
+					}}
+				>
+					친구 목록
+				</Text>
+
+			</View>
+			<View style={{ width: width, alignItems: "flex-end" }}>
+				<Pressable style={styles.button} onPress={moveToSearch}>
 					<Text>친구추가</Text>
 				</Pressable>
 			</View>
@@ -54,10 +70,28 @@ function FriendsList({ navigation }: any) {
 			) : (
 				<Text>아직 친구가 없군요</Text>
 			)}
+
 		</View>
 	)
 }
 
 export default FriendsList
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: "center",
+		marginTop: Constants.statusBarHeight
+	},
+	button: {
+		borderRadius: 13,
+		borderColor: "black",
+		margin: 10,
+		overflow: "hidden",
+		borderStyle: "solid",
+		borderWidth: 1,
+		paddingHorizontal: 15,
+		paddingVertical: 4,
+		backgroundColor: "#FAFAFA"
+	},
+})

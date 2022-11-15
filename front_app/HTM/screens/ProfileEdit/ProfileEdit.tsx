@@ -1,14 +1,18 @@
 import { Text, View, Image, StyleSheet, TextInput, Pressable } from "react-native"
 import * as React from "react"
 import * as ImagePicker from "expo-image-picker"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
 
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { user } from "../../api/userAPI"
 import { picture } from "../../api/pictureAPI"
-import { getUserInfo } from "../../store/user"
+import { getUserInfo, initUserId } from "../../store/user"
 import FormData from "form-data"
 
-function ProfileEdit() {
+function ProfileEdit({ navigation }: any) {
 	const dispatch = useAppDispatch()
 	const userId = useAppSelector(state => state.userId)
 	const userInfo = useAppSelector(state => state.userInfo)
@@ -18,7 +22,17 @@ function ProfileEdit() {
 	const [imageUrl, setImageUrl] = React.useState("")
 	const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
 
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
+
 	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
 		setImageUrl(userInfo.url)
 	}, [])
 
@@ -139,43 +153,179 @@ function ProfileEdit() {
 			})
 	}
 
+	async function logout() {
+		console.log("로그아웃 ㄱㄱ")
+		await AsyncStorage.removeItem("userId")
+		let data = {
+			nickname: "",
+			url: "",
+			height: 0
+		}
+		await dispatch(getUserInfo(data))
+		await dispatch(initUserId())
+		navigation.navigate("Home")
+	}
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View>
-			<Text>프로필 이미지</Text>
-			<Image
-				source={imageUrl ? { uri: imageUrl } : { uri: userInfo.url }}
-				style={styles.profilePic}
-			/>
-			<Pressable onPress={uploadImage}>
-				<Text>이미지 업로드하기</Text>
-			</Pressable>
-			<Pressable onPress={cancelUpload}>
-				<Text>이미지 업로드 취소</Text>
-			</Pressable>
-			<Text>닉네임</Text>
-			<Text>닉네임은 7글자 이하이며 숫자, 영어 또는 한글만 사용가능합니다 </Text>
+		<View onLayout={onLayoutRootView} style={styles.container}>
+			<View style={{ backgroundColor: "#EBEDFF" }}>
+				<Text style={{ fontFamily: "line-bd", fontSize: 20, textAlign: "left", padding: 5 }}>
+					프로필 이미지
+				</Text>
+			</View>
+			<View style={[styles.partsrow, { margin: 20 }]}>
+				<Image
+					source={imageUrl ? { uri: imageUrl } : { uri: userInfo.url }}
+					style={styles.profilePic}
+				/>
+				<View style={{ marginLeft: 5 }}>
+					<View
+						style={{
+							backgroundColor: `#b4b4b4`,
+							paddingLeft: 10,
+							paddingRight: 10,
+							paddingBottom: 5,
+							paddingTop: 5,
+							borderRadius: 7,
+							margin: 4,
+							elevation: 2
+						}}
+					>
+						<Pressable onPress={uploadImage}>
+							<Text style={{ textAlign: "center" }}>이미지 업로드하기</Text>
+						</Pressable>
+					</View>
+					<View
+						style={{
+							backgroundColor: "#fff",
+							paddingLeft: 10,
+							paddingRight: 10,
+							paddingBottom: 5,
+							paddingTop: 5,
+							borderRadius: 7,
+							elevation: 2,
+							margin: 4
+						}}
+					>
+						<Pressable onPress={cancelUpload}>
+							<Text>이미지 업로드 취소</Text>
+						</Pressable>
+					</View>
+				</View>
+			</View>
+			<View style={{ backgroundColor: "#EBEDFF" }}>
+				<Text style={{ fontFamily: "line-bd", fontSize: 20, textAlign: "left", padding: 5 }}>
+					닉네임
+				</Text>
+			</View>
+			<Text style={{ fontFamily: "line-rg", marginLeft: 12, marginTop: 10 }}>
+				닉네임은 숫자, 영어 또는 한글로, 7글자 이하여야 합니다
+			</Text>
 			<TextInput
 				onChangeText={text => checkNickname(text)}
 				defaultValue={userInfo.nickname}
 				maxLength={7}
 				value={newNickname}
+				style={{
+					backgroundColor: "#dcdcdc",
+					padding: 10,
+					borderRadius: 10,
+					margin: 10,
+					fontFamily: "line-rg",
+					fontSize: 15
+				}}
 			></TextInput>
+			<View style={{ backgroundColor: "#EBEDFF" }}>
+				<Text style={{ fontFamily: "line-bd", fontSize: 20, textAlign: "left", padding: 5 }}>
+					키
+				</Text>
+			</View>
 			<TextInput
 				onChangeText={text => checkHeight(parseInt(text))}
 				keyboardType={"numeric"}
 				defaultValue={String(userInfo.height)}
 				maxLength={3}
+				style={{
+					backgroundColor: "#dcdcdc",
+					padding: 10,
+					borderRadius: 10,
+					margin: 10,
+					fontFamily: "line-rg"
+				}}
 			></TextInput>
+			<View style={{ backgroundColor: "#EBEDFF" }}>
+				<Text style={{ fontFamily: "line-bd", fontSize: 20, textAlign: "left", padding: 5 }}>
+					기기 등록
+				</Text>
+			</View>
 			<TextInput
 				placeholder="기기의 번호를 등록해주세요"
 				onChangeText={text => setUuid(text)}
+				style={{
+					backgroundColor: "#dcdcdc",
+					padding: 10,
+					borderRadius: 10,
+					margin: 10,
+					fontFamily: "line-rg"
+				}}
 			></TextInput>
-			<Pressable onPress={registerUuid}>
-				<Text>기기 등록</Text>
-			</Pressable>
-			<Pressable onPress={updateProfile}>
-				<Text>수정 완료</Text>
-			</Pressable>
+			<View
+				style={{
+					backgroundColor: `#b4b4b4`,
+					paddingLeft: 10,
+					paddingRight: 10,
+					paddingBottom: 5,
+					paddingTop: 5,
+					borderRadius: 7,
+					marginLeft: 10,
+					marginRight: 10,
+					elevation: 2
+				}}
+			>
+				<Pressable onPress={registerUuid}>
+					<Text style={{ textAlign: "center", fontFamily: "line-rg" }}>기기 등록</Text>
+				</Pressable>
+			</View>
+			<View
+				style={{
+					backgroundColor: `#D2D6FF`,
+					padding: 10,
+					borderRadius: 7,
+					marginLeft: 10,
+					marginRight: 10,
+					marginTop: 25
+				}}
+			>
+				<Pressable onPress={updateProfile}>
+					<Text style={{ textAlign: "center", fontFamily: "line-rg", fontSize: 15 }}>
+						수정 완료
+					</Text>
+				</Pressable>
+			</View>
+			<View
+				style={{
+					backgroundColor: `#fff`,
+					padding: 10,
+					borderRadius: 7,
+					marginLeft: 10,
+					marginRight: 10,
+					marginTop: 15
+				}}
+			>
+				<Pressable onPress={logout}>
+					<Text style={{ color: "pink", textAlign: "center", fontFamily: "line-rg", fontSize: 15 }}>
+						로그아웃
+					</Text>
+				</Pressable>
+			</View>
 		</View>
 	)
 }
@@ -183,8 +333,18 @@ function ProfileEdit() {
 const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
+		flex: 1
+	},
+	parts: {
+		justifyContent: "center",
 		elevation: 4,
-		padding: 20
+		padding: 20,
+		alignItems: "center"
+	},
+	partsrow: {
+		justifyContent: "center",
+		alignItems: "center",
+		flexDirection: "row"
 	},
 	text: {
 		fontSize: 40
@@ -192,7 +352,7 @@ const styles = StyleSheet.create({
 	profilePic: {
 		width: 100,
 		height: 100,
-		marginRight: 12
+		borderRadius: 30
 	}
 })
 

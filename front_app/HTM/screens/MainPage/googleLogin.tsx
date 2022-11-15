@@ -144,17 +144,11 @@ function GoogleLogin() {
 		}
 		dispatch(getUserInfo(data))
 		dispatch(initUserId())
-		console.log("왜 안바뀜?", userId.id)
-		console.log("유저정보 파기됐나?", userInfo)
 	}
 
 	return (
-		<View>
-			{userId.id ? (
-				<Pressable onPress={logout}>
-					<Text>로그아웃</Text>
-				</Pressable>
-			) : (
+		<>
+			{userId.id ? null : (
 				<Pressable
 					style={styles.container}
 					disabled={!request}
@@ -178,7 +172,7 @@ function GoogleLogin() {
 					</Pressable>
 				</>
 			) : null} */}
-		</View>
+		</>
 	)
 }
 const styles = StyleSheet.create({
@@ -189,7 +183,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		elevation: 4,
 		padding: 10,
-		borderRadius: 10
+		borderRadius: 10,
+		margin: 10
 	},
 	userInfo: {
 		alignItems: "center",
