@@ -71,8 +71,8 @@ export default function CreateRoutine({ navigation }: any) {
 			return
 		}
 
-		if (time === 0) {
-			alert("시간은 0초일 수 없습니다")
+		if (time < 10) {
+			alert("시간은 10보다 작을 수 없습니다")
 			return
 		}
 		let temp: SetData[] = [
@@ -163,8 +163,8 @@ export default function CreateRoutine({ navigation }: any) {
 			alert("휴식시간은 60분을 넘을 수 없습니다")
 			return
 		}
-		if (num == 0) {
-			alert(`휴식시간은 0초일 수 없습니다.${"\n"}최소 10초여야 합니다`)
+		if (num < 10) {
+			alert(`휴식시간은 10초보다 작을 수 없습니다.`)
 			return
 		}
 		setTime(num)
