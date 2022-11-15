@@ -7,7 +7,8 @@ import Constants from "expo-constants"
 
 import { routine } from "../../api/routineAPI"
 import { RoutineData, SetData } from "../../store/routine"
-import { useAppSelector } from "../../store/hook"
+import { useAppSelector, useAppDispatch } from "../../store/hook"
+import { getRoutineList, initRoutineList } from "../../store/routine"
 
 import { Feather } from "@expo/vector-icons"
 
@@ -20,7 +21,8 @@ export interface ExerciseData {
 interface tempSetData extends SetData {
 	id: number
 }
-export default function CreateRoutine() {
+export default function CreateRoutine({ navigation }: any) {
+	const dispatch = useAppDispatch()
 	const userId = useAppSelector(state => state.userId)
 
 	const [index, setIndex] = React.useState(0)
@@ -37,7 +39,7 @@ export default function CreateRoutine() {
 	// 인풋 데이터
 	const [name, setName] = React.useState("")
 	const [selectedExercise, setSelectedExercise] = React.useState("")
-	const [time, setTime] = React.useState(0)
+	const [time, setTime] = React.useState(10)
 	const [num, setNum] = React.useState(0)
 	const [set, setSet] = React.useState(0)
 
@@ -63,24 +65,32 @@ export default function CreateRoutine() {
 		if (!selectedExercise) {
 			alert("운동을 선택해주세요")
 			return
-		} else if (setType) {
-			if (num === 0 || set === 0) {
-				alert("횟수, 세트 수는 0일 수 없습니다.")
-				return
-			}
-		} else if (!setType) {
-			if (time === 0) {
-				alert("시간은 0분일 수 없습니다")
-				return
-			}
 		}
-		let temp: SetData = {
-			exercise_id: setType ? parseInt(selectedExercise) : 1,
-			exercise_name: setType ? exerciseList[parseInt(selectedExercise) - 1].name : "휴식",
-			number: setType ? num : 0,
-			sec: setType ? 0 : time,
-			set_cnt: setType ? set : 0
+		if (num === 0 || set === 0) {
+			alert("횟수, 세트 수는 0일 수 없습니다.")
+			return
 		}
+
+		if (time === 0) {
+			alert("시간은 0초일 수 없습니다")
+			return
+		}
+		let temp: SetData[] = [
+			{
+				exercise_id: parseInt(selectedExercise),
+				exercise_name: exerciseList[parseInt(selectedExercise) - 1].name,
+				number: num,
+				sec: 0,
+				set_cnt: set
+			},
+			{
+				exercise_id: 1,
+				exercise_name: "휴식",
+				number: 0,
+				sec: time,
+				set_cnt: 0
+			}
+		]
 		// let list = sets
 		// list.push(temp)
 		setSets(sets.concat(temp))
@@ -112,15 +122,35 @@ export default function CreateRoutine() {
 			sets: sets
 		}
 
-		console.log(JSON.stringify(data))
+		console.log(JSON.stringify(sets))
 		routine
 			.routineCreate(data)
 			.then(result => {
 				console.log("생성 성공")
 				console.log(result.data)
+				updateReduxRoutineList()
+				alert("루틴이 등록되었습니다")
+				navigation.navigate("RoutineList")
 			})
 			.catch(err => {
 				console.log("실패했습니다")
+				console.log(err)
+				alert(err.response.data)
+			})
+	}
+
+	function updateReduxRoutineList() {
+		if (!userId.id) {
+			dispatch(initRoutineList())
+			return
+		}
+		routine
+			.routineList(userId.id)
+			.then(result => {
+				console.log(result.data)
+				dispatch(getRoutineList(result.data))
+			})
+			.catch(err => {
 				console.log(err)
 			})
 	}
@@ -129,11 +159,12 @@ export default function CreateRoutine() {
 	}
 	function changeTime(num: number) {
 		if (!num) return
-		if (num > 60) {
+		if (num > 3600) {
 			alert("휴식시간은 60분을 넘을 수 없습니다")
 			return
-		} else if (num == 0) {
-			alert("휴식시간은 0분일 수 없습니다.")
+		}
+		if (num == 0) {
+			alert(`휴식시간은 0초일 수 없습니다.${"\n"}최소 10초여야 합니다`)
 			return
 		}
 		setTime(num)
@@ -180,7 +211,7 @@ export default function CreateRoutine() {
 					})}
 				</View>
 				<View style={styles.exerciseInput}>
-					<Switch
+					{/* <Switch
 						backgroundActive={"#FAFAFA"}
 						backgroundInactive={"#FAFAFA"}
 						circleBorderWidth={0}
@@ -196,63 +227,58 @@ export default function CreateRoutine() {
 						activeTextStyle={{ color: "black", textAlign: "center" }}
 						inactiveTextStyle={{ color: "black", textAlign: "center" }}
 						changeValueImmediately={true}
-					/>
-					{setType ? (
-						<View>
-							<Text>운동종류를 골라주세요</Text>
-							<Picker
-								style={styles.picker}
-								selectedValue={selectedExercise}
-								onValueChange={(itemValue, itemIndex) => setSelectedExercise(itemValue)}
-							>
-								{exerciseList
-									? exerciseList
-											.filter(exercise => exercise.exercise_id !== 1)
-											.map((exercise, idx) => {
-												return exercise.exercise_id == 0 ? null : (
-													<Picker.Item
-														label={exercise.name}
-														value={exercise.exercise_id}
-														key={idx}
-													/>
-												)
-											})
-									: null}
-							</Picker>
-							<View style={styles.exerciseNumInput}>
-								<TextInput
-									style={styles.textInput_sm}
-									onChangeText={text => {
-										setNum(parseInt(text))
-									}}
-									// placeholder="횟수를 설정해주세요"
-									keyboardType={"numeric"}
-								></TextInput>
-								<Text>회</Text>
-								<TextInput
-									style={styles.textInput_sm}
-									onChangeText={text => {
-										setSet(parseInt(text))
-									}}
-									// placeholder="세트 수 설정해주세요"
-									keyboardType={"numeric"}
-								></TextInput>
-								<Text>세트</Text>
-							</View>
-						</View>
-					) : (
-						<View>
+					/> */}
+					<View>
+						<Text>운동종류를 골라주세요</Text>
+						<Picker
+							style={styles.picker}
+							selectedValue={selectedExercise}
+							onValueChange={(itemValue, itemIndex) => setSelectedExercise(itemValue)}
+						>
+							{exerciseList
+								? exerciseList
+										.filter(exercise => exercise.exercise_id !== 1)
+										.map((exercise, idx) => {
+											return exercise.exercise_id == 0 ? null : (
+												<Picker.Item label={exercise.name} value={exercise.exercise_id} key={idx} />
+											)
+										})
+								: null}
+						</Picker>
+						<View style={styles.exerciseNumInput}>
 							<TextInput
 								style={styles.textInput_sm}
 								onChangeText={text => {
-									changeTime(parseInt(text))
+									setNum(parseInt(text))
 								}}
-								// placeholder="휴식시간을 설정해주세요"
+								// placeholder="횟수를 설정해주세요"
 								keyboardType={"numeric"}
 							></TextInput>
-							<Text>분</Text>
+							<Text>회</Text>
+							<TextInput
+								style={styles.textInput_sm}
+								onChangeText={text => {
+									setSet(parseInt(text))
+								}}
+								// placeholder="세트 수 설정해주세요"
+								keyboardType={"numeric"}
+							></TextInput>
+							<Text>세트</Text>
 						</View>
-					)}
+					</View>
+					<View>
+						<Text>휴식</Text>
+						<TextInput
+							style={styles.textInput_sm}
+							onChangeText={text => {
+								changeTime(parseInt(text))
+							}}
+							defaultValue={"10"}
+							// placeholder="휴식시간을 설정해주세요"
+							keyboardType={"numeric"}
+						></TextInput>
+						<Text>초</Text>
+					</View>
 				</View>
 				<View>
 					<Pressable onPress={addSetInfoBox} style={styles.addButton}>
