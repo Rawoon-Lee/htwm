@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native"
+import { StyleSheet, Text, View, Image, ScrollView } from "react-native"
 import * as React from "react"
 
 import moment from "moment"
@@ -57,7 +57,7 @@ export default function DailyInfo(props: DateData) {
 			return hours.toString() + "시간 " + (minute % 60).toString() + "분"
 		}
 	}
-	// console.log(recordList[0].routineJson)ㄴ
+	// console.log(recordList[0].routineJson)
 	return (
 		<View>
 			{dailyRecord.length >= 1 || picList.length >= 1 ? (
@@ -67,10 +67,15 @@ export default function DailyInfo(props: DateData) {
 							return (
 								<View key={idx}>
 									<Text>
+										{`운동시간 :${"\t"}`}
 										{msToTime(Date.parse(item.endDateTime) - Date.parse(item.startDateTime))}
 									</Text>
-									<Text>{item.doneSetNum}</Text>
-									{/* <Text>{item.routineJson}</Text> */}
+									<Text>
+										{" "}
+										{`총 수행한 세트 개수 :${"\t"}`}
+										{item.doneSetNum}
+									</Text>
+									<Text>{item.routineJson}</Text>
 									<Text key={idx}>{item.username}</Text>
 								</View>
 							)
