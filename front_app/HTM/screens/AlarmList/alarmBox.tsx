@@ -64,10 +64,11 @@ function AlarmMessage(props: any) {
 			})
 	}
 
-	function sendNotice(data:any) {
+	function sendNotice(data: any) {
 		readAlarm()
 		let alarmData = {
-			to: props.alarmData.fromPhoneId,
+			to: "ExponentPushToken[OO8ZhAEFzIuU3Y9GOznTSi]",
+			// to: props.alarmData.fromPhoneId,
 			title: data,
 			body: data,
 			sound: "default"
@@ -76,13 +77,13 @@ function AlarmMessage(props: any) {
 		fetch("https://exp.host/--/api/v2/push/send", {
 			method: "POST", // *GET, POST, PUT, DELETE 등
 			headers: {
-			  "Content-Type": "application/json",
-			  // 'Content-Type': 'application/x-www-form-urlencoded',
+				"Content-Type": "application/json"
+				// 'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: JSON.stringify(alarmData), // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
-		  }).then((res) => {
+			body: JSON.stringify(alarmData) // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
+		}).then(res => {
 			console.log(JSON.stringify(res))
-		  })
+		})
 	}
 
 	if (props.alarmData.type == "REQ_FRI") {
@@ -116,8 +117,7 @@ function AlarmMessage(props: any) {
 									.friendAdd(data)
 									.then(result => {
 										console.log(result)
-										sendNotice(props.toUsername + "님이 친구가 되었습니다.")
-
+										sendNotice(props.alarmData.toUsername + "님이 친구가 되었습니다.")
 									})
 									.catch(err => {
 										console.log(err.response.data)
@@ -158,7 +158,7 @@ function AlarmMessage(props: any) {
 									.then(result => {
 										console.log(result)
 										readAlarm()
-										sendNotice(props.toUsername + "님이 플레이를 수락하셨습니다.")
+										sendNotice(props.alarmData.toUsername + "님이 플레이를 수락하셨습니다.")
 									})
 									.catch(err => {
 										console.log(err.response.data)
@@ -175,7 +175,7 @@ function AlarmMessage(props: any) {
 									.then(result => {
 										console.log(result)
 										readAlarm()
-										sendNotice(props.toUsername + "님이 플레이를 거절하였습니다.")
+										sendNotice(props.alarmData.toUsername + "님이 플레이를 거절하였습니다.")
 									})
 									.catch(err => {
 										console.log(err.response.data)
