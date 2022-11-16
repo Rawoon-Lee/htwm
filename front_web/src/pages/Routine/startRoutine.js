@@ -18,9 +18,9 @@ export default function StartRoutine(props) {
   const [intervalMsg, setIntervalMsg] = useState('')
 
   const setNo = useRef(0) // 진행중인 세트번호
-  const totSet = 6 // routineDetail.sets.length // 전체 세트 수
+  const totSet = routineDetail.sets.length // 전체 세트 수
   const count = useRef(0) // 운동 카운트
-  const [viewCount, setViewCount] = useState(0)
+  const [viewCount, setViewCount] = useState(0) // 보여지는 카운트
   const progressRate = useRef(0) // 진행률
 
   const [viewTime, setViewTime] = useState(0)
@@ -28,13 +28,14 @@ export default function StartRoutine(props) {
 
   useEffect(() => {
     const date = new Date()
-    const startDateTime = date.toISOString()
+    const offset = date.getTimezoneOffset() * 60000
+    const startDateTime = new Date(date.getTime() - offset).toISOString()
     return () => {
       // 루틴 끝낸 결과 보내기
       const doneSetNum = parseInt(Math.round(progressRate.current * 100))
       const routineJson = String(JSON.stringify(routineDetail))
       const date = new Date()
-      const endDateTime = date.toISOString()
+      const endDateTime = new Date(date.getTime() - offset).toISOString()
       dispatch(setRoutineResult({ startDateTime, endDateTime, routineJson, doneSetNum, username }))
       if (doneSetNum >= 5) {
         routine
@@ -105,7 +106,7 @@ export default function StartRoutine(props) {
     isSetIntervalRef.current = true
     if (routineDetail.sets[setNo.current].exercise_name !== '휴식') {
       setIntervalMsg(
-        ['잘 하셨어요!', '좀 더 힘내봐요!', '거의 다 왔습니다', '다음 세트도 열정있게!'][Math.floor(Math.random() * 3)],
+        ['잘 하셨어요!', '좀 더 힘내봐요!', '거의 다 왔습니다', '다음 세트도 열정있게!'][Math.floor(Math.random() * 4)],
       )
     } else {
       setIntervalMsg(['푹 쉬셨나요?', '숨 좀 고르셨나요?', '다시 힘내봅시다!'][Math.floor(Math.random() * 3)])
@@ -113,7 +114,7 @@ export default function StartRoutine(props) {
 
     await new Promise((resolve) => {
       if (routineDetail.sets[setNo.current].exercise_name === routineDetail.sets[setNo.current + 1].exercise_name) {
-        setTimeout(resolve, 15000)
+        setTimeout(resolve, 2000)
       } else {
         setTimeout(resolve, 2000)
       }
