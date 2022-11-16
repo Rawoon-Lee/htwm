@@ -5,13 +5,25 @@ import * as React from "react"
 import { user } from "../../api/userAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getUserUuid } from "../../store/user"
+
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
 let width = Dimensions.get("screen").width
 
 function DeviceIntro({ navigation }: any) {
 	const dispatch = useAppDispatch()
 	const userId = useAppSelector(state => state.userId)
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
 
 	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
 		user
 			.getUuid({ username: userId.id })
 			.then(result => {
@@ -30,10 +42,19 @@ function DeviceIntro({ navigation }: any) {
 	function moveToEdit() {
 		navigation.navigate("ProfileEdit")
 	}
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View style={[styles.container, { backgroundColor: "#D9D9D9", borderRadius: 20 }]}>
-			<Text style={styles.text}>거울을 연결하여 사용하세요</Text>
-			<View style={{ width: (width * 1) / 2 }}>
+		<View style={[styles.container]}>
+			<Text style={styles.text}>🪞 거울을 연결하여 사용하세요</Text>
+			<View>
 				<BigButton children={"거울 연결하기"} clickFunction={moveToEdit}></BigButton>
 			</View>
 		</View>
@@ -44,12 +65,12 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
 		alignItems: "center",
-		elevation: 4,
 		padding: 20
 	},
 	text: {
-		fontSize: 15,
-		color: "#373737"
+		fontSize: 25,
+		color: "#373737",
+		fontFamily: "line-bd"
 	}
 })
 
