@@ -142,7 +142,7 @@ export default function DailyInfo(props: DateData) {
 							<View style={{ backgroundColor: "#EBEDFF", width: width }}>
 								<Text style={{ fontSize: 25, fontFamily: "line-bd", padding: 5 }}>사진</Text>
 							</View>
-							<View style={{ flexDirection: "row" }}>
+							<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 								{picList.map((item, idx) => {
 									return (
 										<View key={idx}>
