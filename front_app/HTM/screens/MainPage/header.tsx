@@ -80,7 +80,8 @@ function Header({ navigation }: any) {
 const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
-		elevation: 4
+		elevation: 4,
+		margin: 10
 	},
 	text: {
 		fontSize: 30,

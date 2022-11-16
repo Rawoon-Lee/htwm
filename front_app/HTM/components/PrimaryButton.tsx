@@ -1,5 +1,5 @@
 import * as React from "react"
-import { StyleSheet, Text, View, Pressable } from "react-native"
+import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native"
 
 function PrimaryButton({ children, clickFunction }: any) {
 	function pressHandler() {
@@ -56,13 +56,9 @@ function SmallButton({ children, clickFunction, color, borderColor }: any) {
 }
 function BigButton({ children, clickFunction, color, borderColor }: any) {
 	return (
-		<View style={styles4(color, borderColor).outerContainer}>
-			<Pressable
-				style={styles4(color, borderColor).innerContainer}
-				onPress={clickFunction}
-				android_ripple={{ color: "yellow" }}
-			>
-				<Text style={styles4(color, borderColor).textStyle}>{children}</Text>
+		<View style={styles4(color).outerContainer}>
+			<Pressable style={styles4(color).innerContainer} onPress={clickFunction}>
+				<Text style={styles4(color).textStyle}>{children}</Text>
 			</Pressable>
 		</View>
 	)
@@ -144,25 +140,24 @@ const styles3 = (color: any, borderColor: any) =>
 		}
 	})
 
-const styles4 = (color: any, borderColor: any) =>
+const styles4 = (color: any) =>
 	StyleSheet.create({
 		outerContainer: {
-			borderRadius: 18,
-			borderColor: borderColor,
+			padding: 10,
+			borderRadius: 7,
 			margin: 10,
-			overflow: "hidden",
-			borderStyle: "solid",
-			borderWidth: 2
+			backgroundColor: "lightgreen",
+			width: (Dimensions.get("screen").width * 8) / 10
 		},
 		innerContainer: {
-			paddingHorizontal: 10,
-			paddingVertical: 4,
-			backgroundColor: color
+			flexDirection: "row",
+			justifyContent: "center"
 		},
 		textStyle: {
-			color: "black",
+			color: "white",
 			fontSize: 20,
-			textAlign: "center"
+			textAlign: "center",
+			fontFamily: "line-bd"
 		}
 	})
 const alarmStyle = (color: any) =>
