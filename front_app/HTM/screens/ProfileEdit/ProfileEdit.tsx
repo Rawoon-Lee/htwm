@@ -12,6 +12,8 @@ import { picture } from "../../api/pictureAPI"
 import { getUserInfo, initUserId } from "../../store/user"
 import FormData from "form-data"
 
+import { color } from "../../Style/commonStyle"
+
 function ProfileEdit({ navigation }: any) {
 	const dispatch = useAppDispatch()
 	const userId = useAppSelector(state => state.userId)
@@ -189,7 +191,7 @@ function ProfileEdit({ navigation }: any) {
 				<View style={{ marginLeft: 5 }}>
 					<View
 						style={{
-							backgroundColor: `#b4b4b4`,
+							backgroundColor: "lightgreen",
 							paddingLeft: 10,
 							paddingRight: 10,
 							paddingBottom: 5,
@@ -235,7 +237,7 @@ function ProfileEdit({ navigation }: any) {
 				maxLength={7}
 				value={newNickname}
 				style={{
-					backgroundColor: "#dcdcdc",
+					backgroundColor: color.textInputGrey,
 					padding: 10,
 					borderRadius: 10,
 					margin: 10,
@@ -254,7 +256,7 @@ function ProfileEdit({ navigation }: any) {
 				defaultValue={String(userInfo.height)}
 				maxLength={3}
 				style={{
-					backgroundColor: "#dcdcdc",
+					backgroundColor: color.textInputGrey,
 					padding: 10,
 					borderRadius: 10,
 					margin: 10,
@@ -270,7 +272,7 @@ function ProfileEdit({ navigation }: any) {
 				placeholder="기기의 번호를 등록해주세요"
 				onChangeText={text => setUuid(text)}
 				style={{
-					backgroundColor: "#dcdcdc",
+					backgroundColor: color.textInputGrey,
 					padding: 10,
 					borderRadius: 10,
 					margin: 10,
@@ -279,7 +281,7 @@ function ProfileEdit({ navigation }: any) {
 			></TextInput>
 			<View
 				style={{
-					backgroundColor: `#b4b4b4`,
+					backgroundColor: "lightgreen",
 					paddingLeft: 10,
 					paddingRight: 10,
 					paddingBottom: 5,
@@ -291,12 +293,14 @@ function ProfileEdit({ navigation }: any) {
 				}}
 			>
 				<Pressable onPress={registerUuid}>
-					<Text style={{ textAlign: "center", fontFamily: "line-rg" }}>기기 등록</Text>
+					<Text style={{ textAlign: "center", fontFamily: "line-rg", paddingVertical: 3 }}>
+						기기 등록
+					</Text>
 				</Pressable>
 			</View>
 			<View
 				style={{
-					backgroundColor: `#D2D6FF`,
+					backgroundColor: "skyblue",
 					padding: 10,
 					borderRadius: 7,
 					marginLeft: 10,
@@ -305,7 +309,15 @@ function ProfileEdit({ navigation }: any) {
 				}}
 			>
 				<Pressable onPress={updateProfile}>
-					<Text style={{ textAlign: "center", fontFamily: "line-rg", fontSize: 15 }}>
+					<Text
+						style={{
+							paddingVertical: 3,
+							textAlign: "center",
+							fontFamily: "line-bd",
+							fontSize: 18,
+							color: "white"
+						}}
+					>
 						수정 완료
 					</Text>
 				</Pressable>
@@ -313,15 +325,25 @@ function ProfileEdit({ navigation }: any) {
 			<View
 				style={{
 					backgroundColor: `#fff`,
+					borderWidth: 2,
+					borderRadius: 10,
+					borderColor: color.textInputGrey,
 					padding: 10,
-					borderRadius: 7,
 					marginLeft: 10,
 					marginRight: 10,
-					marginTop: 15
+					marginTop: 10
 				}}
 			>
 				<Pressable onPress={logout}>
-					<Text style={{ color: "pink", textAlign: "center", fontFamily: "line-rg", fontSize: 15 }}>
+					<Text
+						style={{
+							color: color.danger,
+							paddingVertical: 3,
+							textAlign: "center",
+							fontFamily: "line-rg",
+							fontSize: 15
+						}}
+					>
 						로그아웃
 					</Text>
 				</Pressable>
@@ -333,7 +355,8 @@ function ProfileEdit({ navigation }: any) {
 const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
-		flex: 1
+		flex: 1,
+		backgroundColor: "#fff"
 	},
 	parts: {
 		justifyContent: "center",
