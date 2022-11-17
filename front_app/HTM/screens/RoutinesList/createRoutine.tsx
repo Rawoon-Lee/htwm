@@ -31,7 +31,7 @@ export default function CreateRoutine({ navigation }: any) {
 
 	const [boxes, setBoxes] = React.useState<JSX.Element[]>([])
 	const colors = ["#00796B", "#DE5788", "#9747FF", "#8FE81E", "#E0BB95"]
-	const [selectedColor, setSelectedColor] = React.useState("D2D2FF")
+	const [selectedColor, setSelectedColor] = React.useState("#8686ff")
 
 	const [exerciseList, setExerciseList] = React.useState<ExerciseData[] | null>(null)
 

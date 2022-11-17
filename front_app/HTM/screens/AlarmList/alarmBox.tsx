@@ -7,6 +7,8 @@ import { getAlarmList, initAlarmList } from "../../store/notice"
 import { notice } from "../../api/noticeAPI"
 import { user } from "../../api/userAPI"
 import { streaming } from "../../api/streamingAPI"
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
 
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
@@ -21,8 +23,7 @@ function AlarmBox(props: any) {
 			<View
 				style={{
 					flexDirection: "row",
-					justifyContent: "space-between",
-					alignItems: "center"
+					alignItems: "center",
 				}}
 			>
 				<Image style={styles.profile} source={{ uri: props.alarmData.fromUrl }}></Image>
@@ -84,24 +85,43 @@ function AlarmMessage(props: any) {
 			console.log(JSON.stringify(res))
 		})
 	}
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
 
+	React.useEffect(() => {
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
+	}, [])
+
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 	if (props.alarmData.type == "REQ_FRI") {
 		return (
 			<View
 				style={{
-					flexDirection: "row",
-					width: width / 2,
 					justifyContent: "space-between",
 					alignItems: "center"
 				}}
+				onLayout={onLayoutRootView}
 			>
 				<View style={styles.message}>
-					<Text style={{ fontSize: 14 }}>
-						{fromName}님이{"\n"}친구신청 하였습니다.
+					<Text style={{ flexWrap: "wrap", textAlign:"center", fontFamily:"line-rg", fontSize: 18}}>
+						{fromName}님이 친구신청 하였습니다.
 					</Text>
 				</View>
 				{props.alarmData.read == false ? (
-					<View style={{ flexDirection: "row", marginLeft: -30, justifyContent: "center" }}>
+					<View style={{ flexDirection: "row", justifyContent: "center", marginTop:5 }}>
 						<AlarmButton
 							children={"수락"}
 							color={"skyblue"}
@@ -134,19 +154,17 @@ function AlarmMessage(props: any) {
 		return (
 			<View
 				style={{
-					flexDirection: "row",
-					width: width / 2,
 					justifyContent: "space-between",
 					alignItems: "center"
 				}}
 			>
 				<View style={styles.message}>
-					<Text style={{ fontSize: 14 }}>
-						{fromName}님이{"\n"}플레이를 신청하였습니다.
+					<Text style={{ flexWrap: "wrap", textAlign:"center", fontFamily:"line-rg",fontSize: 18 }}>
+						{fromName}님이 플레이를 신청하였습니다.
 					</Text>
 				</View>
 				{props.alarmData.read == false ? (
-					<View style={{ flexDirection: "row", marginLeft: -30, justifyContent: "center" }}>
+					<View style={{ flexDirection: "row", justifyContent: "center", marginTop:5}}>
 						<AlarmButton
 							children={"수락"}
 							color={"skyblue"}
@@ -192,24 +210,24 @@ function AlarmMessage(props: any) {
 	} else if (props.alarmData.type == "ACC_FRI") {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
-				<Text style={{ fontSize: 14, marginLeft: -100 }}>
-					{fromName}님이{"\n"}친구가 되었습니다.
+				<Text style={{ flexWrap: "wrap", textAlign:"center",fontFamily:"line-rg", fontSize: 18 }}>
+					{fromName}님이 친구가 되었습니다.
 				</Text>
 			</View>
 		)
 	} else if (props.alarmData.type == "ACC_STR") {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
-				<Text style={{ fontSize: 14, marginLeft: -100 }}>
-					{fromName}님이{"\n"}플레이를 수락하였습니다.
+				<Text style={{ 	flexWrap: "wrap",textAlign:"center", fontFamily:"line-rg", fontSize: 18 }}>
+					{fromName}님이 플레이를 수락하였습니다.
 				</Text>
 			</View>
 		)
 	} else if (props.alarmData.type == "DEN_STR") {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
-				<Text style={{ fontSize: 14, marginLeft: -100 }}>
-					{fromName}님이{"\n"}플레이를 거절하였습니다.
+				<Text style={{ flexWrap: "wrap", textAlign:"center", fontFamily:"line-rg", fontSize: 18 }}>
+					{fromName}님이 플레이를 거절하였습니다.
 				</Text>
 			</View>
 		)
@@ -226,8 +244,7 @@ const styles = StyleSheet.create({
 		borderRadius: 30
 	},
 	message: {
-		width: (width * 5) / 12,
-		marginLeft: -70
+		width: width * 7/10,
 	}
 })
 
@@ -237,8 +254,8 @@ const boxStyle = (color: any) =>
 			backgroundColor: color,
 			borderRadius: 10,
 			width: (width * 9) / 10,
-			height: height / 11,
 			justifyContent: "center",
-			paddingHorizontal: 10
+			paddingHorizontal: 10,
+			paddingVertical: 10
 		}
 	})

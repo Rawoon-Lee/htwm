@@ -7,6 +7,7 @@ import moment from "moment"
 
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
+import { exerciseColor, color } from "../../Style/commonStyle"
 
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { picture } from "../../api/pictureAPI"
@@ -72,16 +73,6 @@ export default function DailyInfo(props: DateData) {
 			.catch(err => console.log(err))
 	}, [props.timestamp])
 
-	const onLayoutRootView = React.useCallback(async () => {
-		if (fontsLoaded) {
-			await SplashScreen.hideAsync()
-		}
-	}, [fontsLoaded])
-
-	if (!fontsLoaded) {
-		return null
-	}
-
 	function msToTime(diff: number) {
 		let duration = moment.duration(diff)
 		let seconds: number = duration.asSeconds()
@@ -109,6 +100,16 @@ export default function DailyInfo(props: DateData) {
 	}
 
 	// console.log(recordList[0].routineJson)
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
+
 	return (
 		<View onLayout={onLayoutRootView} style={{ justifyContent: "center", alignItems: "center" }}>
 			{dailyRecord.length >= 1 || picList.length >= 1 || dayWeight.length >= 1 ? (
@@ -203,11 +204,28 @@ export default function DailyInfo(props: DateData) {
 												</View>
 												<View style={{ paddingLeft: 4 }}>
 													{JSON.parse(item.routineJson).sets.map((set: any, id: number) => {
+														if (set.exercise_name == "휴식") return
 														return (
-															<View key={id} style={{ flexDirection: "row", padding: 1 }}>
+															<View
+																key={id}
+																style={{
+																	flexDirection: "row",
+																	padding: 1,
+																	alignItems: "center",
+																	marginTop: 3
+																}}
+															>
 																<Text
-																	style={{ fontFamily: "line-rg", width: 100, fontSize: 18 }}
-																>{`${set.exercise_name} `}</Text>
+																	style={{
+																		fontFamily: "line-bd",
+																		fontSize: 16,
+																		padding: 5,
+																		paddingHorizontal: 9,
+																		borderRadius: 8,
+																		backgroundColor: `${exerciseColor[set.exercise_name]}`,
+																		marginRight: 5
+																	}}
+																>{`${set.exercise_name}`}</Text>
 																<Text style={{ fontFamily: "line-rg", fontSize: 18 }}>
 																	{`${set.set_cnt}${"  "}세트`}
 																</Text>

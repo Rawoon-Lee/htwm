@@ -10,10 +10,26 @@ import { getFriendsList, getFriendsSearchList } from "../../store/user"
 
 import { Feather } from "@expo/vector-icons"
 
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
+import { color } from "../../Style/commonStyle"
+
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 
 export default function FriendBox({ username, nickname, url, status, isSearch }: FriendData) {
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
+	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
+	}, [])
+
 	function Button0() {
 		return (
 			<View style={styles.button0}>
@@ -23,7 +39,7 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 						updateFriendList()
 					}}
 				>
-					<Text>친구 신청</Text>
+					<Text style={{ fontFamily: "line-bd", fontSize: 15, color: "#fff" }}>친구 신청</Text>
 				</Pressable>
 			</View>
 		)
@@ -32,7 +48,7 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 		return (
 			<View style={styles.button1}>
 				<Pressable disabled={true}>
-					<Feather name="check-circle" size={24} color="black" />
+					<Text style={{ fontFamily: "line-bd", fontSize: 18 }}>🟢{`  `}친구</Text>
 				</Pressable>
 			</View>
 		)
@@ -41,7 +57,7 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 		return (
 			<View style={styles.button2}>
 				<Pressable disabled={true}>
-					<Text>친구 신청</Text>
+					<Text style={{ fontFamily: "line-bd", fontSize: 15, color: "grey" }}>친구 신청</Text>
 				</Pressable>
 			</View>
 		)
@@ -55,7 +71,7 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 						updateFriendList()
 					}}
 				>
-					<Text>친구 수락</Text>
+					<Text style={{ fontFamily: "line-bd", fontSize: 15, color: "#fff" }}>친구 수락</Text>
 				</Pressable>
 			</View>
 		)
@@ -135,22 +151,48 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 				console.log(err)
 			})
 	}
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
 
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View style={styles.buttonContainer}>
+		<View style={styles.buttonContainer} onLayout={onLayoutRootView}>
 			<View style={{ flexDirection: "row", alignItems: "center" }}>
 				<Image source={{ uri: url }} style={styles.profilePic} />
-				<Text style={{ fontSize: 15 }}>{nickname}</Text>
+				<Text style={{ fontSize: 20, fontFamily: "line-bd" }}>{nickname}</Text>
 			</View>
 			{isSearch ? (
 				<View>{buttons[Number(status)]}</View>
 			) : (
-				<View style={{ flexDirection: "row" }}>
+				<View style={{ flexDirection: "row", backgroundColor: "#fff" }}>
 					<Pressable onPress={streamingRequest} style={styles.playButton}>
-						<Text>플레이</Text>
+						<Text
+							style={{
+								color: "white",
+								textAlign: "center",
+								fontFamily: "line-bd",
+								fontSize: 15
+							}}
+						>
+							플레이
+						</Text>
 					</Pressable>
 					<Pressable onPress={friendDelete} style={styles.deleteButton}>
-						<Text>삭제</Text>
+						<Text
+							style={{
+								color: color.danger,
+								textAlign: "center",
+								fontFamily: "line-bd",
+								fontSize: 15
+							}}
+						>
+							삭제
+						</Text>
 					</Pressable>
 				</View>
 			)}
@@ -159,61 +201,67 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 }
 const styles = StyleSheet.create({
 	profilePic: {
-		width: height / 15,
-		height: height / 15,
+		width: height / 17,
+		height: height / 17,
 		borderRadius: 30,
 		marginRight: 12
 	},
 	button0: {
-		borderRadius: 10,
-		backgroundColor: "skyblue",
-		margin: 5,
-		paddingHorizontal: 10,
-		paddingVertical: 4
-	},
-	button1: {
-		borderWidth: 4,
-		borderColor: "grey",
-		borderRadius: 10
-	},
-	button2: {
-		borderRadius: 10,
-		backgroundColor: "grey",
-		margin: 5,
-		paddingHorizontal: 10,
-		paddingVertical: 4
-	},
-	button3: {
-		borderRadius: 10,
+		borderRadius: 7,
 		backgroundColor: "lightgreen",
 		margin: 5,
-		paddingHorizontal: 10,
-		paddingVertical: 4
+		paddingHorizontal: 12,
+		paddingVertical: 10
+	},
+	button1: {
+		// borderWidth: 4,
+		// borderColor: "grey",
+		// borderRadius: 10
+		margin: 5
+	},
+	button2: {
+		borderRadius: 7,
+		backgroundColor: color.textInputGrey,
+		margin: 5,
+		paddingHorizontal: 12,
+		paddingVertical: 10
+	},
+	button3: {
+		borderRadius: 7,
+		backgroundColor: "lightgreen",
+		margin: 5,
+		paddingHorizontal: 12,
+		paddingVertical: 10
 	},
 	playButton: {
-		borderRadius: 10,
 		backgroundColor: "skyblue",
-		margin: 5,
+		borderWidth: 2,
+		borderColor: "skyblue",
+		borderRadius: 7,
+		marginLeft: 10,
 		paddingHorizontal: 10,
-		paddingVertical: 4
+		paddingVertical: 5
 	},
 	deleteButton: {
-		borderRadius: 10,
-		backgroundColor: "pink",
-		margin: 5,
+		backgroundColor: "#fff",
+		borderWidth: 2,
+		borderColor: color.textInputGrey,
+		borderRadius: 7,
+		marginLeft: 10,
 		paddingHorizontal: 10,
-		paddingVertical: 4
+		paddingVertical: 5
 	},
 	buttonContainer: {
-		borderRadius: 10,
+		borderRadius: 15,
 		width: (width * 9) / 10,
 		height: height / 12,
-		borderWidth: 1,
-		borderColor: "grey",
+		elevation: 4,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
 		marginVertical: 5,
-		paddingHorizontal: 10
+		marginHorizontal: 2,
+		paddingHorizontal: 10,
+		backgroundColor: "#fff"
 	}
 })
