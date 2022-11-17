@@ -9,6 +9,9 @@ import { getFriendsList, initFriendList } from "../../store/user"
 import FriendBox from "./friendBox"
 import { FriendData } from "../../store/user"
 
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
+
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 
@@ -21,6 +24,18 @@ function FriendsList({ navigation }: any) {
 	const userId = useAppSelector(state => state.userId)
 	const friendList = useAppSelector(state => state.friendList)
 	const dispatch = useAppDispatch()
+
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
+	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
+	}, [])
 
 	React.useEffect(() => {
 		if (!userId.id) {
@@ -38,27 +53,44 @@ function FriendsList({ navigation }: any) {
 	function moveToSearch() {
 		navigation.navigate("FriendSearch")
 	}
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View style={styles.container}>
+		<View style={styles.container} onLayout={onLayoutRootView}>
 			<View
 				style={{
-					width: width,
+					width: width
 				}}
 			>
 				<Text
 					style={{
 						fontSize: 30,
-						paddingBottom: 5,
-						paddingLeft: 20
+						paddingVertical: 10,
+						paddingLeft: 20,
+						fontFamily: "line-bd"
 					}}
 				>
 					친구 목록
 				</Text>
-
 			</View>
-			<View style={{ width: width, alignItems: "flex-end" }}>
+			<View style={{ width: (width * 9) / 10, alignItems: "flex-end", marginBottom: 10 }}>
 				<Pressable style={styles.button} onPress={moveToSearch}>
-					<Text>친구추가</Text>
+					<Text
+						style={{
+							fontFamily: "line-bd",
+							fontSize: 18,
+							color: "white"
+						}}
+					>
+						친구추가
+					</Text>
 				</Pressable>
 			</View>
 			{friendList.length >= 1 ? (
@@ -68,9 +100,8 @@ function FriendsList({ navigation }: any) {
 					renderItem={renderItems}
 				></FlatList>
 			) : (
-				<Text>아직 친구가 없군요</Text>
+				<Text style={{ fontFamily: "line-rg", fontSize: 25 }}>😥 아직 친구가 없군요</Text>
 			)}
-
 		</View>
 	)
 }
@@ -81,17 +112,18 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		marginTop: Constants.statusBarHeight
+		marginTop: Constants.statusBarHeight,
+		backgroundColor: "#fff"
 	},
 	button: {
-		borderRadius: 13,
-		borderColor: "black",
-		margin: 10,
+		borderRadius: 8,
 		overflow: "hidden",
 		borderStyle: "solid",
-		borderWidth: 1,
 		paddingHorizontal: 15,
-		paddingVertical: 4,
-		backgroundColor: "#FAFAFA"
-	},
+		paddingVertical: 8,
+		backgroundColor: "lightgreen",
+		flexDirection: "row",
+		justifyContent: "center",
+		marginBottom: 5
+	}
 })
