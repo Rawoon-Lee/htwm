@@ -127,16 +127,32 @@ public class UserService {
              */
             int status = 0;
 
-            Optional<Notice> sentNotice = noticeRepository.findByFromIdAndToIdIfType(userRepository.findByUsername(username).getId(), user.getId(),Type.REQ_FRI.toString());
-            if(sentNotice.isPresent()) {
+            ArrayList<Notice> sentNotice = noticeRepository.findByFromIdAndToIdIfTypeArr(userRepository.findByUsername(username).getId(), user.getId(),Type.REQ_FRI.toString());
+            if(!sentNotice.isEmpty()) {
                 status = 2;
-                if(sentNotice.get().isIsread()) status = 0;
+                boolean flag = true;
+                for(Notice notice : sentNotice){
+                    if(notice.isIsread()) continue;
+                    else {
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag) status = 0;
             }
 
-            Optional<Notice> receivedNotice = noticeRepository.findByFromIdAndToIdIfType(user.getId(),userRepository.findByUsername(username).getId(),Type.REQ_FRI.toString());
-            if(receivedNotice.isPresent()) {
+            ArrayList<Notice> receivedNotice = noticeRepository.findByFromIdAndToIdIfTypeArr(user.getId(),userRepository.findByUsername(username).getId(),Type.REQ_FRI.toString());
+            if(!receivedNotice.isEmpty()) {
                 status = 3;
-                if(sentNotice.get().isIsread()) status = 0;
+                boolean flag = true;
+                for(Notice notice : sentNotice){
+                    if(notice.isIsread()) continue;
+                    else {
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag) status = 0;
             }
 
             Optional<Friend> friends = friendRepository.findByMyIdAndFriendId(userRepository.findByUsername(username).getId(), user.getId());
