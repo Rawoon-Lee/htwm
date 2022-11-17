@@ -1,4 +1,4 @@
-.modal {
+.modal-layer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,7 +8,7 @@
   height: 100%;
 }
 
-.modal-msg {
+.modal {
   position: absolute;
   top: 5vh;
   display: flex;
@@ -25,4 +25,8 @@
 
   color: black;
   font-size: 8vw;
+}
+
+.speaking {
+  background-color: red;
 }

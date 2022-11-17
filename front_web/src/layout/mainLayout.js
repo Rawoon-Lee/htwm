@@ -12,7 +12,7 @@ import { user } from '../actions/api/api'
 import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/user'
 import { setRoutineDetail } from '../store/modules/routine'
 import { setModalMsg, setModalState } from '../store/modules/util'
-import { UUID, SEND_TEST } from '../store/constants'
+import { UUID } from '../store/constants'
 
 import './mainLayout.css'
 
@@ -143,9 +143,9 @@ export default function mainLayout() {
   ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    ipcRenderer.on(SEND_TEST, getMsg)
+    ipcRenderer.on('send_test', getMsg)
     return () => {
-      ipcRenderer.removeListener(SEND_TEST, getMsg)
+      ipcRenderer.removeListener('send_test', getMsg)
     }
   }, [])
 
@@ -169,7 +169,7 @@ export default function mainLayout() {
   }
 
   const sendMain = () => {
-    ipcRenderer.send(SEND_TEST, 'hello')
+    ipcRenderer.send('send_test', 'hello')
   }
 
   return <div className="layout">{components[state]}</div>

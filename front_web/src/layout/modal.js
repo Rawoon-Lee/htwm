@@ -2,13 +2,16 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setModalMsg, setModalState } from '../store/modules/util'
 
+import NormalModal from './normalModal'
+import VoiceModal from './voiceModal'
+
 import './modal.css'
 
 export default function Modal(props) {
   const dispatch = useDispatch()
 
-  const modalMsg = useSelector((state) => state.util.modalMsg)
   const modalState = useSelector((state) => state.util.modalState)
+  const isVoice = useSelector((state) => state.util.isvoice)
 
   useEffect(() => {
     if (modalState) {
@@ -22,8 +25,8 @@ export default function Modal(props) {
   }, [modalState])
 
   return (
-    <div className="modal">
-      {modalState && <div className="modal-msg">{modalMsg}</div>}
+    <div className="modal-layer">
+      {modalState && isVoice ? <VoiceModal /> : <NormalModal />}
       {props.children}
     </div>
   )

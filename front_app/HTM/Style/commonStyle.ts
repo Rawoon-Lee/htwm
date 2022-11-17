@@ -16,3 +16,9 @@ export const commonStyle = StyleSheet.create({
 		justifyContent: "center"
 	}
 })
+
+export const color = {
+	textInputGrey: "#f2f3f5",
+	danger: "#fa6666",
+	divider: "#EBEDFF"
+}
