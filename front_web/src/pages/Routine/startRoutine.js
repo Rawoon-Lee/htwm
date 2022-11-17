@@ -45,9 +45,15 @@ export default function StartRoutine(props) {
           })
           .catch((error) => console.log(error))
       }
-      dispatch(setRoutineDetail({}))
+      dispatch(setRoutineDetail(-1))
     }
   }, [])
+
+  useEffect(() => {
+    if (!routineDetail.name) {
+      setRoutineState(3)
+    }
+  }, [routineDetail])
 
   useEffect(() => {
     time.current = routineDetail.sets[0].sec
