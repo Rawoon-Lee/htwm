@@ -1,5 +1,6 @@
 import * as React from "react"
 import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native"
+import { color } from "../Style/commonStyle"
 
 function PrimaryButton({ children, clickFunction }: any) {
 	function pressHandler() {
@@ -19,29 +20,24 @@ function PrimaryButton({ children, clickFunction }: any) {
 	)
 }
 
-function SelectButton({ children, clickFunction, color, borderColor }: any) {
+function SelectButton({ children, clickFunction, color, width, borderColor, textColor }: any) {
 	function pressHandler() {
 		console.log("눌렀다!")
 	}
 
 	return (
-		<View style={styles2(color, borderColor).outerContainer}>
+		<View style={styles2(color, width, borderColor, textColor).outerContainer}>
 			<Pressable
-				style={styles2(color, borderColor).innerContainer}
+				style={styles2(color, width, borderColor, textColor).innerContainer}
 				onPress={clickFunction}
-				android_ripple={{ color: "yellow" }}
 			>
-				<Text style={styles2(color, borderColor).textStyle}>{children}</Text>
+				<Text style={styles2(color, width, borderColor, textColor).textStyle}>{children}</Text>
 			</Pressable>
 		</View>
 	)
 }
 
 function SmallButton({ children, clickFunction, color, borderColor }: any) {
-	function pressHandler() {
-		console.log("눌렀다!")
-	}
-
 	return (
 		<View style={styles3(color, borderColor).outerContainer}>
 			<Pressable
@@ -98,25 +94,27 @@ const styles = StyleSheet.create({
 	}
 })
 
-const styles2 = (color: any, borderColor: any) =>
+const styles2 = (givencolor: any, width: number, borderColor: string, textColor: string) =>
 	StyleSheet.create({
 		outerContainer: {
-			borderRadius: 18,
-			borderColor: borderColor,
+			borderRadius: 8,
 			margin: 10,
 			overflow: "hidden",
 			borderStyle: "solid",
-			borderWidth: 2
+			backgroundColor: givencolor,
+			width: width
+			// borderColor: borderColor,
+			// borderWidth: 2
 		},
 		innerContainer: {
-			paddingHorizontal: 30,
-			paddingVertical: 4,
-			backgroundColor: color
+			paddingHorizontal: 20,
+			paddingVertical: 10
 		},
 		textStyle: {
-			color: "black",
-			fontSize: 20,
-			textAlign: "center"
+			color: textColor,
+			fontSize: 15,
+			textAlign: "center",
+			fontFamily: "line-bd"
 		}
 	})
 
