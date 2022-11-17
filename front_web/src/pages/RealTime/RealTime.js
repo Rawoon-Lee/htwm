@@ -40,19 +40,20 @@ export default function RealTime(props) {
       })
       client.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
-        if (!content.data) return
-        if (content.type === 1) {
+        if (content.type === 1 && content.data) {
           getOfferMakeAnswer(content.data)
         }
-        if (content.type === 2) {
+        if (content.type === 2 && content.data) {
           getAnswer(content.data)
         }
-        if (content.type === 3) {
+        if (content.type === 3 && content.data) {
           getIce(content.data)
         }
         if (content.type === 'END') {
-          if (isEnd) return
-          peerVideoRef.current.srcObject = ''
+          console.log(1)
+          if (isEnded) return
+          console.log(2)
+          peerVideoRef.current.srcObject = null
           setIsStarted(false)
           setIsEnded(true)
           setTimeout(() => {

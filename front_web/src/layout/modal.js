@@ -11,22 +11,19 @@ export default function Modal(props) {
   const dispatch = useDispatch()
 
   const modalState = useSelector((state) => state.util.modalState)
-  const isVoice = useSelector((state) => state.util.isvoice)
+  const isVoice = useSelector((state) => state.util.isVoice)
 
-  useEffect(() => {
-    if (modalState) {
-      // setTimeout(() => {
-      //   dispatch(setModalState(false))
-      // }, 3000)
-    }
-    return () => {
-      dispatch(setModalMsg(''))
-    }
-  }, [modalState])
+  // useEffect(() => {
+  // if (modalState) {
+  // setTimeout(() => {
+  //   dispatch(setModalState(false))
+  // }, 3000)
+  // }
+  // }, [modalState])
 
   return (
     <div className="modal-layer">
-      {modalState && isVoice ? <VoiceModal /> : <NormalModal />}
+      {modalState ? isVoice ? <VoiceModal /> : <NormalModal /> : null}
       {props.children}
     </div>
   )

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Stompjs from '@stomp/stompjs'
 import Sockjs from 'sockjs-client'
@@ -11,7 +11,7 @@ import Routine from '../pages/Routine/Routine'
 import { user } from '../actions/api/api'
 import { setStreamingPeer, setUserInfo, setUsername } from '../store/modules/user'
 import { setRoutineDetail } from '../store/modules/routine'
-import { setModalMsg, setModalState } from '../store/modules/util'
+import { setModalMsg, setModalState, setIsVoice, setVoiceMsg } from '../store/modules/util'
 import { UUID } from '../store/constants'
 
 import './mainLayout.css'
@@ -23,6 +23,8 @@ export default function mainLayout() {
   const routineList = useSelector((state) => state.routine.routineList)
   const userStore = useSelector((state) => state.user)
   const modalState = useSelector((state) => state.util.modalState)
+  const modalStateRef = useRef(null)
+  const stateRef = useRef(0)
 
   const [client, setClient] = useState(undefined)
   const [state, setState] = useState(0)
@@ -41,6 +43,14 @@ export default function mainLayout() {
       clearInterval(getInfoInterval)
     }
   }, [])
+
+  useEffect(() => {
+    modalStateRef.current = modalState
+  }, [modalState])
+
+  useEffect(() => {
+    stateRef.current = state
+  }, [state])
 
   useEffect(() => {
     const eventListener = window.addEventListener('keydown', (e) => {
@@ -67,6 +77,9 @@ export default function mainLayout() {
     const stompClient = new Stompjs.Client({})
     stompClient.webSocketFactory = () => new Sockjs('https://k7a306.p.ssafy.io/api/socket')
 
+    let knockCount = 0
+    let knockStart = false
+    let voiceStarted = false
     stompClient.onConnect = () => {
       stompClient.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
@@ -76,56 +89,96 @@ export default function mainLayout() {
           const peerInfo = { username: content.from, url: content.url, nickname: content.nickname }
           dispatch(setStreamingPeer(peerInfo))
           setState(2)
-        } else if (content.type === 'END') {
-          // 통화를 종료
-        } else if (content.type === 'knock' && state === 0) {
-          dispatch(setModalMsg('사진 화면으로 넘어갑니다'))
-          dispatch(setModalState(true))
-          setTimeout(() => {
-            setState(1)
-            dispatch(setModalState(false))
-          }, 2000)
-        } else if (content.type === 'speech') {
-          // start 면 모달 띄우기
-          // end 면 모달 내리기
-          // again 이면 다시 말해주세요
-          if (content.data === 'end' && modalState) {
-            dispatch(setModalState(false))
-          }
-        } else if (content.type === 'order') {
-          // 운동 시작해줘
-          // setState(3)
-          //
-          if (state === 0 && content.data === '운동') {
-            dispatch(setModalMsg('운동 화면으로 넘어갑니다'))
-            dispatch(setModalState(true))
+        } else if (content.type === 'knock' && stateRef.current === 0) {
+          // 노크
+          if (knockCount < 8) {
+            knockCount++
             setTimeout(() => {
-              setState(1)
-              dispatch(setModalState(false))
-            }, 2000)
-          } else if (state === 3 && content.data.search('번 루틴')) {
-            const idx = Number(content.data.split('번')[0])
-            dispatch(setRoutineDetail(routineList[idx - 1]))
-            // 운동 시작
-          } else if (state === 3 && content.data === '루틴 종료') {
-            // 루틴 종료
-          } else if (state === 0 && content.data === '사진') {
+              console.log('노크 리셋')
+              knockCount = 0
+            }, 5000)
+          } else if (!knockStart) {
+            knockStart = true
             dispatch(setModalMsg('사진 화면으로 넘어갑니다'))
             dispatch(setModalState(true))
             setTimeout(() => {
+              if (stateRef.current === 0) {
+                setState(1)
+                dispatch(setModalState(false))
+              }
+              knockStart = false
+            }, 1000)
+          }
+        } else if (content.type === 'speech') {
+          // 스피치 제어
+          if (content.data === 'start' && !modalStateRef.current) {
+            dispatch(setVoiceMsg('원하시는걸 말해주세요!'))
+            voiceStarted = true
+            dispatch(setModalState(true))
+            dispatch(setIsVoice(true))
+          } else if (content.data === 'again' && modalStateRef.current) {
+            dispatch(setVoiceMsg('다시 말해주세요!'))
+          } else if (content.data === 'end') {
+            dispatch(setVoiceMsg('음성인식이 종료됩니다.'))
+            setTimeout(() => {
+              if (modalStateRef.current) {
+                dispatch(setModalState(false))
+              }
+            }, 1000)
+          } else if (modalStateRef.current) {
+            if (voiceStarted) {
+              voiceStarted = false
+            } else {
+              dispatch(setModalMsg(content.data))
+            }
+          }
+        } else if (content.type === 'order' && modalStateRef.current) {
+          // 스피치 결과
+          if (stateRef.current === 0 && content.data === '리스트') {
+            dispatch(setVoiceMsg('운동 화면으로 넘어갑니다'))
+            dispatch(setModalMsg(''))
+            setTimeout(() => {
+              dispatch(setVoiceMsg('$리스트'))
+              setState(3)
+            }, 1000)
+          } else if (stateRef.current === 3 && content.data === '루틴 종료') {
+            dispatch(setVoiceMsg('운동을 종료합니다.'))
+            dispatch(setModalMsg(''))
+            setTimeout(() => {
+              dispatch(setRoutineDetail({}))
+              dispatch(setModalState(false))
+            }, 1000)
+          } else if (stateRef.current === 0 && content.data === '사진') {
+            dispatch(setVoiceMsg('사진 화면으로 넘어갑니다'))
+            dispatch(setModalMsg(''))
+            setTimeout(() => {
               setState(1)
               dispatch(setModalState(false))
-            }, 2000)
-          } else if (state === 2 && content.data === '종료') {
-            client.publish({
-              destination: `/pub/streaming`,
-              body: JSON.stringify({
-                from: userStore.username,
-                to: userStore.username,
-                type: 'END',
-                url: userStore.userInfo.url,
-              }),
-            })
+            }, 1000)
+          } else if (stateRef.current === 2 && content.data === '종료') {
+            dispatch(setVoiceMsg('통화를 종료합니다.'))
+            dispatch(setModalMsg(''))
+            setTimeout(() => {
+              client.publish({
+                destination: `/pub/streaming`,
+                body: JSON.stringify({
+                  from: userStore.username,
+                  to: userStore.username,
+                  type: 'END',
+                  url: userStore.userInfo.url,
+                }),
+              })
+              dispatch(setModalState(false))
+            }, 1000)
+          } else if (stateRef.current === 3) {
+            const idx = Number(content.data)
+            dispatch(setVoiceMsg(`${idx}번 운동을 시작합니다.`))
+            dispatch(setModalMsg(''))
+            setTimeout(() => {
+              dispatch(setRoutineDetail(idx - 1))
+              dispatch(setModalState(false))
+            }, 1000)
+          } else {
           }
         }
       })
