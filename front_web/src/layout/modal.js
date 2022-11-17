@@ -11,12 +11,14 @@ export default function Modal(props) {
   const modalState = useSelector((state) => state.util.modalState)
 
   useEffect(() => {
-    // if (modalState) {
-    //   setTimeout(() => {
-    //     dispatch(setModalState(false))
-    //     dispatch(setModalMsg(''))
-    //   }, 3000)
-    // }
+    if (modalState) {
+      // setTimeout(() => {
+      //   dispatch(setModalState(false))
+      // }, 3000)
+    }
+    return () => {
+      dispatch(setModalMsg(''))
+    }
   }, [modalState])
 
   return (

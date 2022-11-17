@@ -22,6 +22,7 @@ export default function mainLayout() {
 
   const routineList = useSelector((state) => state.routine.routineList)
   const userStore = useSelector((state) => state.user)
+  const modalState = useSelector((state) => state.util.modalState)
 
   const [client, setClient] = useState(undefined)
   const [state, setState] = useState(0)
@@ -60,7 +61,7 @@ export default function mainLayout() {
     })
   }, [])
 
-  ////////////////////////////////////////////////////webSocket 통신//////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////webSocket(stomp) 통신//////////////////////////////////////////////////////////////
 
   useEffect(() => {
     const stompClient = new Stompjs.Client({})
@@ -75,6 +76,57 @@ export default function mainLayout() {
           const peerInfo = { username: content.from, url: content.url, nickname: content.nickname }
           dispatch(setStreamingPeer(peerInfo))
           setState(2)
+        } else if (content.type === 'END') {
+          // 통화를 종료
+        } else if (content.type === 'knock' && state === 0) {
+          dispatch(setModalMsg('사진 화면으로 넘어갑니다'))
+          dispatch(setModalState(true))
+          setTimeout(() => {
+            setState(1)
+            dispatch(setModalState(false))
+          }, 2000)
+        } else if (content.type === 'speech') {
+          // start 면 모달 띄우기
+          // end 면 모달 내리기
+          // again 이면 다시 말해주세요
+          if (content.data === 'end' && modalState) {
+            dispatch(setModalState(false))
+          }
+        } else if (content.type === 'order') {
+          // 운동 시작해줘
+          // setState(3)
+          //
+          if (state === 0 && content.data === '운동') {
+            dispatch(setModalMsg('운동 화면으로 넘어갑니다'))
+            dispatch(setModalState(true))
+            setTimeout(() => {
+              setState(1)
+              dispatch(setModalState(false))
+            }, 2000)
+          } else if (state === 3 && content.data.search('번 루틴')) {
+            const idx = Number(content.data.split('번')[0])
+            dispatch(setRoutineDetail(routineList[idx - 1]))
+            // 운동 시작
+          } else if (state === 3 && content.data === '루틴 종료') {
+            // 루틴 종료
+          } else if (state === 0 && content.data === '사진') {
+            dispatch(setModalMsg('사진 화면으로 넘어갑니다'))
+            dispatch(setModalState(true))
+            setTimeout(() => {
+              setState(1)
+              dispatch(setModalState(false))
+            }, 2000)
+          } else if (state === 2 && content.data === '종료') {
+            client.publish({
+              destination: `/pub/streaming`,
+              body: JSON.stringify({
+                from: userStore.username,
+                to: userStore.username,
+                type: 'END',
+                url: userStore.userInfo.url,
+              }),
+            })
+          }
         }
       })
     }
@@ -87,23 +139,6 @@ export default function mainLayout() {
       }
     }
   }, [])
-
-  // 사진 시작
-  // setState(1)
-  // 운동 시작
-  // setState(3)
-  // idx번 운동 시작
-  // dispatch(setRoutineDetail(routineList[idx - 1]))
-  // 통화 종료해줘
-  // client.publish({
-  //   destination: `/pub/streaming`,
-  //   body: JSON.stringify({
-  //     from: userStore.username,
-  //     to: userStore.username,
-  //     type: 'END',
-  //     url: userStore.userInfo.url,
-  //   }),
-  // })
 
   ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
 
