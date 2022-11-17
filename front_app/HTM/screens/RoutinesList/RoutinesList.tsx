@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native"
 import Constants from "expo-constants"
 import * as React from "react"
 
@@ -11,7 +11,8 @@ import { SelectButton } from "../../components/PrimaryButton"
 
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
-import { commonStyle } from "../../Style/commonStyle"
+import { color } from "../../Style/commonStyle"
+let width = Dimensions.get("screen").width
 
 function RoutineList({ navigation }: any) {
 	const dispatch = useAppDispatch()
@@ -57,43 +58,48 @@ function RoutineList({ navigation }: any) {
 
 	return (
 		<View style={styles.container} onLayout={onLayoutRootView}>
-			<Text
-				style={{
-					fontSize: 30,
-					paddingBottom: 5,
-					paddingLeft: 20
-				}}
-			>
-				루틴
-			</Text>
-			{routineList.length >= 1 ? (
-				<View style={{ justifyContent: "space-between" }}>
-					<View style={{ alignItems: "center" }}>
-						{routineList.map((cur, idx) => {
-							return <RoutineBox key={idx} routine={routineList[idx]}></RoutineBox>
-						})}
-					</View>
-				</View>
-			) : (
-				<Text style={{ fontFamily: "line-rg", fontSize: 20, textAlign: "center" }}>
-					아직 루틴이 없군요
+			<ScrollView>
+				<Text
+					style={{
+						fontSize: 30,
+						paddingVertical: 10,
+						paddingLeft: 20,
+						fontFamily: "line-bd"
+					}}
+				>
+					루틴
 				</Text>
-			)}
+				{routineList.length >= 1 ? (
+					<View style={{ justifyContent: "space-between" }}>
+						<View style={{ alignItems: "center" }}>
+							{routineList.map((cur, idx) => {
+								return <RoutineBox key={idx} routine={routineList[idx]}></RoutineBox>
+							})}
+						</View>
+					</View>
+				) : (
+					<Text style={{ fontFamily: "line-rg", fontSize: 20, textAlign: "center" }}>
+						아직 루틴이 없군요
+					</Text>
+				)}
 
-			<View
-				style={{
-					flexDirection: "row",
-					justifyContent: "center",
-					marginTop: 10
-				}}
-			>
-				<SelectButton
-					children={"추가"}
-					color={"white"}
-					borderColor={"green"}
-					clickFunction={moveToCreate}
-				/>
-			</View>
+				<View
+					style={{
+						flexDirection: "row",
+						justifyContent: "center",
+						marginTop: 10
+					}}
+				>
+					<SelectButton
+						children={<Feather name="plus-circle" size={24} color="white" />}
+						color={"lightgreen"}
+						clickFunction={moveToCreate}
+						borderColor={"lightgreen"}
+						textColor={"white"}
+						width={(width * 9) / 10}
+					/>
+				</View>
+			</ScrollView>
 		</View>
 	)
 }
@@ -102,7 +108,9 @@ export default RoutineList
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: Constants.statusBarHeight
+		marginTop: Constants.statusBarHeight,
+		backgroundColor: "white",
+		flex: 1
 	},
 	buttons: {
 		backgroundColor: "white"
