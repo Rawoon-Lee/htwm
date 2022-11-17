@@ -9,7 +9,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: __dirname + '/dist',
-    filename: 'react.js',
+    filename: '[name].js',
     // publicPath: './',
   },
   resolve: {

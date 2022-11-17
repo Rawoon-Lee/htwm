@@ -10,19 +10,17 @@ function createWindow() {
     height: 1920,
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       enableRemoteModule: true,
       devTools: isDev,
       contextIsolation: false,
       webSecurity: false,
     },
   })
-
   mainWindow.loadURL(isDev ? 'http://localhost:8080' : `file://${path.join(__dirname, '../dist/index.html')}`)
-
   if (isDev) {
     mainWindow.webContents.openDevTools({ mode: 'detach' })
   }
-
   mainWindow.setResizable(true)
   mainWindow.on('closed', () => (mainWindow = null))
   mainWindow.focus()
