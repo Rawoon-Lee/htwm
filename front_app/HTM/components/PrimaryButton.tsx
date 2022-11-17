@@ -162,19 +162,26 @@ const styles4 = (color: any) =>
 const alarmStyle = (color: any) =>
 	StyleSheet.create({
 		outerContainer: {
-			borderRadius: 18,
-			margin: 5,
-			overflow: "hidden"
+			// borderRadius: 18,
+			// margin: 5,
+			// overflow: "hidden"
+			backgroundColor: color,
+			borderWidth: 2,
+			borderColor: color,
+			borderRadius: 7,
+			paddingHorizontal: 5,
+			paddingVertical: 3,
+			margin: 4
 		},
 		innerContainer: {
-			paddingHorizontal: 45,
-			paddingVertical: 5,
-			backgroundColor: color
+			paddingHorizontal: 35,
+			paddingVertical: 5
+			// backgroundColor: color
 		},
 		textStyle: {
-			color: "black",
+			color: "white",
 			fontSize: 16,
 			textAlign: "center",
-			fontFamily: "line-rg"
+			fontFamily: "line-bd"
 		}
 	})

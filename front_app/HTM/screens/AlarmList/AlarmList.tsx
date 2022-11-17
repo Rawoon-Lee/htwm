@@ -30,13 +30,14 @@ function AlarmList() {
 		notice
 			.getAlarms(userId.id)
 			.then(result => {
-				dispatch(getAlarmList(result.data))
+				console.log(result.data)
+				dispatch(getAlarmList(result.data.reverse()))
 			})
 			.catch(err => {
 				console.log(err)
 			})
 	}, [])
-	
+
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {
 			await SplashScreen.hideAsync()
@@ -58,7 +59,7 @@ function AlarmList() {
 						fontSize: 30,
 						paddingVertical: 10,
 						paddingLeft: 20,
-						fontFamily:"line-bd"
+						fontFamily: "line-bd"
 					}}
 				>
 					알림
@@ -74,7 +75,10 @@ function AlarmList() {
 						)
 					})
 				) : (
-					<Text style={{fontFamily: "line-rg", fontSize: 20, textAlign: "center"}}> 알람이 없습니다. </Text>
+					<Text style={{ fontFamily: "line-rg", fontSize: 20, textAlign: "center" }}>
+						{" "}
+						알람이 없습니다.{" "}
+					</Text>
 				)}
 			</ScrollView>
 		</View>
@@ -87,8 +91,8 @@ const styles = StyleSheet.create({
 	container: {
 		marginTop: Constants.statusBarHeight,
 		alignItems: "center",
-		paddingBottom: 45,
-		backgroundColor:"white",
-		flex:1,
+		// paddingBottom: 45,
+		backgroundColor: "white",
+		flex: 1
 	}
 })

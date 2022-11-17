@@ -33,10 +33,10 @@ let height = Dimensions.get("screen").height
 function MyRecord() {
 	const tabBarHeight = height / 2.5 + 10
 
-	// const userId = useAppSelector(state => state.userId)
-	const userId = {
-		id: "b"
-	}
+	const userId = useAppSelector(state => state.userId)
+	// const userId = {
+	// 	id: "b"
+	// }
 	const recordList = useAppSelector(state => state.recordList)
 	const picList = useAppSelector(state => state.picList)
 	const weightList = useAppSelector(state => state.weightList)
