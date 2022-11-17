@@ -14,6 +14,10 @@ import {
 
 import FriendBox from "./friendBox"
 
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
+import { color } from "../../Style/commonStyle"
+
 function renderItems({ item }: { item: FriendData }) {
 	return (
 		<View style={{ alignItems: "center" }}>
@@ -33,6 +37,17 @@ function FriendSearch() {
 	const userId = useAppSelector(state => state.userId)
 	const friendSearchList = useAppSelector(state => state.friendSearchList)
 	const [input, setInput] = React.useState("")
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
+	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
+	}, [])
 
 	React.useEffect(() => {
 		if (!input) {
@@ -50,9 +65,18 @@ function FriendSearch() {
 			})
 			.catch(err => console.log(err))
 	}
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 
 	return (
-		<View style={styles.container}>
+		<View style={styles.container} onLayout={onLayoutRootView}>
 			<Text style={{ margin: 10 }}>친구검색</Text>
 			<TextInput
 				onChangeText={text => {
@@ -61,7 +85,7 @@ function FriendSearch() {
 				}}
 				placeholder="닉네임을 입력해주세요"
 				style={{
-					backgroundColor: "#d2d2d2",
+					backgroundColor: color.textInputGrey,
 					padding: 10,
 					borderRadius: 10,
 					margin: 10,
@@ -82,7 +106,8 @@ export default FriendSearch
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: "#fff"
 		// marginTop: Constants.statusBarHeight
 	}
 })

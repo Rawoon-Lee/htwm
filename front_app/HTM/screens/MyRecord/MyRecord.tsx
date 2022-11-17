@@ -3,14 +3,18 @@ import Constants from "expo-constants"
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { Calendar } from "react-native-calendars"
 import { LocaleConfig } from "react-native-calendars"
+import * as React from "react"
 
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getUserRecord } from "../../store/record"
-import * as React from "react"
 import { record } from "../../api/recordAPI"
-import DailyInfo from "./dailyInfo"
+import { picture } from "../../api/pictureAPI"
+import { user } from "../../api/userAPI"
+import { getPicList } from "../../store/picture"
+import { getWeightList } from "../../store/user"
 import routine from "../../store/routine"
-import RoutineList from "../RoutinesList/RoutinesList"
+
+import DailyInfo from "./dailyInfo"
 
 export interface DateData {
 	dateString: string
@@ -29,11 +33,13 @@ let height = Dimensions.get("screen").height
 function MyRecord() {
 	const tabBarHeight = height / 2.5 + 10
 
-	const recordList = useAppSelector(state => state.recordList)
 	// const userId = useAppSelector(state => state.userId)
 	const userId = {
 		id: "b"
 	}
+	const recordList = useAppSelector(state => state.recordList)
+	const picList = useAppSelector(state => state.picList)
+	const weightList = useAppSelector(state => state.weightList)
 	const dispatch = useAppDispatch()
 
 	const [dayInfo, setDayInfo] = React.useState<DateData | null>(null)
@@ -64,31 +70,70 @@ function MyRecord() {
 				markDates()
 			})
 			.catch(err => console.log(err))
+		user
+			.weightList(userId.id)
+			.then(result => {
+				dispatch(getWeightList(result.data))
+			})
+			.catch(err => console.log(err))
 	}, [])
 
 	React.useEffect(() => {
 		markDates()
 	}, [recordList])
 
+	React.useEffect(() => {
+		markDates()
+	}, [weightList])
+
+	React.useEffect(() => {
+		markDates()
+	}, [picList])
+
 	function markDates() {
-		if (recordList.length < 1) return
+		let container = {
+			backgroundColor: "#D2D2FF"
+		}
+		let text = {
+			color: "white",
+			fontWeight: "bold"
+		}
+		let customStyles = {
+			container: container,
+			text: text
+		}
+		let setting = {
+			customStyles: customStyles
+		}
 		for (let i = 0; i < recordList.length; i++) {
-			let container = {
-				backgroundColor: "#D2D2FF"
-			}
-			let text = {
-				color: "white",
-				fontWeight: "bold"
-			}
-			let customStyles = {
-				container: container,
-				text: text
-			}
-			let setting = {
-				customStyles: customStyles
-			}
 			markedDates[recordList[i].startDateTime.slice(0, 10)] = setting
 			setMarkedDates({ ...markedDates })
+		}
+		for (let i = 0; i < weightList.length; i++) {
+			markedDates[weightList[i].date] = setting
+			setMarkedDates({ ...markedDates })
+		}
+		for (let i = 1; i <= 30; i++) {
+			let num = String(i)
+			if (i < 10) {
+				num = "0" + String(i)
+			}
+			let date = `2022-11-${num}`
+			let data = { username: userId.id, date: date }
+			picture
+				.pictureList(data)
+				.then(result => {
+					console.log("사진가져왔음")
+					console.log(result.data)
+					if (result.data.length >= 1) {
+						markedDates[date] = setting
+						setMarkedDates({ ...markedDates })
+					}
+				})
+				.catch(err => {
+					console.log("오늘의 사진 못가져옴")
+					console.log(err)
+				})
 		}
 	}
 	console.log("marked", markedDates)

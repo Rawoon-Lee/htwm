@@ -91,7 +91,7 @@ function Main({ navigation }: any) {
 				<ExerciseDays></ExerciseDays>
 				<WeightInput></WeightInput>
 			</View>
-			<WeightGraph></WeightGraph>
+			{/* <WeightGraph></WeightGraph> */}
 			{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
 		</View>
 	)
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#fff",
 		alignItems: "center",
-		justifyContent: "center"
-		// marginTop: Constants.statusBarHeight,
+		justifyContent: "flex-start",
+		marginTop: Constants.statusBarHeight
 	},
 	text: {
 		fontSize: 40
