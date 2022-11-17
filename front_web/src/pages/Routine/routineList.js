@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { routine } from '../../actions/api/api'
 import { setRoutineDetail, setRoutineList } from '../../store/modules/routine'
+import { setModalState } from '../../store/modules/util'
 
 import './routineList.css'
 
@@ -18,6 +19,12 @@ export default function RoutineList(props) {
       console.log(result.data)
       dispatch(setRoutineList(result.data))
     })
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      dispatch(setModalState(false))
+    }
   }, [])
 
   useEffect(() => {

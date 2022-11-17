@@ -20,20 +20,23 @@ export default function mainLayout() {
   const dispatch = useDispatch()
   const { ipcRenderer } = window.require('electron')
 
-  const routineList = useSelector((state) => state.routine.routineList)
   const userStore = useSelector((state) => state.user)
   const modalState = useSelector((state) => state.util.modalState)
+  const modalMsg = useSelector((state) => state.util.modalMsg)
+  const userStoreRef = useRef({})
   const modalStateRef = useRef(null)
-  const stateRef = useRef(0)
+  const modalMsgRef = useRef('')
 
   const [client, setClient] = useState(undefined)
   const [state, setState] = useState(0)
+  const stateRef = useRef(0)
+  const routineStateRef = useRef(0)
 
   const components = [
     <Home />,
     <Picture setState={setState} />,
     <RealTime client={client} setState={setState} />,
-    <Routine setState={setState} />,
+    <Routine setState={setState} routineStateRef={routineStateRef} />,
   ]
 
   useEffect(() => {
@@ -45,13 +48,22 @@ export default function mainLayout() {
   }, [])
 
   useEffect(() => {
+    userStoreRef.current = userStore
+  }, [userStore])
+
+  useEffect(() => {
     modalStateRef.current = modalState
   }, [modalState])
+
+  useEffect(() => {
+    modalMsgRef.current = modalMsg
+  }, [modalMsg])
 
   useEffect(() => {
     stateRef.current = state
   }, [state])
 
+  // 개발용
   useEffect(() => {
     const eventListener = window.addEventListener('keydown', (e) => {
       switch (e.key) {
@@ -69,6 +81,9 @@ export default function mainLayout() {
           break
       }
     })
+    return () => {
+      window.removeEventListener(eventListener)
+    }
   }, [])
 
   ////////////////////////////////////////////////////webSocket(stomp) 통신//////////////////////////////////////////////////////////////
@@ -77,9 +92,10 @@ export default function mainLayout() {
     const stompClient = new Stompjs.Client({})
     stompClient.webSocketFactory = () => new Sockjs('https://k7a306.p.ssafy.io/api/socket')
 
-    let knockCount = 0
-    let knockStart = false
-    let voiceStarted = false
+    let knockCount = 0 // 연속 노크 수
+    let knockStart = false // 노크 명령 작동됨
+    let voiceStarted = false // 첫번째 단어 거르기
+
     stompClient.onConnect = () => {
       stompClient.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
@@ -91,11 +107,12 @@ export default function mainLayout() {
           setState(2)
         } else if (content.type === 'knock' && stateRef.current === 0) {
           // 노크
-          if (knockCount < 8) {
+          if (knockCount < 3) {
             knockCount++
             setTimeout(() => {
-              console.log('노크 리셋')
-              knockCount = 0
+              if (knockCount > 0) {
+                knockCount--
+              }
             }, 5000)
           } else if (!knockStart) {
             knockStart = true
@@ -118,13 +135,13 @@ export default function mainLayout() {
             dispatch(setIsVoice(true))
           } else if (content.data === 'again' && modalStateRef.current) {
             dispatch(setVoiceMsg('다시 말해주세요!'))
-          } else if (content.data === 'end') {
-            dispatch(setVoiceMsg('음성인식이 종료됩니다.'))
-            setTimeout(() => {
-              if (modalStateRef.current) {
+          } else if (content.data === 'end' && modalStateRef.current) {
+            if (modalStateRef.current !== 3 || routineStateRef.current !== 0) {
+              dispatch(setVoiceMsg('음성인식이 종료됩니다.'))
+              setTimeout(() => {
                 dispatch(setModalState(false))
-              }
-            }, 1000)
+              }, 1000)
+            }
           } else if (modalStateRef.current) {
             if (voiceStarted) {
               voiceStarted = false
@@ -162,10 +179,10 @@ export default function mainLayout() {
               client.publish({
                 destination: `/pub/streaming`,
                 body: JSON.stringify({
-                  from: userStore.username,
-                  to: userStore.username,
+                  from: userStoreRef.current.username,
+                  to: userStoreRef.current.username,
                   type: 'END',
-                  url: userStore.userInfo.url,
+                  url: userStoreRef.current.userInfo.url,
                 }),
               })
               dispatch(setModalState(false))
@@ -196,11 +213,20 @@ export default function mainLayout() {
   ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
 
   useEffect(() => {
+    const getMsg = (event, arg) => {
+      console.log(event, arg)
+    }
+    const sendMain = () => {
+      ipcRenderer.send('send_test', 'hello')
+    }
+
     ipcRenderer.on('send_test', getMsg)
     return () => {
       ipcRenderer.removeListener('send_test', getMsg)
     }
   }, [])
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const getUserInfos = () => {
     user
@@ -215,14 +241,6 @@ export default function mainLayout() {
         })
       })
       .catch((error) => console.log(error))
-  }
-
-  const getMsg = (event, arg) => {
-    console.log(event, arg)
-  }
-
-  const sendMain = () => {
-    ipcRenderer.send('send_test', 'hello')
   }
 
   return <div className="layout">{components[state]}</div>

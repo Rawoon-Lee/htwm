@@ -119,11 +119,7 @@ export default function StartRoutine(props) {
     }
 
     await new Promise((resolve) => {
-      if (routineDetail.sets[setNo.current].exercise_name === routineDetail.sets[setNo.current + 1].exercise_name) {
-        setTimeout(resolve, 2000)
-      } else {
-        setTimeout(resolve, 2000)
-      }
+      setTimeout(resolve, 2000)
     })
     setIsSetInterval(false)
     isSetIntervalRef.current = false
