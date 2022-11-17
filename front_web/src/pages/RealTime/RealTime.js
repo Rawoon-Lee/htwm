@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Profile from '../../components/profile'
 
@@ -7,13 +7,15 @@ import { UUID } from '../../store/constants'
 
 import './RealTime.css'
 import loading from './../../assets/loading.gif'
+import { setModalMsg, setModalState } from '../../store/modules/util'
 
 export default function RealTime(props) {
+  const dispatch = useDispatch()
+
   const username = useSelector((state) => state.user.username)
   const userInfo = useSelector((state) => state.user.userInfo)
   const streamingPeer = useSelector((state) => state.user.streamingPeer)
 
-  const [isMuted, setIsMuted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
   const [isEnded, setIsEnded] = useState(false)
   const [endOpacity, setEndopacity] = useState(true)
@@ -50,10 +52,16 @@ export default function RealTime(props) {
           getIce(content.data)
         }
         if (content.type === 'END') {
-          console.log(1)
           if (isEnded) return
-          console.log(2)
-          peerVideoRef.current.srcObject = null
+          client.publish({
+            destination: '/pub/streaming',
+            body: JSON.stringify({
+              from: username,
+              to: streamingPeer.username,
+              type: 'END',
+              url: userInfo.url,
+            }),
+          })
           setIsStarted(false)
           setIsEnded(true)
           setTimeout(() => {
@@ -75,20 +83,7 @@ export default function RealTime(props) {
   }, [])
 
   useEffect(() => {
-    if (!myStream) return
-    if (isMuted) {
-      myStream.getAudioTraks().forEach((track) => {
-        track.enabled = false
-      })
-    } else {
-      myStream.getAudioTraks().forEach((track) => {
-        track.enabled = true
-      })
-    }
-  }, [isMuted])
-
-  let interval
-  useEffect(() => {
+    let interval
     if (isStarted) {
       interval = setInterval(() => {
         timeRef.current++
@@ -101,6 +96,37 @@ export default function RealTime(props) {
       clearInterval(interval)
     }
   }, [isStarted])
+
+  useEffect(() => {
+    let interval
+    let cnt = 0
+    if (!isStarted && !isEnded && client) {
+      interval = setInterval(() => {
+        if (cnt < 5) {
+          cnt++
+          client.publish({
+            destination: '/pub/streaming',
+            body: JSON.stringify({
+              from: username,
+              to: streamingPeer.username,
+              type: 'ENTER',
+              url: userInfo.url,
+            }),
+          })
+        } else {
+          dispatch(setModalMsg('연결에 실패하여 메인페이지로 돌아갑니다.'))
+          dispatch(setModalState(true))
+          setTimeout(() => {
+            dispatch(setModalState(false))
+            setState(0)
+          }, 1000)
+        }
+      }, 5000)
+    }
+    return () => {
+      clearInterval(interval)
+    }
+  }, [isStarted, isEnded, username, streamingPeer, userInfo])
 
   useEffect(() => {
     if (isEnded) {

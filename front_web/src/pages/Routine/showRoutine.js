@@ -10,7 +10,7 @@ export default function ShowRoutine(props) {
   useEffect(() => {
     setTimeout(() => {
       setRoutineState(2)
-    }, 5000)
+    }, 10000)
   }, [])
 
   return (

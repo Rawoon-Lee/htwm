@@ -7,6 +7,8 @@ import './Picture.css'
 import cameraSound from './../../assets/camera.mp3'
 
 export default function Picture(props) {
+  const setState = props.setState
+
   const username = useSelector((state) => state.user.username)
 
   const [pictureMsg, setPictureMsg] = useState('')
@@ -15,7 +17,6 @@ export default function Picture(props) {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
 
-  const setState = props.setState
   let myStream
 
   useEffect(() => {
@@ -63,10 +64,6 @@ export default function Picture(props) {
       resultDiv.appendChild(canvas)
       canvasRef.current = canvas
     })
-    // canvasRef.current
-    //   .getContext('2d')
-    //   .drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
-
     let imageUrl = canvasRef.current.toDataURL('image/jpeg')
     submitPicture(imageUrl)
   }

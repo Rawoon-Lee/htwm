@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import RoutineList from './routineList'
 import ShowRoutine from './showRoutine'
@@ -7,7 +7,12 @@ import RoutineResult from './routineResult'
 
 export default function Routine(props) {
   const setState = props.setState
+  const routineStateRef = props.routineStateRef
   const [routineState, setRoutineState] = useState(0)
+
+  useEffect(() => {
+    routineStateRef.current = routineState
+  }, [routineState])
 
   const components = [
     <RoutineList setState={setState} setRoutineState={setRoutineState} />, // 루틴 리스트 확인 및 선택
@@ -15,8 +20,6 @@ export default function Routine(props) {
     <StartRoutine setRoutineState={setRoutineState} />, // 운동 시작
     <RoutineResult setState={setState} />, // 운동 결과 및 시작페이지로 돌아가기
   ]
-
-  // 운동 중단 요청오면 setState 변경
 
   return <div>{components[routineState]}</div>
 }
