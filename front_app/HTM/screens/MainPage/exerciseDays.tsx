@@ -4,13 +4,26 @@ import * as React from "react"
 import { record } from "../../api/recordAPI"
 import { useAppSelector } from "../../store/hook"
 
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
+
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 function ExerciseDays() {
 	const userId = useAppSelector(state => state.userId)
 	const [daysCont, setDaysCont] = React.useState(0)
 
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
+
+
 	React.useEffect(() => {
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
 		let today = new Date()
 		let year = today.getFullYear()
 		let month = ("0" + (today.getMonth() + 1)).slice(-2)
@@ -27,9 +40,19 @@ function ExerciseDays() {
 				console.log(err)
 			})
 	}, [])
+
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View style={styles.container}>
-			<Text style={{ fontSize: 12, color: "#727272" }}>연속 운동 일자</Text>
+		<View onLayout={onLayoutRootView} style={styles.container}>
+			<Text style={{ fontFamily:"line-rg", fontSize: 15, color: "#727272" }}>연속 운동 일자</Text>
 			<Text style={styles.text}>{daysCont}</Text>
 		</View>
 	)

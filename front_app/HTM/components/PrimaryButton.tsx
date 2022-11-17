@@ -134,7 +134,8 @@ const styles3 = (color: any, borderColor: any) =>
 		textStyle: {
 			color: "black",
 			fontSize: 15,
-			textAlign: "center"
+			textAlign: "center",
+			fontFamily: "line-rg"
 		}
 	})
 
@@ -166,13 +167,14 @@ const alarmStyle = (color: any) =>
 			overflow: "hidden"
 		},
 		innerContainer: {
-			paddingHorizontal: 10,
-			paddingVertical: 4,
+			paddingHorizontal: 45,
+			paddingVertical: 5,
 			backgroundColor: color
 		},
 		textStyle: {
 			color: "black",
-			fontSize: 15,
-			textAlign: "center"
+			fontSize: 16,
+			textAlign: "center",
+			fontFamily: "line-rg"
 		}
 	})
