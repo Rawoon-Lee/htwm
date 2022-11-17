@@ -128,10 +128,16 @@ public class UserService {
             int status = 0;
 
             Optional<Notice> sentNotice = noticeRepository.findByFromIdAndToIdIfType(userRepository.findByUsername(username).getId(), user.getId(),Type.REQ_FRI.toString());
-            if(sentNotice.isPresent()) status = 2;
+            if(sentNotice.isPresent()) {
+                status = 2;
+                if(sentNotice.get().isIsread()) status = 0;
+            }
 
             Optional<Notice> receivedNotice = noticeRepository.findByFromIdAndToIdIfType(user.getId(),userRepository.findByUsername(username).getId(),Type.REQ_FRI.toString());
-            if(receivedNotice.isPresent()) status = 3;
+            if(receivedNotice.isPresent()) {
+                status = 3;
+                if(sentNotice.get().isIsread()) status = 0;
+            }
 
             Optional<Friend> friends = friendRepository.findByMyIdAndFriendId(userRepository.findByUsername(username).getId(), user.getId());
             if(friends.isPresent()) status = 1;
