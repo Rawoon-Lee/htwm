@@ -78,8 +78,8 @@ function RoutineList({ navigation }: any) {
 						</View>
 					</View>
 				) : (
-					<Text style={{ fontFamily: "line-rg", fontSize: 20, textAlign: "center" }}>
-						아직 루틴이 없군요
+					<Text style={{ fontFamily: "line-rg", fontSize: 25, textAlign: "center" }}>
+						😥 아직 루틴이 없군요
 					</Text>
 				)}
 
