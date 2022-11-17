@@ -1,0 +1,59 @@
+.voice-modal {
+  flex-direction: column;
+}
+
+.voice-modal-circle {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.circle {
+  border-radius: 50%;
+  background-color: deepskyblue;
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  opacity: 0;
+  animation: scaleIn 4s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
+}
+.circle-base {
+  border-radius: 50%;
+  background-color: white;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+}
+@keyframes scaleIn {
+  from {
+    transform: scale(0.5, 0.5);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(2.5, 2.5);
+    opacity: 0;
+  }
+}
+
+.modal-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  height: 100%;
+}
+.modal-msg div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 10vw;
+}
+.modal-msg div p {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}

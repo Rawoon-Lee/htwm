@@ -1,5 +1,6 @@
 import * as React from "react"
-import { StyleSheet, Text, View, Pressable } from "react-native"
+import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native"
+import { color } from "../Style/commonStyle"
 
 function PrimaryButton({ children, clickFunction }: any) {
 	function pressHandler() {
@@ -19,29 +20,24 @@ function PrimaryButton({ children, clickFunction }: any) {
 	)
 }
 
-function SelectButton({ children, clickFunction, color, borderColor }: any) {
+function SelectButton({ children, clickFunction, color, width, borderColor, textColor }: any) {
 	function pressHandler() {
 		console.log("눌렀다!")
 	}
 
 	return (
-		<View style={styles2(color, borderColor).outerContainer}>
+		<View style={styles2(color, width, borderColor, textColor).outerContainer}>
 			<Pressable
-				style={styles2(color, borderColor).innerContainer}
+				style={styles2(color, width, borderColor, textColor).innerContainer}
 				onPress={clickFunction}
-				android_ripple={{ color: "yellow" }}
 			>
-				<Text style={styles2(color, borderColor).textStyle}>{children}</Text>
+				<Text style={styles2(color, width, borderColor, textColor).textStyle}>{children}</Text>
 			</Pressable>
 		</View>
 	)
 }
 
 function SmallButton({ children, clickFunction, color, borderColor }: any) {
-	function pressHandler() {
-		console.log("눌렀다!")
-	}
-
 	return (
 		<View style={styles3(color, borderColor).outerContainer}>
 			<Pressable
@@ -56,13 +52,9 @@ function SmallButton({ children, clickFunction, color, borderColor }: any) {
 }
 function BigButton({ children, clickFunction, color, borderColor }: any) {
 	return (
-		<View style={styles4(color, borderColor).outerContainer}>
-			<Pressable
-				style={styles4(color, borderColor).innerContainer}
-				onPress={clickFunction}
-				android_ripple={{ color: "yellow" }}
-			>
-				<Text style={styles4(color, borderColor).textStyle}>{children}</Text>
+		<View style={styles4(color).outerContainer}>
+			<Pressable style={styles4(color).innerContainer} onPress={clickFunction}>
+				<Text style={styles4(color).textStyle}>{children}</Text>
 			</Pressable>
 		</View>
 	)
@@ -102,25 +94,27 @@ const styles = StyleSheet.create({
 	}
 })
 
-const styles2 = (color: any, borderColor: any) =>
+const styles2 = (givencolor: any, width: number, borderColor: string, textColor: string) =>
 	StyleSheet.create({
 		outerContainer: {
-			borderRadius: 18,
-			borderColor: borderColor,
+			borderRadius: 8,
 			margin: 10,
 			overflow: "hidden",
 			borderStyle: "solid",
-			borderWidth: 2
+			backgroundColor: givencolor,
+			width: width
+			// borderColor: borderColor,
+			// borderWidth: 2
 		},
 		innerContainer: {
-			paddingHorizontal: 30,
-			paddingVertical: 4,
-			backgroundColor: color
+			paddingHorizontal: 20,
+			paddingVertical: 10
 		},
 		textStyle: {
-			color: "black",
-			fontSize: 20,
-			textAlign: "center"
+			color: textColor,
+			fontSize: 15,
+			textAlign: "center",
+			fontFamily: "line-bd"
 		}
 	})
 
@@ -140,29 +134,29 @@ const styles3 = (color: any, borderColor: any) =>
 		textStyle: {
 			color: "black",
 			fontSize: 15,
-			textAlign: "center"
+			textAlign: "center",
+			fontFamily: "line-rg"
 		}
 	})
 
-const styles4 = (color: any, borderColor: any) =>
+const styles4 = (color: any) =>
 	StyleSheet.create({
 		outerContainer: {
-			borderRadius: 18,
-			borderColor: borderColor,
+			padding: 10,
+			borderRadius: 7,
 			margin: 10,
-			overflow: "hidden",
-			borderStyle: "solid",
-			borderWidth: 2
+			backgroundColor: "lightgreen",
+			width: (Dimensions.get("screen").width * 8) / 10
 		},
 		innerContainer: {
-			paddingHorizontal: 10,
-			paddingVertical: 4,
-			backgroundColor: color
+			flexDirection: "row",
+			justifyContent: "center"
 		},
 		textStyle: {
-			color: "black",
+			color: "white",
 			fontSize: 20,
-			textAlign: "center"
+			textAlign: "center",
+			fontFamily: "line-bd"
 		}
 	})
 const alarmStyle = (color: any) =>
@@ -173,13 +167,14 @@ const alarmStyle = (color: any) =>
 			overflow: "hidden"
 		},
 		innerContainer: {
-			paddingHorizontal: 10,
-			paddingVertical: 4,
+			paddingHorizontal: 45,
+			paddingVertical: 5,
 			backgroundColor: color
 		},
 		textStyle: {
 			color: "black",
-			fontSize: 15,
-			textAlign: "center"
+			fontSize: 16,
+			textAlign: "center",
+			fontFamily: "line-rg"
 		}
 	})

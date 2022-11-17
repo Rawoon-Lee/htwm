@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar"
-import { StyleSheet, Text, View, Image} from "react-native"
+import { StyleSheet, Text, View, Image } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { Provider } from "react-redux"
 import { createStackNavigator, StackNavigationProp } from "@react-navigation/stack"
@@ -11,12 +11,41 @@ import FriendSearch from "./screens/FriendsList/friendSearch"
 import ProfileEdit from "./screens/ProfileEdit/ProfileEdit"
 
 import Constants from "expo-constants"
-
-
-
+import * as SplashScreen from "expo-splash-screen"
 
 const Stack = createStackNavigator()
 export default function App() {
+	const [appIsReady, setAppIsReady] = React.useState(false)
+	React.useEffect(() => {
+		async function prepare() {
+			try {
+				await new Promise(resolve => setTimeout(resolve, 1000))
+			} catch (e) {
+				console.warn(e)
+			} finally {
+				// Tell the application to render
+				setAppIsReady(true)
+			}
+		}
+
+		prepare()
+	}, [])
+
+	const onLayoutRootView = React.useCallback(async () => {
+		if (appIsReady) {
+			// This tells the splash screen to hide immediately! If we call this after
+			// `setAppIsReady`, then we may see a blank screen while the app is
+			// loading its initial state and rendering its first pixels. So instead,
+			// we hide the splash screen once we know the root view has already
+			// performed layout.
+			await SplashScreen.hideAsync()
+		}
+	}, [appIsReady])
+
+	if (!appIsReady) {
+		return null
+	}
+
 	return (
 		<>
 			<StatusBar style="light" backgroundColor="red" />

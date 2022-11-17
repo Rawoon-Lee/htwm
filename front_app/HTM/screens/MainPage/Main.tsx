@@ -14,22 +14,22 @@ import Header from "./header"
 import TrainingBird from "./trainingBird"
 import { getPushToken } from "../../store/user"
 import * as Notifications from "expo-notifications"
-import { Subscription } from 'expo-modules-core';
+import { Subscription } from "expo-modules-core"
 import * as Device from "expo-device"
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
 		shouldShowAlert: true,
 		shouldPlaySound: true,
-		shouldSetBadge: true,
-	}),
-});
+		shouldSetBadge: true
+	})
+})
 
 function Main({ navigation }: any) {
 	const userUuid = useAppSelector(state => state.userUuid)
-	const [notification, setNotification] = React.useState<Notifications.Notification>();
-	const notificationListener = React.useRef<Subscription>();
-	const responseListener = React.useRef<Subscription>();
+	const [notification, setNotification] = React.useState<Notifications.Notification>()
+	const notificationListener = React.useRef<Subscription>()
+	const responseListener = React.useRef<Subscription>()
 	const dispatch = useAppDispatch()
 
 	React.useEffect(() => {
@@ -63,21 +63,24 @@ function Main({ navigation }: any) {
 
 		configurePushNotification()
 	}, [])
-	React.useEffect(()=>{
+	React.useEffect(() => {
 		notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-			setNotification(notification);
-		});
-	
+			setNotification(notification)
+		})
+
 		responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-			console.log(response);
-		});
-	
+			console.log(response)
+		})
+
 		return () => {
-			if(typeof notificationListener.current !== 'undefined' && typeof responseListener.current !== 'undefined'){
-				Notifications.removeNotificationSubscription(notificationListener.current);
-				Notifications.removeNotificationSubscription(responseListener.current);
+			if (
+				typeof notificationListener.current !== "undefined" &&
+				typeof responseListener.current !== "undefined"
+			) {
+				Notifications.removeNotificationSubscription(notificationListener.current)
+				Notifications.removeNotificationSubscription(responseListener.current)
 			}
-		};
+		}
 	})
 	return (
 		<View style={styles.container}>
@@ -88,7 +91,7 @@ function Main({ navigation }: any) {
 				<ExerciseDays></ExerciseDays>
 				<WeightInput></WeightInput>
 			</View>
-			<WeightGraph></WeightGraph>
+			{/* <WeightGraph></WeightGraph> */}
 			{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
 		</View>
 	)
@@ -101,9 +104,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#fff",
 		alignItems: "center",
-		justifyContent: "center",
-		marginTop: Constants.statusBarHeight,
-		margin: 0
+		justifyContent: "flex-start",
+		marginTop: Constants.statusBarHeight
 	},
 	text: {
 		fontSize: 40
