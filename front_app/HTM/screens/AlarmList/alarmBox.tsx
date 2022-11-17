@@ -46,7 +46,7 @@ function AlarmMessage(props: any) {
 		notice
 			.getAlarms(userId.id)
 			.then(result => {
-				dispatch(getAlarmList(result.data))
+				dispatch(getAlarmList(result.data.reverse()))
 			})
 			.catch(err => {
 				console.log(err)
@@ -190,7 +190,7 @@ function AlarmMessage(props: any) {
 							children={"거절"}
 							color={"pink"}
 							clickFunction={() => {
-								let data = { from: props.alarmData.fromUsername, to: props.alarmData.toUsername }
+								let data = { from: props.alarmData.toUsername, to: props.alarmData.fromUsername }
 								streaming
 									.denyStreaming(data)
 									.then(result => {
@@ -200,6 +200,7 @@ function AlarmMessage(props: any) {
 									})
 									.catch(err => {
 										console.log(err.response.data)
+										console.log(data)
 									})
 							}}
 						/>

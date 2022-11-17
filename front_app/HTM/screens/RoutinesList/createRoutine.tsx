@@ -90,7 +90,7 @@ export default function CreateRoutine({ navigation }: any) {
 				exercise_id: parseInt(selectedExercise),
 				exercise_name: exerciseList[parseInt(selectedExercise) - 1].name,
 				number: num,
-				sec: 0,
+				sec: num * 3,
 				set_cnt: set
 			},
 			{
