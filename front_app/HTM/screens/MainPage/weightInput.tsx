@@ -48,6 +48,7 @@ export default function WeightInput() {
 								fontFamily: "line-rg",
 								fontSize: 20
 							}}
+							keyboardType={"numeric"}
 							onChangeText={text => {
 								setWeightToday(text)
 							}}
@@ -66,7 +67,7 @@ export default function WeightInput() {
 				</View>
 			) : (
 				<View style={styles.container2}>
-					<Text style={{ fontSize: 12, color: "#727272" }}>오늘의 몸무게</Text>
+					<Text style={{ fontSize: 15, color: "#727272" }}>오늘의 몸무게</Text>
 					<Text style={{ fontSize: 24, color: "#373737" }}> {weightToday}kg</Text>
 				</View>
 			)}
@@ -87,7 +88,7 @@ let styles = StyleSheet.create({
 	container1: {
 		flexDirection: "row",
 		alignItems: "center",
-		padding: 10
+		paddingTop: 10
 	},
 	container2: {
 		paddingBottom: 15,
@@ -96,8 +97,8 @@ let styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: `rgba(222,87,136,0.2)`,
 		borderRadius: 10,
-		width: (width * 2) / 7,
-		height: height / 10,
+		width: width / 2.5,
+		height: height / 9,
 		marginLeft: 5
 	}
 })
