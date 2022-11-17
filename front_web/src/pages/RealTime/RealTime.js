@@ -29,16 +29,6 @@ export default function RealTime(props) {
 
   useEffect(() => {
     if (client) {
-      // client.send(
-      //   `/pub/streaming`,
-      //   {},
-      //   JSON.stringify({
-      //     from: username,
-      //     to: streamingPeer.username,
-      //     type: 'ENTER',
-      //     url: userInfo.url,
-      //   }),
-      // )
       client.publish({
         destination: '/pub/streaming',
         body: JSON.stringify({
@@ -50,7 +40,6 @@ export default function RealTime(props) {
       })
       client.subscribe(`/sub/${UUID}`, (action) => {
         const content = JSON.parse(action.body)
-        console.log('받음', content)
         if (!content.data) return
         if (content.type === 1) {
           getOfferMakeAnswer(content.data)
@@ -62,7 +51,8 @@ export default function RealTime(props) {
           getIce(content.data)
         }
         if (content.type === 'END') {
-          peerVideoRef.current.srcObject = data.stream
+          if (isEnd) return
+          peerVideoRef.current.srcObject = ''
           setIsStarted(false)
           setIsEnded(true)
           setTimeout(() => {
@@ -148,8 +138,8 @@ export default function RealTime(props) {
     })
     myPeerConnection.addEventListener('addstream', (data) => {
       if (peerVideoRef && peerVideoRef.current) {
-        setIsStarted(true)
         peerVideoRef.current.srcObject = data.stream
+        setIsStarted(true)
       }
     })
   }
@@ -207,7 +197,7 @@ export default function RealTime(props) {
   return (
     <div className="realtime">
       <div className="realtime-video">
-        <video ref={peerVideoRef} height="300" width="400" autoPlay={true} playsInline={true} />
+        <video ref={peerVideoRef} autoPlay={true} playsInline={true} />
         <div className="realtime-video-profile" style={{ opacity: isStarted ? 1 : 0 }}>
           <Profile nickname={streamingPeer.nickname} url={streamingPeer.url} />
         </div>

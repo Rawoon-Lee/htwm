@@ -1,21 +1,24 @@
 import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { setRoutineResult } from '../../store/modules/routine'
 
 import './routineResult.css'
 
 export default function RoutineResult(props) {
+  const dispatch = useDispatch()
+
   const setState = props.setState
   const routineResult = useSelector((state) => state.routine.routineResult)
 
   useEffect(() => {
     if (typeof setState === 'function') {
       setTimeout(() => {
+        dispatch(setRoutineResult({}))
         setState(0)
       }, 5000)
     }
   }, [setState])
-
-  console.log(routineResult)
 
   return (
     <div className="result">

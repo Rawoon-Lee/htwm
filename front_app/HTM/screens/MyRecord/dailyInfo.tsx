@@ -1,25 +1,50 @@
-import { StyleSheet, Text, View, Image } from "react-native"
+import { StyleSheet, Text, View, Image, ScrollView, Dimensions } from "react-native"
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
+
 import * as React from "react"
 
 import moment from "moment"
 
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
+
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { picture } from "../../api/pictureAPI"
+import { user } from "../../api/userAPI"
 import { getPicList } from "../../store/picture"
+import { getWeightList } from "../../store/user"
 
 import { RecordData } from "../../store/record"
+import { WeightData } from "../../store/user"
 import { DateData } from "../MyRecord/MyRecord"
 
+const width = Dimensions.get("screen").width
+
 export default function DailyInfo(props: DateData) {
+	const tabBarHeight = useBottomTabBarHeight() * 2
 	const dispatch = useAppDispatch()
 
 	const userId = useAppSelector(state => state.userId)
 	const recordList = useAppSelector(state => state.recordList)
 	const picList = useAppSelector(state => state.picList)
+	const weightList = useAppSelector(state => state.weightList)
+
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
 
 	let dailyRecord = recordList.filter(
 		(item: RecordData) => item.startDateTime.slice(0, 10) == props.dateString
 	)
+	let dayWeight = weightList.filter((item: WeightData) => item.date == props.dateString)
+	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
+	}, [])
 
 	React.useEffect(() => {
 		dailyRecord = recordList.filter(
@@ -37,7 +62,25 @@ export default function DailyInfo(props: DateData) {
 				console.log("오늘의 사진 못가져옴")
 				console.log(err)
 			})
+
+		user
+			.weightList(userId.id)
+			.then(result => {
+				dispatch(getWeightList(result.data))
+				dayWeight = weightList.filter((item: WeightData) => item.date == props.dateString)
+			})
+			.catch(err => console.log(err))
 	}, [props.timestamp])
+
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 
 	function msToTime(diff: number) {
 		let duration = moment.duration(diff)
@@ -57,35 +100,133 @@ export default function DailyInfo(props: DateData) {
 			return hours.toString() + "시간 " + (minute % 60).toString() + "분"
 		}
 	}
-	// console.log(recordList[0].routineJson)ㄴ
+
+	function stampToTime(timestamp: string) {
+		const hour = timestamp.slice(11, 13)
+		const min = timestamp.slice(14, 16)
+		if (parseInt(hour) < 12) return "오전 " + hour + " : " + min
+		return "오후 " + hour + " : " + min
+	}
+
+	// console.log(recordList[0].routineJson)
 	return (
-		<View>
-			{dailyRecord.length >= 1 || picList.length >= 1 ? (
+		<View onLayout={onLayoutRootView} style={{ justifyContent: "center", alignItems: "center" }}>
+			{dailyRecord.length >= 1 || picList.length >= 1 || dayWeight.length >= 1 ? (
 				<View>
-					{dailyRecord.length >= 1 &&
-						dailyRecord.map((item, idx) => {
-							return (
-								<View key={idx}>
-									<Text>
-										{msToTime(Date.parse(item.endDateTime) - Date.parse(item.startDateTime))}
-									</Text>
-									<Text>{item.doneSetNum}</Text>
-									{/* <Text>{item.routineJson}</Text> */}
-									<Text key={idx}>{item.username}</Text>
-								</View>
-							)
-						})}
-					{picList.length >= 1 &&
-						picList.map((item, idx) => {
-							return (
-								<View key={idx}>
-									<Image source={{ uri: item.url }} style={{ width: 100, height: 100 }} />
-								</View>
-							)
-						})}
+					{dayWeight.length >= 1 && (
+						<View>
+							<View style={{ backgroundColor: "#EBEDFF", width: width }}>
+								<Text style={{ fontSize: 25, fontFamily: "line-bd", padding: 5 }}>몸무게</Text>
+							</View>
+							<View style={{ flexDirection: "row", margin: 10 }}>
+								<Image
+									style={{ width: 25, height: 25, margin: 10 }}
+									source={require("./../../assets/scale.png")}
+								/>
+								<Text
+									style={{
+										fontFamily: "line-bd",
+										fontSize: 23,
+										padding: 5,
+										margin: 10,
+										marginLeft: 0
+									}}
+								>
+									{dayWeight[0].weight}kg
+								</Text>
+							</View>
+						</View>
+					)}
+					{picList.length >= 1 && (
+						<View>
+							<View style={{ backgroundColor: "#EBEDFF", width: width }}>
+								<Text style={{ fontSize: 25, fontFamily: "line-bd", padding: 5 }}>사진</Text>
+							</View>
+							<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+								{picList.map((item, idx) => {
+									return (
+										<View key={idx}>
+											<Image
+												source={{ uri: item.url }}
+												style={{ width: 100, height: 100, margin: 10 }}
+											/>
+										</View>
+									)
+								})}
+							</View>
+						</View>
+					)}
+					{dailyRecord.length >= 1 && (
+						<View>
+							<View style={{ backgroundColor: "#EBEDFF", width: width }}>
+								<Text style={{ fontSize: 25, fontFamily: "line-bd", padding: 5 }}>운동</Text>
+							</View>
+							{dailyRecord.map((item, idx) => {
+								return (
+									<View key={idx} style={{ margin: 10 }}>
+										<View style={{ flexDirection: "row" }}>
+											<Image
+												style={{ width: 25, height: 25, margin: 10 }}
+												source={require("./../../assets/dumbbell.png")}
+											/>
+											<View style={{ margin: 5 }}>
+												<Text style={{ fontSize: 23, fontFamily: "line-bd", padding: 5 }}>
+													{JSON.parse(item.routineJson).name}
+												</Text>
+												<View>
+													<Text
+														style={{
+															fontFamily: "line-rg",
+															fontSize: 20,
+															padding: 5,
+															lineHeight: 23
+														}}
+													>
+														{stampToTime(item.startDateTime)}
+													</Text>
+													<Text
+														style={{
+															fontFamily: "line-rg",
+															fontSize: 20,
+															padding: 5,
+															lineHeight: 23,
+															marginBottom: 10
+														}}
+													>
+														{`운동시간 :${"\t"}`}
+														{msToTime(
+															Date.parse(item.endDateTime) - Date.parse(item.startDateTime)
+														)}
+														{`${"\n"}총 수행한 세트 개수 :${"  "}`}
+														{item.doneSetNum}개
+													</Text>
+												</View>
+												<View style={{ paddingLeft: 4 }}>
+													{JSON.parse(item.routineJson).sets.map((set: any, id: number) => {
+														return (
+															<View key={id} style={{ flexDirection: "row", padding: 1 }}>
+																<Text
+																	style={{ fontFamily: "line-rg", width: 100, fontSize: 18 }}
+																>{`${set.exercise_name} `}</Text>
+																<Text style={{ fontFamily: "line-rg", fontSize: 18 }}>
+																	{`${set.set_cnt}${"  "}세트`}
+																</Text>
+															</View>
+														)
+													})}
+												</View>
+											</View>
+										</View>
+									</View>
+								)
+							})}
+						</View>
+					)}
 				</View>
 			) : (
-				<Text>아직 운동기록이 없군요</Text>
+				<View style={{ margin: 10 }}>
+					<Text style={{ fontFamily: "line-rg", fontSize: 25 }}>😥 아직 운동기록이 없군요</Text>
+				</View>
 			)}
 		</View>
 	)

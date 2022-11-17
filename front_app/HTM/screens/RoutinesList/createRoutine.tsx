@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, TextInput, Pressable, ScrollView, Dimensions } from "react-native"
-import { Switch } from "react-native-switch"
 import { Picker } from "@react-native-picker/picker"
-import { commonStyle } from "../../Style/commonStyle"
 import * as React from "react"
 import Constants from "expo-constants"
+
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
 
 import { routine } from "../../api/routineAPI"
 import { RoutineData, SetData } from "../../store/routine"
@@ -11,6 +12,7 @@ import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getRoutineList, initRoutineList } from "../../store/routine"
 
 import { Feather } from "@expo/vector-icons"
+import { color } from "../../Style/commonStyle"
 
 export interface ExerciseData {
 	exercise_id: number
@@ -44,8 +46,16 @@ export default function CreateRoutine({ navigation }: any) {
 	const [set, setSet] = React.useState(0)
 
 	const [sets, setSets] = React.useState<SetData[]>([])
-
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
 	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
 		routine
 			.exerciseList()
 			.then(result => {
@@ -169,49 +179,60 @@ export default function CreateRoutine({ navigation }: any) {
 		}
 		setTime(num)
 	}
+
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View style={commonStyle.containerInner}>
+		<View style={styles.containerInner} onLayout={onLayoutRootView}>
 			<ScrollView style={styles.scrollView}>
-				<TextInput
-					style={styles.textInput}
-					onChangeText={text => {
-						setName(text)
-					}}
-					placeholder="루틴의 이름을 입력해주세요"
-				></TextInput>
-				<View
-					style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}
-				>
-					{colors.map((color, idx) => {
-						return (
-							<View key={idx}>
-								<Pressable
-									onPress={() => {
-										setSelectedColor(color), console.log(selectedColor)
-									}}
-								>
-									<View
-										style={[
-											styles.colorCircle,
-											color == selectedColor
-												? {
-														backgroundColor: color,
-														borderRadius: 40,
-														width: 40,
-														height: 40
-												  }
-												: {
-														backgroundColor: color
-												  }
-										]}
-									></View>
-								</Pressable>
-							</View>
-						)
-					})}
-				</View>
-				<View style={styles.exerciseInput}>
-					{/* <Switch
+				<View style={{ alignItems: "center" }}>
+					<TextInput
+						style={[styles.textInput, { fontFamily: "line-rg" }]}
+						onChangeText={text => {
+							setName(text)
+						}}
+						placeholder="루틴의 이름을 입력해주세요"
+					></TextInput>
+					<View
+						style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}
+					>
+						{colors.map((color, idx) => {
+							return (
+								<View key={idx}>
+									<Pressable
+										onPress={() => {
+											setSelectedColor(color), console.log(selectedColor)
+										}}
+									>
+										<View
+											style={[
+												styles.colorCircle,
+												color == selectedColor
+													? {
+															backgroundColor: color,
+															borderRadius: 40,
+															width: 40,
+															height: 40
+													  }
+													: {
+															backgroundColor: color
+													  }
+											]}
+										></View>
+									</Pressable>
+								</View>
+							)
+						})}
+					</View>
+					<View style={styles.exerciseInput}>
+						{/* <Switch
 						backgroundActive={"#FAFAFA"}
 						backgroundInactive={"#FAFAFA"}
 						circleBorderWidth={0}
@@ -228,99 +249,158 @@ export default function CreateRoutine({ navigation }: any) {
 						inactiveTextStyle={{ color: "black", textAlign: "center" }}
 						changeValueImmediately={true}
 					/> */}
+						<View style={{ alignItems: "center" }}>
+							<Text style={{ fontSize: 22, margin: 10, fontFamily: "line-bd" }}>
+								👟 운동종류를 골라주세요
+							</Text>
+							<View
+								style={{
+									borderWidth: 3,
+									borderColor: color.textInputGrey,
+									borderRadius: 10,
+									padding: 1,
+									margin: 10
+								}}
+							>
+								<Picker
+									style={styles.picker}
+									selectedValue={selectedExercise}
+									onValueChange={(itemValue, itemIndex) => setSelectedExercise(itemValue)}
+								>
+									{exerciseList
+										? exerciseList
+												.filter(exercise => exercise.exercise_id !== 1)
+												.map((exercise, idx) => {
+													return exercise.exercise_id == 0 ? null : (
+														<Picker.Item
+															label={exercise.name}
+															value={exercise.exercise_id}
+															key={idx}
+														/>
+													)
+												})
+										: null}
+								</Picker>
+							</View>
+							<View style={styles.exerciseNumInput}>
+								<TextInput
+									style={styles.textInput_sm}
+									onChangeText={text => {
+										setNum(parseInt(text))
+									}}
+									// placeholder="횟수를 설정해주세요"
+									keyboardType={"numeric"}
+								></TextInput>
+								<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 회 </Text>
+								<TextInput
+									style={styles.textInput_sm}
+									onChangeText={text => {
+										setSet(parseInt(text))
+									}}
+									// placeholder="세트 수 설정해주세요"
+									keyboardType={"numeric"}
+								></TextInput>
+								<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 세트</Text>
+							</View>
+						</View>
+						<View style={{ alignItems: "center" }}>
+							<Text style={{ fontSize: 22, margin: 10, marginTop: 25, fontFamily: "line-bd" }}>
+								⏰ 휴식시간을 설정해주세요
+							</Text>
+							<View style={{ flexDirection: "row", alignItems: "center" }}>
+								<TextInput
+									style={styles.textInput_sm}
+									onChangeText={text => {
+										changeTime(parseInt(text))
+									}}
+									defaultValue={"10"}
+									// placeholder="휴식시간을 설정해주세요"
+									keyboardType={"numeric"}
+								></TextInput>
+								<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 초</Text>
+							</View>
+						</View>
+					</View>
 					<View>
-						<Text>운동종류를 골라주세요</Text>
-						<Picker
-							style={styles.picker}
-							selectedValue={selectedExercise}
-							onValueChange={(itemValue, itemIndex) => setSelectedExercise(itemValue)}
+						<Pressable
+							onPress={addSetInfoBox}
+							style={[
+								styles.addButton,
+								{
+									backgroundColor: "lightgreen",
+									flexDirection: "row",
+									justifyContent: "center"
+								}
+							]}
 						>
-							{exerciseList
-								? exerciseList
-										.filter(exercise => exercise.exercise_id !== 1)
-										.map((exercise, idx) => {
-											return exercise.exercise_id == 0 ? null : (
-												<Picker.Item label={exercise.name} value={exercise.exercise_id} key={idx} />
-											)
-										})
-								: null}
-						</Picker>
-						<View style={styles.exerciseNumInput}>
-							<TextInput
-								style={styles.textInput_sm}
-								onChangeText={text => {
-									setNum(parseInt(text))
+							<Feather name="plus-circle" size={24} color="white" />
+						</Pressable>
+					</View>
+					{sets.map((set, idx) => {
+						return set.exercise_id === 1 ? (
+							<View key={idx} style={[styles.setsStyle, { marginBottom: 10 }]}>
+								<Text style={{ fontFamily: "line-bd", fontSize: 20 }}>휴식 </Text>
+								<Text style={{ fontFamily: "line-rg", fontSize: 20, marginLeft: 10 }}>
+									{set.sec} 초
+								</Text>
+							</View>
+						) : (
+							<View key={idx} style={[styles.setsStyle, { marginTop: 10 }]}>
+								<Text style={{ fontFamily: "line-bd", fontSize: 20 }}>{set.exercise_name}</Text>
+								<Text style={{ fontFamily: "line-rg", fontSize: 20, marginLeft: 10 }}>
+									{set.number} 회
+								</Text>
+								<Text style={{ fontFamily: "line-rg", fontSize: 20, marginLeft: 10 }}>
+									{set.set_cnt} 세트
+								</Text>
+							</View>
+						)
+					})}
+
+					<View style={{ marginTop: 10 }}>
+						<Pressable
+							onPress={createRoutine}
+							style={[styles.addButton, { backgroundColor: "skyblue", marginBottom: 0 }]}
+						>
+							<Text
+								style={{
+									color: "white",
+									paddingVertical: 3,
+									textAlign: "center",
+									fontFamily: "line-bd",
+									fontSize: 18
 								}}
-								// placeholder="횟수를 설정해주세요"
-								keyboardType={"numeric"}
-							></TextInput>
-							<Text>회</Text>
-							<TextInput
-								style={styles.textInput_sm}
-								onChangeText={text => {
-									setSet(parseInt(text))
-								}}
-								// placeholder="세트 수 설정해주세요"
-								keyboardType={"numeric"}
-							></TextInput>
-							<Text>세트</Text>
-						</View>
+							>
+								등록
+							</Text>
+						</Pressable>
 					</View>
 					<View>
-						<Text>휴식</Text>
-						<TextInput
-							style={styles.textInput_sm}
-							onChangeText={text => {
-								changeTime(parseInt(text))
-							}}
-							defaultValue={"10"}
-							// placeholder="휴식시간을 설정해주세요"
-							keyboardType={"numeric"}
-						></TextInput>
-						<Text>초</Text>
+						<Pressable
+							onPress={resetRoutine}
+							style={[
+								styles.addButton,
+								{
+									backgroundColor: "white",
+									borderWidth: 2,
+									borderRadius: 10,
+									borderColor: color.textInputGrey
+								}
+							]}
+						>
+							<Text
+								style={{
+									color: color.danger,
+									paddingVertical: 3,
+									textAlign: "center",
+									fontFamily: "line-bd",
+									fontSize: 15
+								}}
+							>
+								리셋
+							</Text>
+						</Pressable>
 					</View>
-				</View>
-				<View>
-					<Pressable onPress={addSetInfoBox} style={styles.addButton}>
-						<Feather name="plus-circle" size={24} color="white" />
-						<Text style={styles.addButtonText}>추가</Text>
-					</Pressable>
-				</View>
-				{sets.map((set, idx) => {
-					return set.exercise_id === 1 ? (
-						<View key={idx}>
-							<Text>{set.exercise_name}</Text>
-							<View style={styles.exerciseInfo}>
-								<Text>휴식 시간</Text>
-								<Text>{set.sec}</Text>
-							</View>
-						</View>
-					) : (
-						<View key={idx}>
-							<View style={styles.exerciseInfo}>
-								<Text>운동이름</Text>
-								<Text>{set.exercise_name}</Text>
-							</View>
-							<View style={styles.exerciseInfo}>
-								<Text>회</Text>
-								<Text>{set.number}</Text>
-							</View>
-							<View style={styles.exerciseInfo}>
-								<Text>세트</Text>
-								<Text>{set.set_cnt}</Text>
-							</View>
-						</View>
-					)
-				})}
-				<View>
-					<Pressable onPress={resetRoutine} style={styles.addButton}>
-						<Text style={styles.addButtonText}>리셋</Text>
-					</Pressable>
-				</View>
-				<View>
-					<Pressable onPress={createRoutine} style={styles.addButton}>
-						<Text style={styles.addButtonText}>등록</Text>
-					</Pressable>
 				</View>
 			</ScrollView>
 		</View>
@@ -328,60 +408,74 @@ export default function CreateRoutine({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
+	containerInner: {
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#fff",
+		flex: 1
+	},
 	scrollView: {
-		backgroundColor: "pink",
 		marginHorizontal: 10,
 		width: Dimensions.get("screen").width
 	},
 	addButton: {
-		borderRadius: 10,
-		borderWidth: 2,
-		borderColor: "white",
-		justifyContent: "center",
-		alignItems: "center",
-		flexDirection: "row",
-		backgroundColor: "green"
-	},
-	addButtonText: {
-		color: "white",
-		marginLeft: 10
+		backgroundColor: `#D2D6FF`,
+		padding: 10,
+		borderRadius: 7,
+		margin: 10,
+		width: (Dimensions.get("screen").width * 9) / 10
+		// marginVertical: 6
 	},
 	textInput: {
-		backgroundColor: "#FFFFFF",
-		width: Dimensions.get("screen").width - 50,
-		borderRadius: 7,
-		borderWidth: 1,
-		borderColor: "#727272"
+		backgroundColor: color.textInputGrey,
+		width: (Dimensions.get("screen").width * 9) / 10,
+		padding: 10,
+		borderRadius: 10,
+		margin: 10,
+		fontFamily: "line-rg",
+		fontSize: 15
 	},
 	textInput_sm: {
-		backgroundColor: "#FFFFFF",
-		width: 50,
-		borderRadius: 7,
-		borderWidth: 1,
-		borderColor: "#727272"
+		backgroundColor: color.textInputGrey,
+		width: Dimensions.get("screen").width / 8,
+		// height: Dimensions.get("screen").width / 14,
+		padding: 5,
+		borderRadius: 8,
+		fontFamily: "line-rg",
+		fontSize: 20,
+		textAlign: "center"
 	},
 	picker: {
 		backgroundColor: "white",
-		borderRadius: 10
+		width: (Dimensions.get("screen").width * 8) / 10,
+		fontSize: 20
 	},
 	exerciseInput: {
-		width: Dimensions.get("screen").width,
-		borderRadius: 7,
-		borderWidth: 1,
-		borderColor: "#727272"
+		width: (Dimensions.get("screen").width * 9) / 10
+		// borderRadius: 7,
+		// borderWidth: 1,
+		// borderColor: "#727272"
 	},
 	exerciseNumInput: {
-		flexDirection: "row"
+		flexDirection: "row",
+		alignItems: "center"
 	},
 	exerciseInfo: {
 		width: Dimensions.get("screen").width,
-		borderRadius: 7,
-		flexDirection: "row"
+		fontFamily: "line-rg"
 	},
 	colorCircle: {
 		borderRadius: 35,
 		width: 35,
 		height: 35,
 		margin: 15
+	},
+	setsStyle: {
+		width: (Dimensions.get("screen").width * 9) / 10,
+		paddingLeft: 10,
+		paddingRight: 10,
+		marginLeft: 10,
+		marginRight: 10,
+		flexDirection: "row"
 	}
 })

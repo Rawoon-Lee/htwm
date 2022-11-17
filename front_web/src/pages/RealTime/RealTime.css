@@ -8,11 +8,10 @@
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
 }
-
 .realtime-video-profile {
   position: absolute;
-  left: 10px;
-  top: 10vw;
+  left: 3vw;
+  top: 3vw;
   height: 10vw;
 }
 
