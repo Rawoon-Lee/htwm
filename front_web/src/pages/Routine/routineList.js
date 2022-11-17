@@ -7,9 +7,11 @@ import './routineList.css'
 
 export default function RoutineList(props) {
   const setRoutineState = props.setRoutineState
+
   const dispatch = useDispatch()
   const username = useSelector((state) => state.user.username)
   const routineList = useSelector((state) => state.routine.routineList)
+  const routineDetail = useSelector((state) => state.routine.routineDetail)
 
   useEffect(() => {
     routine.getRoutine({ username }).then((result) => {
@@ -18,9 +20,14 @@ export default function RoutineList(props) {
     })
   }, [])
 
+  useEffect(() => {
+    if (routineDetail.name) {
+      setRoutineState(1)
+    }
+  }, [routineDetail])
+
   const selectRoutine = (idx) => {
-    dispatch(setRoutineDetail(routineList[idx]))
-    setRoutineState(1)
+    dispatch(setRoutineDetail(idx))
   }
 
   return (

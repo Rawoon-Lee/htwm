@@ -4,34 +4,34 @@ const routineSlice = createSlice({
   name: 'routine',
   initialState: {
     routineList: [
-      {
-        name: '',
-        sets: [
-          {
-            exercise_id: 0,
-            exercise_name: '',
-            number: 0,
-            sec: 0,
-            set_cnt: 0,
-          },
-        ],
-        color: '',
-        username: '',
-      },
+      // {
+      //   name: '',
+      //   sets: [
+      //     {
+      //       exercise_id: 0,
+      //       exercise_name: '',
+      //       number: 0,
+      //       sec: 0,
+      //       set_cnt: 0,
+      //     },
+      //   ],
+      //   color: '',
+      //   username: '',
+      // },
     ],
     routineDetail: {
-      name: '',
-      sets: [
-        {
-          exercise_id: 0,
-          exercise_name: '',
-          number: 0,
-          sec: 0,
-          set_cnt: 0,
-        },
-      ],
-      color: '',
-      username: '',
+      // name: '',
+      // sets: [
+      //   {
+      //     exercise_id: 0,
+      //     exercise_name: '',
+      //     number: 0,
+      //     sec: 0,
+      //     set_cnt: 0,
+      //   },
+      // ],
+      // color: '',
+      // username: '',
     },
     routineResult: {},
   },
@@ -41,22 +41,25 @@ const routineSlice = createSlice({
     },
     setRoutineDetail(state, action) {
       const newDetail = {}
-      newDetail.name = action.payload.name
-      newDetail.username = action.payload.username
-      newDetail.sets = []
 
-      if (action.payload.sets?.length) {
-        action.payload.sets.map((set) => {
-          if (set.set_cnt !== 0) {
-            for (let i = 0; i < set.set_cnt; i++) {
-              const newSet = { ...set }
-              newSet.set_cnt = 0
-              newDetail.sets.push(newSet)
+      if (action.payload !== -1) {
+        const routine = state.routineList[action.payload]
+        newDetail.name = routine.name
+        newDetail.username = routine.username
+        newDetail.sets = []
+        if (routine.sets?.length) {
+          routine.sets.map((set) => {
+            if (set.set_cnt !== 0) {
+              for (let i = 0; i < set.set_cnt; i++) {
+                const newSet = { ...set }
+                newSet.set_cnt = 0
+                newDetail.sets.push(newSet)
+              }
+            } else {
+              newDetail.sets.push(set)
             }
-          } else {
-            newDetail.sets.push(set)
-          }
-        })
+          })
+        }
       }
       state.routineDetail = newDetail
     },

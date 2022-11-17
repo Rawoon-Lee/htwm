@@ -9,7 +9,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: __dirname + '/dist',
-    filename: 'react.js',
+    filename: '[name].js',
     // publicPath: './',
   },
   resolve: {
@@ -27,7 +27,7 @@ module.exports = {
         use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
       },
       {
-        test: /\.(png|jpg|webp|gif)$/,
+        test: /\.(png|jpg|webp|gif|mp3)$/,
         use: ['file-loader'],
       },
     ],

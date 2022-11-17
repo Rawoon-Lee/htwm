@@ -3,7 +3,8 @@ import Constants from "expo-constants"
 import { notice } from "../../api/noticeAPI"
 import AlarmBox from "./alarmBox"
 import React, { useState } from "react"
-
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
 import { getAlarmList, initAlarmList } from "../../store/notice"
 
@@ -16,7 +17,16 @@ function AlarmList() {
 	const userId = useAppSelector(state => state.userId)
 	const alarmList = useAppSelector(state => state.alarmList)
 
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
+
 	React.useEffect(() => {
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
 		notice
 			.getAlarms(userId.id)
 			.then(result => {
@@ -26,8 +36,18 @@ function AlarmList() {
 				console.log(err)
 			})
 	}, [])
+	
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
+
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View style={styles.container}>
+		<View onLayout={onLayoutRootView} style={styles.container}>
 			<View
 				style={{
 					width: width
@@ -36,8 +56,9 @@ function AlarmList() {
 				<Text
 					style={{
 						fontSize: 30,
-						paddingBottom: 5,
-						paddingLeft: 20
+						paddingVertical: 10,
+						paddingLeft: 20,
+						fontFamily:"line-bd"
 					}}
 				>
 					알림
@@ -53,7 +74,7 @@ function AlarmList() {
 						)
 					})
 				) : (
-					<Text> 알람이 없습니다. </Text>
+					<Text style={{fontFamily: "line-rg", fontSize: 20, textAlign: "center"}}> 알람이 없습니다. </Text>
 				)}
 			</ScrollView>
 		</View>
@@ -66,6 +87,8 @@ const styles = StyleSheet.create({
 	container: {
 		marginTop: Constants.statusBarHeight,
 		alignItems: "center",
-		marginBottom: 45
+		paddingBottom: 45,
+		backgroundColor:"white",
+		flex:1,
 	}
 })

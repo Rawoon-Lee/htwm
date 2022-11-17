@@ -4,6 +4,7 @@ import { picture } from '../../actions/api/api'
 import html2canvas from 'html2canvas'
 
 import './Picture.css'
+import cameraSound from './../../assets/camera.mp3'
 
 export default function Picture(props) {
   const username = useSelector((state) => state.user.username)
@@ -19,6 +20,7 @@ export default function Picture(props) {
 
   useEffect(() => {
     getMedia()
+    startCapture()
     return () => {
       if (myStream) {
         myStream.getTracks().map((stream) => stream.stop())
@@ -41,9 +43,8 @@ export default function Picture(props) {
 
   const startCapture = async () => {
     let time = 5
-    setPictureMsg(`${time}초 후 사진이 찍힙니다.`)
     const interval = setInterval(() => {
-      if (time > 1) {
+      if (time > 0) {
         time--
         setPictureMsg(`${time}초 후 사진이 찍힙니다.`)
       } else {
@@ -54,6 +55,8 @@ export default function Picture(props) {
   }
 
   const capture = async () => {
+    const sound = new Audio(cameraSound)
+    sound.play()
     await html2canvas(document.querySelector('.picture-video')).then((canvas) => {
       setIsEnd(true)
       const resultDiv = document.querySelector('.picture-result')
@@ -94,7 +97,6 @@ export default function Picture(props) {
 
   return (
     <div className="picture">
-      <button onClick={startCapture}>캡처</button>
       <div className="picture-message">{pictureMsg}</div>
       {!isEnd && <video className="picture-video" ref={videoRef} autoPlay={true} playsInline={true} />}
       <div className="picture-result"></div>
