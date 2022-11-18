@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { connect } from 'net'
 
 import './showRoutine.css'
 
@@ -12,6 +13,42 @@ export default function ShowRoutine(props) {
       setRoutineState(2)
     }, 10000)
   }, [])
+
+  // useEffect(() => {
+  //   const socket = connect({
+  //     port: 2121,
+  //     // host: '70.12.246.21', //ssafy1102
+  //     // host: '70.12.229.98', //guest
+  //     // host: '192.168.159.137', //phone
+  //     host: '192.168.159.45'
+  //   })
+
+  //   // setting encoding
+  //   socket.setEncoding('utf8')
+
+  //   socket.on('connect', function () {
+  //     // send message to server
+  //     socket.write(
+  //       JSON.stringify({
+  //         current_id: '1',
+  //         flag: 'end',
+  //         next_id: `${routineDetail.sets[1].exercise_id}`,
+  //       }),
+  //     )
+  //   })
+
+  //   socket.on('close', function () {
+  //     console.log('close : show')
+  //   })
+
+  //   socket.on('error', function (err) {
+  //     console.log('on error: ', err.code)
+  //   })
+
+  //   return () => {
+  //     socket.destroy()
+  //   }
+  // }, [])
 
   return (
     <div className="show-routine" style={{ fontSize: `${Math.min(50 / routineDetail.sets?.length, 5)}vh` }}>

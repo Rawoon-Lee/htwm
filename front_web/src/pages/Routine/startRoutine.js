@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { routine } from '../../actions/api/api'
 import { setRoutineDetail, setRoutineResult } from '../../store/modules/routine'
+import { connect } from 'net'
 
 import './startRoutine.css'
 import countDown from './../../assets/count_down.mp3'
@@ -25,6 +26,45 @@ export default function StartRoutine(props) {
 
   const [viewTime, setViewTime] = useState(0)
   const time = useRef(0)
+
+  // let socket = null
+  // useEffect(() => {
+  //   const sockets = connect({
+  //     port: 2121,
+  //     // host: '70.12.246.21', //ssafy1102
+  //     // host: '70.12.229.98', //guest
+  //     // host: '192.168.159.137', //phone
+  //     host: '192.168.159.45'
+  //   })
+  //   // setting encoding
+  //   sockets.setEncoding('utf8')
+
+  //   socket = sockets
+  //   return () => {}
+  // }, [])
+
+  // let checkFalse = false
+  // useEffect(() => {
+  //   socket.on('data', function (data) {
+  //     const obj = JSON.parse(data)
+  //     // console.log(obj)
+  //     if (obj['count'] == 'up') addCount()
+  //     if (obj['check'] == false) {
+  //       checkFalse = true
+  //       console.log('카메라에 보이지 않습니다.')
+  //     } else checkFalse = false
+  //   })
+
+  //   // socket.on('close', function () {})
+
+  //   socket.on('error', function (err) {
+  //     console.log('on error: ', err.code)
+  //   })
+
+  //   return () => {
+  //     socket.destroy()
+  //   }
+  // }, [])
 
   useEffect(() => {
     const date = new Date()
