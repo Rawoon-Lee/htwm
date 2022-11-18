@@ -18,7 +18,6 @@ function ExerciseDays() {
 		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
 	})
 
-
 	React.useEffect(() => {
 		async function prepare() {
 			await SplashScreen.preventAutoHideAsync()
@@ -52,8 +51,10 @@ function ExerciseDays() {
 	}
 	return (
 		<View onLayout={onLayoutRootView} style={styles.container}>
-			<Text style={{ fontFamily:"line-rg", fontSize: 15, color: "#727272" }}>연속 운동 일자</Text>
-			<Text style={styles.text}>{daysCont}</Text>
+			<Text style={{ fontFamily: "line-rg", fontSize: 20, color: "#727272", marginTop: 10 }}>
+				연속 운동 일자
+			</Text>
+			<Text style={styles.text}>{daysCont} 일</Text>
 		</View>
 	)
 }
@@ -68,12 +69,14 @@ const styles = StyleSheet.create({
 		backgroundColor: `rgba(0,190,164,0.2)`,
 		borderRadius: 10,
 		width: width / 2.5,
-		height: height / 9,
+		height: height / 7,
 		marginRight: 10
 	},
 	text: {
 		fontSize: 24,
-		color: "#373737"
+		color: "#373737",
+		fontFamily: "line-bd",
+		marginBottom: 10
 	}
 })
 

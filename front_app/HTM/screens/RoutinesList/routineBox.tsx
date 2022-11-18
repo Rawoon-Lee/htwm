@@ -32,6 +32,13 @@ function RoutineBox(props: any) {
 		prepare()
 	}, [])
 
+	let sec = 0
+	for (let i = 0; i < props.routine.sets.length; i++) {
+		sec += parseInt(props.routine.sets[i].sec)
+	}
+	let min = parseInt(String(sec / 60))
+	sec = sec % 60
+
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {
 			await SplashScreen.hideAsync()
@@ -57,12 +64,6 @@ function RoutineBox(props: any) {
 			})
 	}
 
-	let sec = 0
-	for (let i = 0; i < props.routine.sets.length; i++) {
-		sec += props.routine.sets[i].sec
-	}
-	let min = sec % 60
-	sec = sec % 60
 	return (
 		<View style={boxStyle(props.routine.color).container} onLayout={onLayoutRootView}>
 			<View
@@ -81,7 +82,8 @@ function RoutineBox(props: any) {
 					{props.routine.name}
 				</Text>
 				<Text style={{ fontSize: 15, fontFamily: "line-rg" }}>
-					{min} 분 {sec} 초
+					{min === 0 ? null : `${min} 분 `}
+					{sec} 초
 				</Text>
 				{/* <View style={{ borderRadius: 18 }}>
 					<Pressable

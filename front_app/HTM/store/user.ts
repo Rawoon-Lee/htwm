@@ -64,6 +64,7 @@ const userUuidSlice = createSlice({
 		}
 	}
 })
+
 const FriendListSlice = createSlice({
 	name: "friendList",
 	initialState: initialStateFriend,
@@ -93,6 +94,15 @@ const SearchInput = createSlice({
 	initialState: "",
 	reducers: {
 		getSearchInput: (state, action: PayloadAction<string>) => {
+			return action.payload
+		}
+	}
+})
+const UserWeightSlice = createSlice({
+	name: "userWeight",
+	initialState: 0,
+	reducers: {
+		getUserWeight: (state, action: PayloadAction<number>) => {
 			return action.payload
 		}
 	}
@@ -137,6 +147,7 @@ export const { getSearchInput } = SearchInput.actions
 export const { getPushToken, initPushToken } = PushTokenSlice.actions
 export const { getWeightList } = WeightDataListSlice.actions
 export const { getWeightListWeek } = WeightDataListWeekSlice.actions
+export const { getUserWeight } = UserWeightSlice.actions
 export default {
 	userInfo: userInfoSlice.reducer,
 	userId: userIdSlice.reducer,
@@ -145,6 +156,7 @@ export default {
 	friendSearchList: FriendSearchListSlice.reducer,
 	seatchInput: SearchInput.reducer,
 	pushToken: PushTokenSlice.reducer,
+	weight: UserWeightSlice.reducer,
 	weightList: WeightDataListSlice.reducer,
 	weightListWeek: WeightDataListWeekSlice.reducer
 }
