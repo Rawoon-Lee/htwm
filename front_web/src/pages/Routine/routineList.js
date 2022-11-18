@@ -14,12 +14,12 @@ export default function RoutineList(props) {
   const routineList = useSelector((state) => state.routine.routineList)
   const routineDetail = useSelector((state) => state.routine.routineDetail)
 
-  // useEffect(() => {
-  //   routine.getRoutine({ username }).then((result) => {
-  //     console.log(result.data)
-  //     dispatch(setRoutineList(result.data))
-  //   })
-  // }, [])
+  useEffect(() => {
+    routine.getRoutine({ username }).then((result) => {
+      console.log(result.data)
+      dispatch(setRoutineList(result.data))
+    })
+  }, [])
 
   useEffect(() => {
     return () => {

@@ -8,11 +8,11 @@ export default function ShowRoutine(props) {
   const setRoutineState = props.setRoutineState
   const routineDetail = useSelector((state) => state.routine.routineDetail)
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setRoutineState(2)
-  //   }, 10000)
-  // }, [])
+  useEffect(() => {
+    setTimeout(() => {
+      setRoutineState(2)
+    }, 16000)
+  }, [])
 
   // useEffect(() => {
   //   const socket = connect({

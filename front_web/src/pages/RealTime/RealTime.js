@@ -30,6 +30,7 @@ export default function RealTime(props) {
   const setState = props.setState
 
   useEffect(() => {
+    let isEnded = false
     if (client) {
       client.publish({
         destination: '/pub/streaming',
@@ -53,6 +54,7 @@ export default function RealTime(props) {
         }
         if (content.type === 'END') {
           if (isEnded) return
+          isEnded = true
           client.publish({
             destination: '/pub/streaming',
             body: JSON.stringify({
@@ -142,11 +144,11 @@ export default function RealTime(props) {
       iceServers: [
         {
           urls: [
-            'stun:stun.l.google.con:19302',
-            'stun:stun1.l.google.con:19302',
-            'stun:stun2.l.google.con:19302',
-            'stun:stun3.l.google.con:19302',
-            'stun:stun4.l.google.con:19302',
+            'stun:stun.l.google.com:19302',
+            'stun:stun1.l.google.com:19302',
+            'stun:stun2.l.google.com:19302',
+            'stun:stun3.l.google.com:19302',
+            'stun:stun4.l.google.com:19302',
           ],
         },
       ],
@@ -232,7 +234,7 @@ export default function RealTime(props) {
       <div className="realtime-calling">
         {!isStarted && !isEnded ? (
           <div>
-            {streamingPeer.nickname}에게 전화를 거는 중입니다.
+            통화를 연결하는 중입니다.
             <br />
             <img src={loading}></img>
           </div>
