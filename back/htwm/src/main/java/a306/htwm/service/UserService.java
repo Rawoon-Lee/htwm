@@ -127,12 +127,15 @@ public class UserService {
              */
             int status = 0;
 
-            ArrayList<Notice> sentNotice = noticeRepository.findByFromIdAndToIdIfTypeArr(userRepository.findByUsername(username).getId(), user.getId(),Type.REQ_FRI.toString());
             ArrayList<Notice> receivedNotice = noticeRepository.findByFromIdAndToIdIfTypeArr(user.getId(),userRepository.findByUsername(username).getId(),Type.REQ_FRI.toString());
-            if(!sentNotice.isEmpty())
-                status = 2;
-            else if(!receivedNotice.isEmpty())
+            if(!receivedNotice.isEmpty()) {
                 status = 3;
+            }
+
+            ArrayList<Notice> sentNotice = noticeRepository.findByFromIdAndToIdIfTypeArr(userRepository.findByUsername(username).getId(), user.getId(),Type.REQ_FRI.toString());
+            if(!sentNotice.isEmpty()) {
+                status = 2;
+            }
 
             Optional<Friend> friends = friendRepository.findByMyIdAndFriendId(userRepository.findByUsername(username).getId(), user.getId());
             if(friends.isPresent()) status = 1;
