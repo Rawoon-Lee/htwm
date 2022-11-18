@@ -57,10 +57,12 @@ function AlarmMessage(props: any) {
 		notice
 			.readAlarm(props.alarmData.notice_id)
 			.then(result => {
-				console.log(result)
+				// console.log(result)
 				updatAlarmList()
 			})
 			.catch(err => {
+				console.log("----------------------------------------------------")
+
 				console.log(err.response.data)
 			})
 	}
@@ -182,6 +184,8 @@ function AlarmMessage(props: any) {
 										sendNotice(props.alarmData.toUsername + "님이 플레이를 수락하셨습니다.")
 									})
 									.catch(err => {
+										console.log("=============================================")
+
 										console.log(err.response.data)
 									})
 							}}
@@ -223,7 +227,7 @@ function AlarmMessage(props: any) {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
 				<Text style={{ flexWrap: "wrap", fontFamily: "line-rg", fontSize: 18 }}>
-					{fromName}님이 플레이를 수락하였습니다.
+					{fromName}님과 플레이가 시작되었습니다.
 				</Text>
 			</View>
 		)
@@ -231,7 +235,7 @@ function AlarmMessage(props: any) {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
 				<Text style={{ flexWrap: "wrap", fontFamily: "line-rg", fontSize: 18 }}>
-					{fromName}님이 플레이를 거절하였습니다.
+					{fromName}님과의 플레이가 거절되었습니다.
 				</Text>
 			</View>
 		)

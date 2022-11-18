@@ -16,7 +16,8 @@ function Header({ navigation }: any) {
 	const userId = useAppSelector(state => state.userId)
 
 	const [fontsLoaded] = useFonts({
-		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf")
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
 	})
 
 	const dispatch = useAppDispatch()
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 30,
-		fontFamily: "line-rg"
+		fontFamily: "line-bd"
 	},
 	profilePic: {
 		width: 40,

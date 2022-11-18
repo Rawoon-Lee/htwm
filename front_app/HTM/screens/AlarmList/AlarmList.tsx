@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native"
+import { RefreshControl, StyleSheet, Text, View, Dimensions, ScrollView } from "react-native"
 import Constants from "expo-constants"
 import { notice } from "../../api/noticeAPI"
 import AlarmBox from "./alarmBox"
@@ -11,11 +11,30 @@ import { getAlarmList, initAlarmList } from "../../store/notice"
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 
+const wait = (timeout: number) => {
+	return new Promise(resolve => setTimeout(resolve, timeout))
+}
+
 function AlarmList() {
 	const dispatch = useAppDispatch()
 
 	const userId = useAppSelector(state => state.userId)
 	const alarmList = useAppSelector(state => state.alarmList)
+	const [refreshing, setRefreshing] = React.useState(false)
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true)
+		notice
+			.getAlarms(userId.id)
+			.then(result => {
+				console.log(result.data)
+				dispatch(getAlarmList(result.data.reverse()))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+		wait(1000).then(() => setRefreshing(false))
+	}, [])
 
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
@@ -65,7 +84,7 @@ function AlarmList() {
 					알림
 				</Text>
 			</View>
-			<ScrollView>
+			<ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 				{alarmList.length >= 1 ? (
 					alarmList.map((cur, idx) => {
 						return (
