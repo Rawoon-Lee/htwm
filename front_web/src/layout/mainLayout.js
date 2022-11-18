@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Stompjs from '@stomp/stompjs'
 import Sockjs from 'sockjs-client'
+import { createServer } from 'net'
 
 import Home from '../pages/Home/Home'
 import Picture from '../pages/Picture/Picture'
@@ -228,6 +229,46 @@ export default function mainLayout() {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  // const ip = '70.12.246.21' //ssafy1102
+  // const ip = '70.12.229.98' //guest
+  // const ip = '192.168.159.137' //phone
+  // const ip = '192.168.159.45'
+  // const port = 2121
+  // let sockets = []
+
+  // useEffect(() => {
+  //   let server = createServer((socket) => {
+  //     sockets.push(socket)
+  //     console.log(socket.address().address + '연결되었습니다.')
+
+  //     socket.on('data', (data) => {
+  //       broadcast(data, socket)
+  //     })
+
+  //     // print message for disconnection with client
+  //     socket.on('close', function () {
+  //       broadcast('quit', socket)
+  //       console.log('client disconnted.')
+  //     })
+  //   })
+
+  //   // print error message
+  //   server.on('error', function (err) {
+  //     console.log('err: ', err.code)
+  //   })
+
+  //   // listening
+  //   server.listen(port, ip, function () {
+  //     console.log(`listening on ${port}..`)
+  //   })
+
+  //   return () => {
+  //     server.close()
+  //   }
+  // }, [])
+
+  ///////////////////////////////////////////////////////////////////////////////
+
   const getUserInfos = () => {
     user
       .uuid()
@@ -241,6 +282,18 @@ export default function mainLayout() {
         })
       })
       .catch((error) => console.log(error))
+  }
+
+  const broadcast = (message, socketSent) => {
+    if (message === 'quit') {
+      const index = sockets.indexOf(socketSent)
+      console.log('delet : ' + index)
+      sockets.splice(index, 1)
+    } else {
+      sockets.forEach((socket) => {
+        if (socket !== socketSent) socket.write(message)
+      })
+    }
   }
 
   return <div className="layout">{components[state]}</div>

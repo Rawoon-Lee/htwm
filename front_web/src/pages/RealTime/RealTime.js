@@ -186,7 +186,6 @@ export default function RealTime(props) {
   const makeOffer = async () => {
     myStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, myStream))
     const offer = await myPeerConnection.createOffer()
-    myPeerConnection.setLocalDescription(offer)
     client.publish({
       destination: '/pub/streaming',
       body: JSON.stringify({
@@ -196,12 +195,12 @@ export default function RealTime(props) {
         data: offer,
       }),
     })
+    myPeerConnection.setLocalDescription(offer)
   }
 
   const getOfferMakeAnswer = async (offer) => {
     myPeerConnection.setRemoteDescription(offer)
     const answer = await myPeerConnection.createAnswer()
-    myPeerConnection.setLocalDescription(answer)
     client.publish({
       destination: `/pub/streaming`,
       body: JSON.stringify({
@@ -211,14 +210,15 @@ export default function RealTime(props) {
         data: answer,
       }),
     })
+    myPeerConnection.setLocalDescription(answer)
   }
 
-  const getAnswer = async (answer) => {
-    await myPeerConnection.setRemoteDescription(answer)
+  const getAnswer = (answer) => {
+    myPeerConnection.setRemoteDescription(answer)
   }
 
-  const getIce = async (ice) => {
-    await myPeerConnection.addIceCandidate(ice)
+  const getIce = (ice) => {
+    myPeerConnection.addIceCandidate(ice)
   }
 
   return (
