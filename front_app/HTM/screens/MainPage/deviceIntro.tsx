@@ -33,9 +33,9 @@ function DeviceIntro({ navigation }: any) {
 			.catch(err => {
 				console.log(err)
 
-				if (err.response.status === 400) {
-					console.log("어쩔 수 없지")
-				}
+				// if (err.response.status === 400) {
+				// console.log("어쩔 수 없지")
+				// }
 			})
 	}, [])
 

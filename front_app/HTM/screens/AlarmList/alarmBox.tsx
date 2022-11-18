@@ -69,7 +69,7 @@ function AlarmMessage(props: any) {
 		readAlarm()
 		let alarmData = {
 			to: props.alarmData.fromPhoneId,
-			title: data,
+			title: "HTWM 알람",
 			body: data,
 			sound: "default"
 		}
@@ -190,7 +190,10 @@ function AlarmMessage(props: any) {
 							children={"거절"}
 							color={"pink"}
 							clickFunction={() => {
-								let data = { from: props.alarmData.toUsername, to: props.alarmData.fromUsername }
+								let data = {
+									friendname: props.alarmData.toUsername,
+									username: props.alarmData.fromUsername
+								}
 								streaming
 									.denyStreaming(data)
 									.then(result => {

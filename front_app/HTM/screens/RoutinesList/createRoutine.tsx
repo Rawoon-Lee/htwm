@@ -25,10 +25,7 @@ interface tempSetData extends SetData {
 }
 export default function CreateRoutine({ navigation }: any) {
 	const dispatch = useAppDispatch()
-	// const userId = useAppSelector(state => state.userId)
-	const userId = {
-		id: "helennaby"
-	}
+	const userId = useAppSelector(state => state.userId)
 	const [index, setIndex] = React.useState(0)
 
 	const [boxes, setBoxes] = React.useState<JSX.Element[]>([])
@@ -133,10 +130,7 @@ export default function CreateRoutine({ navigation }: any) {
 			username: userId.id,
 			sets: sets.slice(0, -1)
 		}
-		console.log("=============================================================================")
 
-		console.log(JSON.stringify(sets.slice(0, -1)))
-		return
 		routine
 			.routineCreate(data)
 			.then(result => {
