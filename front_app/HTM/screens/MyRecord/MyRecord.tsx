@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native"
+import { StyleSheet, Text, View, Dimensions, ScrollView, RefreshControl } from "react-native"
 import Constants from "expo-constants"
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { Calendar } from "react-native-calendars"
@@ -30,20 +30,27 @@ type ObjType = {
 
 let height = Dimensions.get("screen").height
 
+const wait = (timeout: number) => {
+	return new Promise(resolve => setTimeout(resolve, timeout))
+}
+
 function MyRecord() {
 	const tabBarHeight = height / 2.5 + 10
 
+	const dispatch = useAppDispatch()
 	const userId = useAppSelector(state => state.userId)
-	// const userId = {
-	// 	id: "b"
-	// }
 	const recordList = useAppSelector(state => state.recordList)
 	const picList = useAppSelector(state => state.picList)
 	const weightList = useAppSelector(state => state.weightList)
-	const dispatch = useAppDispatch()
 
 	const [dayInfo, setDayInfo] = React.useState<DateData | null>(null)
 	const [markedDates, setMarkedDates] = React.useState<ObjType>({})
+	const [refreshing, setRefreshing] = React.useState(false)
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true)
+		wait(1000).then(() => setRefreshing(false))
+	}, [])
 
 	React.useEffect(() => {
 		let today = new Date()
@@ -172,7 +179,10 @@ function MyRecord() {
 				markingType={"custom"}
 				markedDates={markedDates}
 			/>
-			<ScrollView style={{ marginBottom: tabBarHeight }}>
+			<ScrollView
+				style={{ marginBottom: tabBarHeight }}
+				refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+			>
 				{dayInfo ? (
 					<DailyInfo
 						dateString={dayInfo?.dateString}
