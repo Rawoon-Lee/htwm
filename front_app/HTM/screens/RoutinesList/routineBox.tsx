@@ -68,13 +68,16 @@ function RoutineBox(props: any) {
 			<View
 				style={{
 					flexDirection: "row",
-					justifyContent: "flex-start",
+					justifyContent: "space-between",
 					alignItems: "center",
 					marginHorizontal: 25,
 					marginVertical: 10
 				}}
 			>
-				<Text style={{ fontSize: 25, width: 100, fontFamily: "line-bd" }}>
+				<Text
+					numberOfLines={1}
+					style={{ fontSize: 25, width: 200, fontFamily: "line-bd", overflow: "hidden" }}
+				>
 					{props.routine.name}
 				</Text>
 				<Text style={{ fontSize: 15, fontFamily: "line-rg" }}>
