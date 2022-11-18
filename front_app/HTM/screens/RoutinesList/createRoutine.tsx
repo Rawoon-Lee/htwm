@@ -25,8 +25,10 @@ interface tempSetData extends SetData {
 }
 export default function CreateRoutine({ navigation }: any) {
 	const dispatch = useAppDispatch()
-	const userId = useAppSelector(state => state.userId)
-
+	// const userId = useAppSelector(state => state.userId)
+	const userId = {
+		id: "helennaby"
+	}
 	const [index, setIndex] = React.useState(0)
 
 	const [boxes, setBoxes] = React.useState<JSX.Element[]>([])
@@ -41,9 +43,10 @@ export default function CreateRoutine({ navigation }: any) {
 	// 인풋 데이터
 	const [name, setName] = React.useState("")
 	const [selectedExercise, setSelectedExercise] = React.useState("")
-	const [time, setTime] = React.useState(10)
+	const [breakTime, setBreakTime] = React.useState(10)
 	const [num, setNum] = React.useState(0)
 	const [set, setSet] = React.useState(0)
+	const [time, setTime] = React.useState(0)
 
 	const [sets, setSets] = React.useState<SetData[]>([])
 	const [fontsLoaded] = useFonts({
@@ -76,12 +79,12 @@ export default function CreateRoutine({ navigation }: any) {
 			alert("운동을 선택해주세요")
 			return
 		}
-		if (num === 0 || set === 0) {
-			alert("횟수, 세트 수는 0일 수 없습니다.")
+		if (num === 0 || set === 0 || time === 0) {
+			alert("횟수, 세트 수, 목표 시간은 0일 수 없습니다.")
 			return
 		}
 
-		if (time < 10) {
+		if (breakTime < 10) {
 			alert("시간은 10보다 작을 수 없습니다")
 			return
 		}
@@ -90,21 +93,20 @@ export default function CreateRoutine({ navigation }: any) {
 				exercise_id: parseInt(selectedExercise),
 				exercise_name: exerciseList[parseInt(selectedExercise) - 1].name,
 				number: num,
-				sec: num * 3,
+				sec: num * time * set,
 				set_cnt: set
 			},
 			{
 				exercise_id: 1,
 				exercise_name: "휴식",
 				number: 0,
-				sec: time,
+				sec: breakTime,
 				set_cnt: 0
 			}
 		]
 		// let list = sets
 		// list.push(temp)
 		setSets(sets.concat(temp))
-		console.log(sets)
 	}
 
 	function deleteSetInfoBox() {
@@ -129,10 +131,12 @@ export default function CreateRoutine({ navigation }: any) {
 			color: selectedColor,
 			name: name,
 			username: userId.id,
-			sets: sets
+			sets: sets.slice(0, -1)
 		}
+		console.log("=============================================================================")
 
-		console.log(JSON.stringify(sets))
+		console.log(JSON.stringify(sets.slice(0, -1)))
+		return
 		routine
 			.routineCreate(data)
 			.then(result => {
@@ -173,11 +177,11 @@ export default function CreateRoutine({ navigation }: any) {
 			alert("휴식시간은 60분을 넘을 수 없습니다")
 			return
 		}
-		if (num < 10) {
-			alert(`휴식시간은 10초보다 작을 수 없습니다.`)
-			return
-		}
-		setTime(num)
+		// if (num < 10) {
+		// 	alert(`휴식시간은 10초보다 작을 수 없습니다.`)
+		// 	return
+		// }
+		setBreakTime(num)
 	}
 
 	const onLayoutRootView = React.useCallback(async () => {
@@ -301,6 +305,22 @@ export default function CreateRoutine({ navigation }: any) {
 									keyboardType={"numeric"}
 								></TextInput>
 								<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 세트</Text>
+							</View>
+							<View style={{ alignItems: "center" }}>
+								<View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}>
+										회당 목표 시간{" "}
+									</Text>
+									<TextInput
+										style={styles.textInput_sm}
+										onChangeText={text => {
+											setTime(parseInt(text))
+										}}
+										// placeholder="횟수를 설정해주세요"
+										keyboardType={"numeric"}
+									></TextInput>
+									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 초 </Text>
+								</View>
 							</View>
 						</View>
 						<View style={{ alignItems: "center" }}>
