@@ -14,12 +14,12 @@ export default function RoutineList(props) {
   const routineList = useSelector((state) => state.routine.routineList)
   const routineDetail = useSelector((state) => state.routine.routineDetail)
 
-  useEffect(() => {
-    routine.getRoutine({ username }).then((result) => {
-      console.log(result.data)
-      dispatch(setRoutineList(result.data))
-    })
-  }, [])
+  // useEffect(() => {
+  //   routine.getRoutine({ username }).then((result) => {
+  //     console.log(result.data)
+  //     dispatch(setRoutineList(result.data))
+  //   })
+  // }, [])
 
   useEffect(() => {
     return () => {
@@ -50,10 +50,10 @@ export default function RoutineList(props) {
               borderLeft: `2vw solid ${routine.color[0] === '#' ? routine.color : 'white'}`,
             }}
           >
-            <div className="routine-list-title">
+            <div className="routine-list-title" style={{ fontSize: `min(8vw, ${40 / routineList.length}vw)` }}>
               {idx + 1}번: {routine.name}
             </div>
-            <div className="routine-list-content">
+            <div className="routine-list-content" style={{ fontSize: `min(${15 / routine.sets.length}vw, 5vw)` }}>
               {routine.sets?.length &&
                 routine.sets.map((set, idx) => (
                   <span key={idx}>
