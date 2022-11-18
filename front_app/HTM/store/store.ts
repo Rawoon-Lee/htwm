@@ -14,6 +14,7 @@ export const store = configureStore({
 		friendSearchList: userInfoReducer.friendSearchList,
 		searchInput: userInfoReducer.seatchInput,
 		pushToken: userInfoReducer.pushToken,
+		userWeight: userInfoReducer.weight,
 		weightList: userInfoReducer.weightList,
 		weightListWeek: userInfoReducer.weightListWeek,
 		recordList: recordReducer,

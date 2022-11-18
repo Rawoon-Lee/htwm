@@ -40,10 +40,11 @@ export default function CreateRoutine({ navigation }: any) {
 	// 인풋 데이터
 	const [name, setName] = React.useState("")
 	const [selectedExercise, setSelectedExercise] = React.useState("")
-	const [breakTime, setBreakTime] = React.useState(10)
+	const [breakTime, setBreakTime] = React.useState(20)
 	const [num, setNum] = React.useState(0)
 	const [set, setSet] = React.useState(0)
-	const [time, setTime] = React.useState(0)
+	const [minTime, setMinTime] = React.useState(0)
+	const [secTime, setSecTime] = React.useState(0)
 
 	const [sets, setSets] = React.useState<SetData[]>([])
 	const [fontsLoaded] = useFonts({
@@ -70,18 +71,16 @@ export default function CreateRoutine({ navigation }: any) {
 		// exerciseList 없음
 		if (!exerciseList) return
 		// 먼저 값이 제대로 들어와 있는지 확인
-		console.log("확안용")
-		console.log(name, setType, selectedExercise, time, num, set)
 		if (!selectedExercise) {
 			alert("운동을 선택해주세요")
 			return
 		}
-		if (num === 0 || set === 0 || time === 0) {
-			alert("횟수, 세트 수, 목표 시간은 0일 수 없습니다.")
+		if (num === 0 || set === 0) {
+			alert("횟수, 세트 수는 0일 수 없습니다.")
 			return
 		}
 
-		if (breakTime < 10) {
+		if (breakTime < 20) {
 			alert("시간은 10보다 작을 수 없습니다")
 			return
 		}
@@ -90,7 +89,7 @@ export default function CreateRoutine({ navigation }: any) {
 				exercise_id: parseInt(selectedExercise),
 				exercise_name: exerciseList[parseInt(selectedExercise) - 1].name,
 				number: num,
-				sec: num * time * set,
+				sec: minTime * 60 + secTime,
 				set_cnt: set
 			},
 			{
@@ -281,6 +280,7 @@ export default function CreateRoutine({ navigation }: any) {
 								</Picker>
 							</View>
 							<View style={styles.exerciseNumInput}>
+								<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-bd" }}>목표 횟수 </Text>
 								<TextInput
 									style={styles.textInput_sm}
 									onChangeText={text => {
@@ -302,18 +302,29 @@ export default function CreateRoutine({ navigation }: any) {
 							</View>
 							<View style={{ alignItems: "center" }}>
 								<View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
-									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}>
-										회당 목표 시간{" "}
+									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-bd" }}>
+										목표 시간{" "}
 									</Text>
 									<TextInput
 										style={styles.textInput_sm}
 										onChangeText={text => {
-											setTime(parseInt(text))
+											setMinTime(parseInt(text))
 										}}
 										// placeholder="횟수를 설정해주세요"
 										keyboardType={"numeric"}
 									></TextInput>
-									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 초 </Text>
+									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 분 </Text>
+									<TextInput
+										style={styles.textInput_sm}
+										onChangeText={text => {
+											setSecTime(parseInt(text))
+										}}
+										// placeholder="횟수를 설정해주세요"
+										keyboardType={"numeric"}
+									></TextInput>
+									<Text
+										style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}
+									>{` 초    `}</Text>
 								</View>
 							</View>
 						</View>
@@ -327,7 +338,7 @@ export default function CreateRoutine({ navigation }: any) {
 									onChangeText={text => {
 										changeTime(parseInt(text))
 									}}
-									defaultValue={"10"}
+									defaultValue={"20"}
 									// placeholder="휴식시간을 설정해주세요"
 									keyboardType={"numeric"}
 								></TextInput>

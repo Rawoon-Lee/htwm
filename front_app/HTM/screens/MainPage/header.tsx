@@ -67,7 +67,7 @@ function Header({ navigation }: any) {
 		<View style={styles.container} onLayout={onLayoutRootView}>
 			{userId.id ? (
 				<View style={styles.profile}>
-					<Pressable onPress={moveToEdit} style={{ marginRight: 10 }}>
+					<Pressable onPress={moveToEdit} style={{ marginRight: 20 }}>
 						<Image source={{ uri: userInfo.url }} style={styles.profilePic} />
 					</Pressable>
 					<Text style={styles.text}>{userInfo.nickname}</Text>
@@ -83,15 +83,15 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		elevation: 4,
 		margin: 10,
-		marginTop: 20
+		marginTop: 50
 	},
 	text: {
-		fontSize: 30,
+		fontSize: 40,
 		fontFamily: "line-bd"
 	},
 	profilePic: {
-		width: 40,
-		height: 40,
+		width: 50,
+		height: 50,
 		borderRadius: 30
 	},
 	profile: {
