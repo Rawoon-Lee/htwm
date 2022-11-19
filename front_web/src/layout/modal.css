@@ -25,4 +25,5 @@
 
   color: black;
   font-size: 8vw;
+  z-index: 999;
 }

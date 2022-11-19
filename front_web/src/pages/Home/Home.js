@@ -70,10 +70,14 @@ export default function Home() {
       String(newDate.getFullYear()) +
       String(newDate.getMonth() + 1).padStart(2, '0') +
       String(newDate.getHours() - 2 >= 0 ? newDate.getDate() : newDate.getDate() - 1).padStart(2, '0')
-    weather(date, time).then((res) => {
-      const data = getWeatherDetail(res.data.response.body.items.item)
-      dispatch(setWeatherData(data))
-    })
+    weather(date, time)
+      .then((res) => {
+        const data = getWeatherDetail(res.data.response.body.items.item)
+        dispatch(setWeatherData(data))
+      })
+      .catch((err) => {
+        setTimeout(getWeather, 3000)
+      })
   }
 
   const getWeatherDetail = (w) => {

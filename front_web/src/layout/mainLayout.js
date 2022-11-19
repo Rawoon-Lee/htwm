@@ -125,7 +125,7 @@ export default function mainLayout() {
                 dispatch(setModalState(false))
               }
               knockStart = false
-            }, 1000)
+            }, 1500)
           }
         } else if (content.type === 'speech') {
           // 스피치 제어
@@ -137,7 +137,7 @@ export default function mainLayout() {
           } else if (content.data === 'again' && modalStateRef.current) {
             dispatch(setVoiceMsg('다시 말해주세요!'))
           } else if (content.data === 'end' && modalStateRef.current) {
-            if (modalStateRef.current !== 3 || routineStateRef.current !== 0) {
+            if (stateRef.current !== 3 || routineStateRef.current !== 0) {
               dispatch(setVoiceMsg('음성인식이 종료됩니다.'))
               setTimeout(() => {
                 dispatch(setModalState(false))
@@ -163,7 +163,7 @@ export default function mainLayout() {
             dispatch(setVoiceMsg('운동을 종료합니다.'))
             dispatch(setModalMsg(''))
             setTimeout(() => {
-              dispatch(setRoutineDetail({}))
+              dispatch(setRoutineDetail(-1))
               dispatch(setModalState(false))
             }, 1000)
           } else if (stateRef.current === 0 && content.data === '사진') {
@@ -177,7 +177,7 @@ export default function mainLayout() {
             dispatch(setVoiceMsg('통화를 종료합니다.'))
             dispatch(setModalMsg(''))
             setTimeout(() => {
-              client.publish({
+              stompClient.publish({
                 destination: `/pub/streaming`,
                 body: JSON.stringify({
                   from: userStoreRef.current.username,
@@ -229,43 +229,50 @@ export default function mainLayout() {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // const ip = '70.12.246.21' //ssafy1102
-  // const ip = '70.12.229.98' //guest
-  // const ip = '192.168.159.137' //phone
-  // const ip = '192.168.159.45'
-  // const port = 2121
-  // let sockets = []
+  useEffect(() => {
+    // const ip = '70.12.246.21' //ssafy1102
+    // const ip = '70.12.229.98' //guest
+    // const ip = '192.168.159.137' //phone
+    const ip = '192.168.159.45'
+    const port = 2121
+    let sockets = []
 
-  // useEffect(() => {
-  //   let server = createServer((socket) => {
-  //     sockets.push(socket)
-  //     console.log(socket.address().address + '연결되었습니다.')
+    const broadcast = (message, socketSent) => {
+      if (message === 'quit') {
+        const index = sockets.indexOf(socketSent)
+        console.log('delete : ' + index)
+        sockets.splice(index, 1)
+      } else {
+        sockets.forEach((socket) => {
+          if (socket !== socketSent) socket.write(message)
+        })
+      }
+    }
 
-  //     socket.on('data', (data) => {
-  //       broadcast(data, socket)
-  //     })
+    let server = createServer((socket) => {
+      socket.setEncoding('utf8')
+      sockets.push(socket)
+      console.log(socket.address().address + '연결되었습니다.')
 
-  //     // print message for disconnection with client
-  //     socket.on('close', function () {
-  //       broadcast('quit', socket)
-  //       console.log('client disconnted.')
-  //     })
-  //   })
+      socket.on('data', (data) => {
+        broadcast(data, socket)
+      })
+      socket.on('close', function () {
+        broadcast('quit', socket)
+        console.log('client disconnted.')
+      })
+    })
+    server.on('error', function (err) {
+      console.log('err: ', err.code)
+    })
+    server.listen(port, ip, function () {
+      console.log(`listening on ${port}..`)
+    })
 
-  //   // print error message
-  //   server.on('error', function (err) {
-  //     console.log('err: ', err.code)
-  //   })
-
-  //   // listening
-  //   server.listen(port, ip, function () {
-  //     console.log(`listening on ${port}..`)
-  //   })
-
-  //   return () => {
-  //     server.close()
-  //   }
-  // }, [])
+    return () => {
+      server.close()
+    }
+  }, [])
 
   ///////////////////////////////////////////////////////////////////////////////
 
@@ -282,18 +289,6 @@ export default function mainLayout() {
         })
       })
       .catch((error) => console.log(error))
-  }
-
-  const broadcast = (message, socketSent) => {
-    if (message === 'quit') {
-      const index = sockets.indexOf(socketSent)
-      console.log('delet : ' + index)
-      sockets.splice(index, 1)
-    } else {
-      sockets.forEach((socket) => {
-        if (socket !== socketSent) socket.write(message)
-      })
-    }
   }
 
   return <div className="layout">{components[state]}</div>

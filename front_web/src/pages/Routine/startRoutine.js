@@ -19,7 +19,10 @@ export default function StartRoutine(props) {
   const [intervalMsg, setIntervalMsg] = useState('')
 
   const setNo = useRef(0) // 진행중인 세트번호
-  const totSet = routineDetail.sets.length // 전체 세트 수
+  const totSet = routineDetail.sets?.length // 전체 세트 수
+  const trueTotSet = routineDetail.sets?.filter((set) => {
+    if (set.exercise_id !== 1) return true
+  }).length // 휴식 제외 전체 세트 수
   const count = useRef(0) // 운동 카운트
   const [viewCount, setViewCount] = useState(0) // 보여지는 카운트
   const progressRate = useRef(0) // 진행률
@@ -27,51 +30,133 @@ export default function StartRoutine(props) {
   const [viewTime, setViewTime] = useState(0)
   const time = useRef(0)
 
-  // let socket = null
-  // useEffect(() => {
-  //   const sockets = connect({
-  //     port: 2121,
-  //     // host: '70.12.246.21', //ssafy1102
-  //     // host: '70.12.229.98', //guest
-  //     // host: '192.168.159.137', //phone
-  //     host: '192.168.159.45'
-  //   })
-  //   // setting encoding
-  //   sockets.setEncoding('utf8')
+  const [poseState, setPoseState] = useState(0) // 포즈 상태
 
-  //   socket = sockets
-  //   return () => {}
-  // }, [])
+  ///////////////////////// socket //////////////////////////
 
-  // let checkFalse = false
-  // useEffect(() => {
-  //   socket.on('data', function (data) {
-  //     const obj = JSON.parse(data)
-  //     // console.log(obj)
-  //     if (obj['count'] == 'up') addCount()
-  //     if (obj['check'] == false) {
-  //       checkFalse = true
-  //       console.log('카메라에 보이지 않습니다.')
-  //     } else checkFalse = false
-  //   })
+  let socket
+  useEffect(() => {
+    const sockets = connect({
+      port: 2121,
+      // host: '70.12.246.21', //ssafy1102
+      // host: '70.12.229.98', //guest
+      // host: '192.168.159.137', //phone
+      host: '192.168.159.45',
+    })
+    sockets.setEncoding('utf8') // setting encoding
+    sockets.on('data', function (data) {
+      const obj = JSON.parse(data)
+      if (obj['count'] == 1) {
+        addCount()
+        setPoseState(1)
+      }
+      if (obj['check'] == false) {
+        console.log('카메라에 보이지 않습니다.')
+        setPoseState(2)
+      }
+    })
+    sockets.on('error', function (err) {
+      console.log('on error: ', err.code)
+    })
 
-  //   // socket.on('close', function () {})
+    socket = sockets
 
-  //   socket.on('error', function (err) {
-  //     console.log('on error: ', err.code)
-  //   })
+    return () => {
+      sockets.destroy()
+    }
+  }, [])
 
-  //   return () => {
-  //     socket.destroy()
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (!socket) return
 
+    const set = setNo.current
+    let next = 1
+    if (setNo.current !== totSet - 1) next = routineDetail.sets[setNo.current + 1]?.exercise_id
+    console.log('start', routineDetail.sets[set].exercise_id, next)
+    socket.write(
+      JSON.stringify({
+        current_id: `${routineDetail.sets[setNo.current].exercise_id}`,
+        flag: 'start',
+        next_id: `${next}`,
+      }),
+    )
+    return () => {
+      if (!socket) return
+
+      let next = 1
+      // 마지막 세트가 아니면 다음 세트
+      if (set !== totSet - 1) next = routineDetail.sets[set + 1].exercise_id
+      // 마지막 운동이 아니면 휴식 건너뛰고 다음 운동
+      if (set + 2 < totSet && routineDetail.sets[set + 1]?.exercise_id === 1)
+        next = routineDetail.sets[set + 2].exercise_id
+      // 현재가 휴식이 아니라면 보내기
+      if (routineDetail.sets[set]?.exercise_id !== 1) {
+        console.log('end', routineDetail.sets[set].exercise_id, next)
+        socket.write(
+          JSON.stringify({
+            current_id: `${routineDetail.sets[set].exercise_id}`,
+            flag: 'end',
+            next_id: `${next}`,
+          }),
+        )
+      }
+    }
+  }, [socket, setNo.current]) // ref 변화를 감지하는 것이 아닌 매 초 rerendering 될 때 dependency가 확인된다.
+
+  ///////////////////////////////////////////////////////////////
+
+  // 세트 시간관리
+  useEffect(() => {
+    time.current = routineDetail.sets[0].sec
+    setViewTime(routineDetail.sets[0].sec)
+
+    const interval = setInterval(() => {
+      if (time.current > 0) {
+        time.current--
+        if (time.current === 3) {
+          const sound = new Audio(countDown)
+          sound.play()
+        }
+        setViewTime(time.current)
+      } else {
+        if (!isSetIntervalRef.current) {
+          nextSet()
+        }
+      }
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
+  // 운동 종료 여부 확인
+  useEffect(() => {
+    if (!routineDetail.name) {
+      setRoutineState(3)
+    }
+  }, [routineDetail])
+
+  // 포즈 상태 관리(GOOD, BAD)
+  useEffect(() => {
+    let isUnmounted = false
+    if (poseState) {
+      setTimeout(() => {
+        if (!isUnmounted) {
+          setPoseState(0)
+        }
+      }, 1000)
+    }
+    return () => {
+      isUnmounted = true
+    }
+  }, [poseState])
+
+  // 종료되면 결과 보내기
   useEffect(() => {
     const date = new Date()
     const offset = date.getTimezoneOffset() * 60000
     const startDateTime = new Date(date.getTime() - offset).toISOString()
     return () => {
-      // 루틴 끝낸 결과 보내기
       const doneSetNum = parseInt(Math.round(progressRate.current * 100))
       const routineJson = String(JSON.stringify(routineDetail))
       const date = new Date()
@@ -89,65 +174,31 @@ export default function StartRoutine(props) {
     }
   }, [])
 
-  useEffect(() => {
-    if (!routineDetail.name) {
-      setRoutineState(3)
-    }
-  }, [routineDetail])
-
-  useEffect(() => {
-    time.current = routineDetail.sets[0].sec
-    setViewTime(routineDetail.sets[0].sec)
-    const interval = setInterval(() => {
-      if (time.current > 0) {
-        time.current = time.current - 1
-        if (time.current === 3) {
-          const sound = new Audio(countDown)
-          sound.play()
-        }
-        setViewTime(time.current)
-      } else {
-        if (!isSetIntervalRef.current) {
-          nextSet()
-        }
-      }
-    }, 1000)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
-
-  useEffect(() => {
-    const imageTag = document.createElement('img')
-    const imageDiv = document.querySelector('#imageDiv')
-    const imageSrc = routineDetail.sets[setNo.current].url
-    imageTag.src = imageSrc
-    imageDiv.replaceChildren(imageTag)
-  }, [setNo.current])
-
+  // 다음 세트
   const nextSet = async () => {
-    const addRate =
-      (1 / totSet) *
-      Math.min(
-        routineDetail.sets[setNo.current].number ? count.current / routineDetail.sets[setNo.current].number : 1,
-        1,
-      )
-    progressRate.current += addRate
+    if (routineDetail.sets[setNo.current]?.exercise_id !== 1) {
+      const addRate =
+        (1 / trueTotSet) *
+        Math.min(
+          routineDetail.sets[setNo.current].number ? count.current / routineDetail.sets[setNo.current].number : 1,
+          1,
+        )
+      progressRate.current += addRate
+    }
 
     count.current = 0
     setViewCount(0)
+
     if (setNo.current === totSet - 1) return setRoutineState(3)
 
     await handlingInterval()
-    time.current = routineDetail.sets[setNo.current + 1].sec
-    setViewTime(time.current)
     setNo.current++
+    time.current = routineDetail.sets[setNo.current].sec
+    setViewTime(time.current)
   }
 
+  // 세트 사이 텀
   const handlingInterval = async () => {
-    const imageTag = document.querySelector('img')
-    imageTag.src = ''
-
     setIsSetInterval(true)
     isSetIntervalRef.current = true
     if (routineDetail.sets[setNo.current].exercise_name !== '휴식') {
@@ -165,9 +216,26 @@ export default function StartRoutine(props) {
     isSetIntervalRef.current = false
   }
 
+  // 세트가 변하면 운동 이미지 변환
+  useEffect(() => {
+    const imageTagBefore = document.querySelector('.start-image img')
+    if (isSetInterval) imageTagBefore.src = ''
+    else {
+      let imageSrc = routineDetail.sets[setNo.current].url
+      if (routineDetail.sets[setNo.current].exercise_name === '휴식' && setNo.current !== totSet - 1) {
+        imageSrc = routineDetail.sets[setNo.current + 1].url
+      }
+
+      const imageTag = document.createElement('img')
+      const imageDiv = document.querySelector('#imageDiv')
+      imageTag.src = imageSrc
+      imageDiv.replaceChildren(imageTag)
+    }
+  }, [isSetInterval, setNo.current])
+
   const addCount = () => {
-    count.current += 1
-    setViewCount(viewCount + 1)
+    count.current++
+    setViewCount(count.current)
   }
 
   return (
@@ -181,10 +249,15 @@ export default function StartRoutine(props) {
             </div>
           </div>
           <div className="start-exercise">
-            <div className="start-exercise-name">{routineDetail.sets[setNo.current]?.exercise_name}</div>
-            {routineDetail.sets[setNo.current]?.exercise_name !== '휴식' ? (
+            <div className="start-exercise-name">
+              {routineDetail.sets && routineDetail.sets[setNo.current].exercise_name}
+            </div>
+            {routineDetail.sets && routineDetail.sets[setNo.current].exercise_name !== '휴식' ? (
               <div className="start-exercise-count">
-                {viewCount} / {routineDetail.sets[setNo.current]?.number}
+                {viewCount} / {routineDetail.sets[setNo.current]?.number}{' '}
+                <span style={{ color: `${poseState === 1 ? 'green' : 'red'}` }}>
+                  {poseState === 1 ? 'GOOD' : poseState === 2 ? 'BAD' : ' '}
+                </span>
               </div>
             ) : null}
           </div>
@@ -196,7 +269,7 @@ export default function StartRoutine(props) {
       )}
       <div className="start-left">
         {setNo.current !== totSet - 1 ? (
-          <div>next: {routineDetail.sets[setNo.current + 1].exercise_name}</div>
+          <div>next: {routineDetail.sets && routineDetail.sets[setNo.current + 1].exercise_name}</div>
         ) : (
           <div>마지막 세트입니다.</div>
         )}
