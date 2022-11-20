@@ -1,0 +1,27 @@
+.result {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-alert {
+  height: 32vh;
+  margin-top: 3vh;
+
+  font-size: 8vw;
+  text-align: center;
+}
+
+.result-time {
+  display: flex;
+  align-items: center;
+
+  height: 40vh;
+  font-size: 5vw;
+}
+
+.result-progress {
+  height: 35vh;
+  font-size: 10vw;
+}
