@@ -17,7 +17,8 @@ export const store = configureStore({
 		userWeight: userInfoReducer.weight,
 		weightList: userInfoReducer.weightList,
 		weightListWeek: userInfoReducer.weightListWeek,
-		recordList: recordReducer,
+		recordList: recordReducer.recordList,
+		streamingList: recordReducer.streamingList,
 		routineList: routineReducer.routineList,
 		picList: pictureReducer.picList,
 		alarmList: alarmReducer.alarmList

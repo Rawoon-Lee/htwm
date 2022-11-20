@@ -62,10 +62,11 @@ function TrainingBird() {
 
 let styles = StyleSheet.create({
 	image: {
-		width: (width * 5) / 10,
-		height: (width * 5) / 10,
-		marginTop: 40,
-		marginBottom: 20
+		width: width / 3,
+		height: width / 3,
+		marginTop: 30,
+		marginBottom: 10,
+		elevation: 2
 	},
 	state: {
 		textAlign: "center",

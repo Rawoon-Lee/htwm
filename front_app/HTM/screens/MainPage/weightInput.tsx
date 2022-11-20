@@ -29,7 +29,6 @@ export default function WeightInput() {
 		prepare()
 	}, [])
 	function updateWeight(weight: number) {
-		if (showWeight) return
 		let data = {
 			username: userId.id,
 			weight: weight
@@ -79,10 +78,10 @@ export default function WeightInput() {
 						></TextInput>
 						<Text style={{ fontFamily: "line-rg", fontSize: 20 }}> kg</Text>
 					</View>
-					<View style={{ width: (width * 2) / 10 }}>
+					<View style={{ width: (width * 2) / 12 }}>
 						<SmallButton
 							children={"입력"}
-							clickFunction={updateWeight(parseInt(weightToday))}
+							clickFunction={() => updateWeight(parseInt(weightToday))}
 							color={"white"}
 							borderColor={"white"}
 						/>
@@ -91,17 +90,23 @@ export default function WeightInput() {
 			) : (
 				<View style={styles.container2}>
 					<Text
-						style={{ fontSize: 20, color: "#727272", fontFamily: "line-rg", marginVertical: 10 }}
+						style={{ fontSize: 20, color: "#727272", fontFamily: "line-rg", marginVertical: 5 }}
 					>
 						오늘의 몸무게
 					</Text>
 					<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
 						<Text
-							style={{ fontSize: 22, color: "#373737", fontFamily: "line-bd", marginVertical: 10 }}
+							style={{
+								fontSize: 22,
+								color: "#373737",
+								fontFamily: "line-bd",
+								marginVertical: 5,
+								marginRight: 7
+							}}
 						>
 							{weightToday}kg
 						</Text>
-						<View style={{ width: (width * 2) / 10 }}>
+						<View style={{ width: (width * 2) / 12 }}>
 							<SmallButton
 								children={"수정"}
 								clickFunction={click}
@@ -123,13 +128,13 @@ let styles = StyleSheet.create({
 		backgroundColor: `rgba(222,87,136,0.2)`,
 		borderRadius: 10,
 		width: width / 2.5,
-		height: height / 7,
-		marginLeft: 5
+		height: height / 9,
+		margin: 10
 	},
 	container1: {
 		flexDirection: "row",
 		alignItems: "center",
-		marginVertical: 5
+		marginVertical: 2
 	},
 	container2: {
 		paddingBottom: 15,
@@ -139,7 +144,7 @@ let styles = StyleSheet.create({
 		backgroundColor: `rgba(222,87,136,0.2)`,
 		borderRadius: 10,
 		width: width / 2.5,
-		height: height / 7,
-		marginLeft: 5
+		height: height / 9,
+		margin: 10
 	}
 })
