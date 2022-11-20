@@ -126,7 +126,7 @@ let styles = StyleSheet.create({
 	container: {
 		padding: 10,
 		alignItems: "center",
-		backgroundColor: `rgba(222,87,136,0.2)`,
+		backgroundColor: `#6da0ff33`,
 		borderRadius: 10,
 		width: width / 2.5,
 		height: height / 9,
@@ -142,7 +142,7 @@ let styles = StyleSheet.create({
 		paddingTop: 10,
 		justifyContent: "space-between",
 		alignItems: "center",
-		backgroundColor: `rgba(222,87,136,0.2)`,
+		backgroundColor: `#6da0ff33`,
 		borderRadius: 10,
 		width: width / 2.5,
 		height: height / 9,
