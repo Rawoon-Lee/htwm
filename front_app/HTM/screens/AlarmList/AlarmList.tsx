@@ -27,7 +27,6 @@ function AlarmList() {
 		notice
 			.getAlarms(userId.id)
 			.then(result => {
-				console.log(result.data)
 				dispatch(getAlarmList(result.data.reverse()))
 			})
 			.catch(err => {
@@ -49,7 +48,6 @@ function AlarmList() {
 		notice
 			.getAlarms(userId.id)
 			.then(result => {
-				console.log(result.data)
 				dispatch(getAlarmList(result.data.reverse()))
 			})
 			.catch(err => {

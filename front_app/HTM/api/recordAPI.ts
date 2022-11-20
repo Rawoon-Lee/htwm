@@ -11,7 +11,6 @@ const record = {
 		})
 	},
 	recordDays(data: any) {
-		console.log(data)
 		return api({
 			method: "get",
 			params: {
