@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, ScrollView, Dimensions } from "react-nat
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 
 import * as React from "react"
+import ImageModal from "react-native-image-modal"
 
 import moment from "moment"
 
@@ -15,7 +16,7 @@ import { user } from "../../api/userAPI"
 import { getPicList } from "../../store/picture"
 import { getWeightList } from "../../store/user"
 
-import { RecordData } from "../../store/record"
+import { RecordData, StreamingData } from "../../store/record"
 import { WeightData } from "../../store/user"
 import { DateData } from "../MyRecord/MyRecord"
 
@@ -29,6 +30,7 @@ export default function DailyInfo(props: DateData) {
 	const recordList = useAppSelector(state => state.recordList)
 	const picList = useAppSelector(state => state.picList)
 	const weightList = useAppSelector(state => state.weightList)
+	const streamingList = useAppSelector(state => state.streamingList)
 
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
@@ -39,6 +41,9 @@ export default function DailyInfo(props: DateData) {
 		(item: RecordData) => item.startDateTime.slice(0, 10) == props.dateString
 	)
 	let dayWeight = weightList.filter((item: WeightData) => item.date == props.dateString)
+	let dailyStreming = streamingList.filter(
+		(item: StreamingData) => item.startTime.slice(0, 10) == props.dateString
+	)
 	React.useEffect(() => {
 		// 폰트 불러오기
 		async function prepare() {
@@ -55,13 +60,10 @@ export default function DailyInfo(props: DateData) {
 		picture
 			.pictureList(data)
 			.then(result => {
-				console.log("사진가져왔음")
-				console.log(result.data)
 				dispatch(getPicList(result.data))
 			})
 			.catch(err => {
 				console.log("오늘의 사진 못가져옴")
-				console.log(err)
 			})
 
 		user
@@ -76,7 +78,7 @@ export default function DailyInfo(props: DateData) {
 	function msToTime(diff: number) {
 		let duration = moment.duration(diff)
 		let seconds: number = duration.asSeconds()
-		let minute: number = duration.asMinutes()
+		let minute: number = parseInt(String(duration.asMinutes()))
 		let hours: number = duration.asHours()
 
 		// 그래서 사용할 때는 parseInt 를 사용해 int 로 바꿔야 한다.
@@ -85,10 +87,17 @@ export default function DailyInfo(props: DateData) {
 			return seconds.toString() + "초"
 		} else if (hours < 1) {
 			// 1시간 미만이면 분 단위로 보여주고
-			return minute.toString() + "분"
+			return minute.toString() + "분" + " " + (seconds % 60).toString() + "초"
 		} else {
 			// 하루 미만이면 시간으로 보여주고
-			return hours.toString() + "시간 " + (minute % 60).toString() + "분"
+			return (
+				hours.toString() +
+				"시간 " +
+				(minute % 60).toString() +
+				"분" +
+				(seconds % 60).toString() +
+				"초"
+			)
 		}
 	}
 
@@ -99,7 +108,6 @@ export default function DailyInfo(props: DateData) {
 		return "오후 " + hour + " : " + min
 	}
 
-	// console.log(recordList[0].routineJson)
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {
 			await SplashScreen.hideAsync()
@@ -112,7 +120,10 @@ export default function DailyInfo(props: DateData) {
 
 	return (
 		<View onLayout={onLayoutRootView} style={{ justifyContent: "center", alignItems: "center" }}>
-			{dailyRecord.length >= 1 || picList.length >= 1 || dayWeight.length >= 1 ? (
+			{dailyRecord.length >= 1 ||
+			picList.length >= 1 ||
+			dayWeight.length >= 1 ||
+			dailyStreming.length >= 1 ? (
 				<View>
 					{dayWeight.length >= 1 && (
 						<View>
@@ -139,22 +150,77 @@ export default function DailyInfo(props: DateData) {
 						</View>
 					)}
 					{picList.length >= 1 && (
-						<View>
-							<View style={{ backgroundColor: "#EBEDFF", width: width }}>
+						<View style={{ marginBottom: 10 }}>
+							<View style={{ backgroundColor: "#EBEDFF", width: width, marginBottom: 10 }}>
 								<Text style={{ fontSize: 25, fontFamily: "line-bd", padding: 5 }}>사진</Text>
 							</View>
 							<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 								{picList.map((item, idx) => {
 									return (
-										<View key={idx}>
-											<Image
+										<View key={idx} style={{ backgroundColor: "#fff" }}>
+											<ImageModal
+												resizeMode="contain"
+												imageBackgroundColor="#fff"
 												source={{ uri: item.url }}
-												style={{ width: 100, height: 100, margin: 10 }}
+												style={{
+													width: 110,
+													height: 90,
+													marginHorizontal: 5,
+													marginVertical: 2
+												}}
 											/>
 										</View>
 									)
 								})}
 							</View>
+						</View>
+					)}
+					{dailyStreming.length >= 1 && (
+						<View>
+							<View style={{ backgroundColor: "#EBEDFF", width: width }}>
+								<Text style={{ fontSize: 25, fontFamily: "line-bd", padding: 5 }}>플레이</Text>
+							</View>
+							{dailyStreming.map((item: StreamingData, idx) => {
+								return (
+									<View key={idx} style={{ margin: 10 }}>
+										<View style={{ flexDirection: "row" }}>
+											<Image
+												style={{ width: 25, height: 25, margin: 10 }}
+												source={require("./../../assets/dumbbell.png")}
+											/>
+											<View style={{ margin: 5 }}>
+												<Text style={{ fontSize: 23, fontFamily: "line-bd", padding: 5 }}>
+													{item.otherNickname}
+												</Text>
+												<Text
+													style={{
+														fontFamily: "line-rg",
+														fontSize: 20,
+														padding: 5,
+														lineHeight: 23
+													}}
+												>
+													{stampToTime(item.startTime)}
+												</Text>
+												<View>
+													<Text
+														style={{
+															fontFamily: "line-rg",
+															fontSize: 20,
+															padding: 5,
+															lineHeight: 23,
+															marginBottom: 10
+														}}
+													>
+														{`운동시간 :  `}
+														{msToTime(Date.parse(item.endTime) - Date.parse(item.startTime))}
+													</Text>
+												</View>
+											</View>
+										</View>
+									</View>
+								)
+							})}
 						</View>
 					)}
 					{dailyRecord.length >= 1 && (

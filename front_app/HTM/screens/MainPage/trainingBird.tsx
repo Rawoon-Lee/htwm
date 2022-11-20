@@ -52,24 +52,26 @@ function TrainingBird() {
 	}
 	return (
 		<View style={{ alignItems: "center" }} onLayout={onLayoutRootView}>
+			<Image style={styles.image} source={require("./../../assets/htwm_logo.png")} />
 			<View style={styles.textContainer}>
 				<Text style={styles.state}>{lifeQuotes[RandomNumber]}</Text>
 			</View>
-			<Image style={styles.image} source={require("./../../assets/htwm_logo.png")} />
 		</View>
 	)
 }
 
 let styles = StyleSheet.create({
 	image: {
-		width: (width * 5) / 10,
-		height: (width * 5) / 10,
-		marginLeft: -100
+		width: width / 3,
+		height: width / 3,
+		marginTop: 30,
+		marginBottom: 10,
+		elevation: 2
 	},
 	state: {
 		textAlign: "center",
 		fontSize: 20,
-		fontFamily: "line-rg"
+		fontFamily: "line-bd"
 	},
 	textContainer: {
 		alignItems: "center",
@@ -77,8 +79,7 @@ let styles = StyleSheet.create({
 		borderRadius: 10,
 		paddingHorizontal: 10,
 		paddingVertical: 10,
-		marginRight: -50,
-		marginTop: 20,
+		marginBottom: 20,
 		width: width / 1.5
 	}
 })

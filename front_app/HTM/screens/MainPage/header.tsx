@@ -16,7 +16,8 @@ function Header({ navigation }: any) {
 	const userId = useAppSelector(state => state.userId)
 
 	const [fontsLoaded] = useFonts({
-		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf")
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
 	})
 
 	const dispatch = useAppDispatch()
@@ -64,12 +65,22 @@ function Header({ navigation }: any) {
 	}
 	return (
 		<View style={styles.container} onLayout={onLayoutRootView}>
+			<Image
+				source={require("../../assets/header.png")}
+				style={{ width: 120, height: 50, margin: 10 }}
+			/>
 			{userId.id ? (
 				<View style={styles.profile}>
-					<Pressable onPress={moveToEdit} style={{ marginRight: 10 }}>
+					<Pressable onPress={moveToEdit}>
 						<Image source={{ uri: userInfo.url }} style={styles.profilePic} />
 					</Pressable>
-					<Text style={styles.text}>{userInfo.nickname}</Text>
+					<View style={{ flexDirection: "row", marginTop: 10 }}>
+						<Image
+							source={require("../../assets/level2.png")}
+							style={{ width: 30, height: 30, marginRight: 10 }}
+						/>
+						<Text style={styles.text}>{userInfo.nickname}</Text>
+					</View>
 				</View>
 			) : null}
 			<GoogleLogin></GoogleLogin>
@@ -81,20 +92,27 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
 		elevation: 4,
-		margin: 10,
-		marginTop: 20
+		alignItems: "center"
+	},
+	logo: {
+		fontFamily: "line-bd",
+		textAlign: "center",
+		fontSize: 25,
+		margin: 10
 	},
 	text: {
-		fontSize: 30,
-		fontFamily: "line-rg"
+		fontSize: 20,
+		fontFamily: "line-bd",
+		marginTop: 10
 	},
 	profilePic: {
-		width: 40,
-		height: 40,
-		borderRadius: 30
+		width: 80,
+		height: 80,
+		borderRadius: 30,
+		marginTop: 10
 	},
 	profile: {
-		flexDirection: "row",
+		// flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "flex-end"
 	}

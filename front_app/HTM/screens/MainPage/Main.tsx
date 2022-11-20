@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable, Platform } from "react-native"
+import { StyleSheet, Text, View, Image, Pressable, Platform, ScrollView } from "react-native"
 import { StatusBar } from "expo-status-bar"
 import Constants from "expo-constants"
 import * as React from "react"
@@ -10,6 +10,8 @@ import ExerciseDays from "./exerciseDays"
 import WeightGraph from "./weightGraph"
 import WeightInput from "./weightInput"
 import Header from "./header"
+import AccumulatedInfo from "./accumalatedInfo"
+import FriendCount from "./friendCount"
 
 import TrainingBird from "./trainingBird"
 import { getPushToken } from "../../store/user"
@@ -46,7 +48,6 @@ function Main({ navigation }: any) {
 					return
 				}
 				const token = (await Notifications.getExpoPushTokenAsync()).data
-				console.log(token)
 				dispatch(getPushToken(token))
 				if (Platform.OS === "android") {
 					Notifications.setNotificationChannelAsync("default", {
@@ -84,15 +85,21 @@ function Main({ navigation }: any) {
 	})
 	return (
 		<View style={styles.container}>
-			<Header navigation={navigation}></Header>
-			<StatusBar style="auto" />
-			<TrainingBird></TrainingBird>
-			<View style={{ flexDirection: "row", marginTop: 10 }}>
-				<ExerciseDays></ExerciseDays>
-				<WeightInput></WeightInput>
-			</View>
-			{/* <WeightGraph></WeightGraph> */}
-			{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
+			<ScrollView>
+				<Header navigation={navigation}></Header>
+				<StatusBar style="auto" />
+				<TrainingBird></TrainingBird>
+				{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
+				<View style={{ flexDirection: "row", marginTop: 10 }}>
+					<FriendCount />
+					<WeightInput></WeightInput>
+				</View>
+				<View style={{ flexDirection: "row" }}>
+					<ExerciseDays></ExerciseDays>
+					<AccumulatedInfo />
+				</View>
+				{/* <WeightGraph></WeightGraph> */}
+			</ScrollView>
 		</View>
 	)
 }

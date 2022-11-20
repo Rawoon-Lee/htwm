@@ -4,8 +4,6 @@ const END_POINT = "user"
 
 const user = {
 	login(data: any) {
-		console.log("로그인하자")
-		console.log(data)
 		return api({
 			method: "post",
 			data: data,

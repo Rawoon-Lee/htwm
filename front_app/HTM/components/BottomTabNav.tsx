@@ -27,6 +27,7 @@ export default function BottomTabNav({ navigation }: any) {
 					name="RoutineList"
 					component={RoutineList}
 					options={{
+						unmountOnBlur: true,
 						headerShown: false,
 						tabBarLabel: "루틴",
 						tabBarIcon: ({ focused }) =>
@@ -41,6 +42,7 @@ export default function BottomTabNav({ navigation }: any) {
 					name="MyRecord"
 					component={MyRecord}
 					options={{
+						unmountOnBlur: true,
 						headerShown: false,
 						tabBarLabel: "기록",
 						tabBarIcon: ({ focused }) =>
@@ -69,6 +71,7 @@ export default function BottomTabNav({ navigation }: any) {
 					name="FriendsList"
 					component={FriendsList}
 					options={{
+						unmountOnBlur: true,
 						headerShown: false,
 						tabBarLabel: "친구",
 						tabBarIcon: ({ focused }) =>
@@ -83,6 +86,7 @@ export default function BottomTabNav({ navigation }: any) {
 					name="AlarmList"
 					component={AlarmList}
 					options={{
+						unmountOnBlur: true,
 						headerShown: false,
 						tabBarLabel: "알림",
 						tabBarIcon: ({ focused }) =>

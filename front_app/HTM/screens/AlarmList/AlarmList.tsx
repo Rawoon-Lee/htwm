@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native"
+import { RefreshControl, StyleSheet, Text, View, Dimensions, ScrollView } from "react-native"
 import Constants from "expo-constants"
 import { notice } from "../../api/noticeAPI"
 import AlarmBox from "./alarmBox"
@@ -11,11 +11,29 @@ import { getAlarmList, initAlarmList } from "../../store/notice"
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 
+const wait = (timeout: number) => {
+	return new Promise(resolve => setTimeout(resolve, timeout))
+}
+
 function AlarmList() {
 	const dispatch = useAppDispatch()
 
 	const userId = useAppSelector(state => state.userId)
 	const alarmList = useAppSelector(state => state.alarmList)
+	const [refreshing, setRefreshing] = React.useState(false)
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true)
+		notice
+			.getAlarms(userId.id)
+			.then(result => {
+				dispatch(getAlarmList(result.data.reverse()))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+		wait(1000).then(() => setRefreshing(false))
+	}, [])
 
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
@@ -30,13 +48,13 @@ function AlarmList() {
 		notice
 			.getAlarms(userId.id)
 			.then(result => {
-				dispatch(getAlarmList(result.data))
+				dispatch(getAlarmList(result.data.reverse()))
 			})
 			.catch(err => {
 				console.log(err)
 			})
 	}, [])
-	
+
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {
 			await SplashScreen.hideAsync()
@@ -58,13 +76,13 @@ function AlarmList() {
 						fontSize: 30,
 						paddingVertical: 10,
 						paddingLeft: 20,
-						fontFamily:"line-bd"
+						fontFamily: "line-bd"
 					}}
 				>
 					알림
 				</Text>
 			</View>
-			<ScrollView>
+			<ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 				{alarmList.length >= 1 ? (
 					alarmList.map((cur, idx) => {
 						return (
@@ -74,7 +92,10 @@ function AlarmList() {
 						)
 					})
 				) : (
-					<Text style={{fontFamily: "line-rg", fontSize: 20, textAlign: "center"}}> 알람이 없습니다. </Text>
+					<Text style={{ fontFamily: "line-rg", fontSize: 20, textAlign: "center" }}>
+						{" "}
+						알람이 없습니다.{" "}
+					</Text>
 				)}
 			</ScrollView>
 		</View>
@@ -87,8 +108,8 @@ const styles = StyleSheet.create({
 	container: {
 		marginTop: Constants.statusBarHeight,
 		alignItems: "center",
-		paddingBottom: 45,
-		backgroundColor:"white",
-		flex:1,
+		// paddingBottom: 45,
+		backgroundColor: "white",
+		flex: 1
 	}
 })

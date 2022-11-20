@@ -56,6 +56,7 @@ function GoogleLogin() {
 	React.useEffect(() => {
 		retreiveUserData()
 		if (!userInfo || typeof userInfo.email === "undefined") return
+		storeUserData()
 		let data = {
 			nickname: userInfo.name,
 			url: userInfo.picture,
@@ -65,27 +66,24 @@ function GoogleLogin() {
 		user
 			.getInfo(data.username)
 			.then(result => {
-				console.log("데이터 가져와서 저장하기 시작")
 				dispatch(getUserInfo(result.data))
 			})
 			.catch(err => {
-				console.log("에러나서 가져오기 못함 ㅠ")
 				console.log(err)
 			})
 	}, [])
 
 	React.useEffect(() => {
 		if (response?.type === "success") {
-			// const { authentication } = response
 			setAccessToken(response.authentication?.accessToken)
-			// console.log(response.authentication)
-			// console.log(response.authentication?.accessToken)
+			storeUserData()
 		}
 		getUserData()
 	}, [response])
 
 	React.useEffect(() => {
 		if (!userInfo || typeof userInfo.email === "undefined") return
+		storeUserData()
 		let data = {
 			nickname: userInfo.name,
 			url: userInfo.picture,
@@ -96,22 +94,17 @@ function GoogleLogin() {
 		user
 			.login(data)
 			.then(result => {
-				console.log(result.data)
-				console.log("성공함")
 				user
 					.getInfo(data.username)
 					.then(result => {
-						console.log("데이터 가져와서 저장하기 시작")
 						dispatch(getUserInfo(result.data))
 					})
 					.catch(err => {
-						console.log("에러나서 가져오기 못함 ㅠ")
 						console.log(err)
 					})
 			})
 			.catch(err => {
 				console.log(err)
-				console.log("실패함")
 			})
 	}, [userInfo])
 
@@ -126,7 +119,6 @@ function GoogleLogin() {
 		})
 
 		await userInfoResponse.json().then(data => {
-			// console.log(userInfo)
 			setUserInfo(data)
 		})
 
@@ -135,7 +127,6 @@ function GoogleLogin() {
 	}
 
 	function logout() {
-		console.log("로그아웃 ㄱㄱ")
 		AsyncStorage.removeItem("userId")
 		let data = {
 			nickname: "",

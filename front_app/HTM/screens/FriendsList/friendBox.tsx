@@ -103,7 +103,6 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 		user
 			.friendAdd(data)
 			.then(result => {
-				console.log(result.data)
 				updateFriendList()
 			})
 			.catch(err => console.log(err))
@@ -113,14 +112,10 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 		notice
 			.requestFriend(data)
 			.then(reuslt => {
-				console.log(reuslt.data)
-				console.log("친구신청함")
-
 				updateFriendList()
 			})
 			.catch(err => {
 				console.log(err)
-				console.log("실패함")
 				alert("예기치 못한 이유로 친구 신청이 실패했습니다.")
 			})
 	}
@@ -130,12 +125,10 @@ export default function FriendBox({ username, nickname, url, status, isSearch }:
 		user
 			.friendDelete(data)
 			.then(reuslt => {
-				console.log(reuslt.data)
 				updateFriendList()
 			})
 			.catch(err => {
 				console.log(err)
-				console.log("실패함")
 			})
 	}
 

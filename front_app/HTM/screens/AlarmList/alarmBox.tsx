@@ -15,15 +15,15 @@ let width = Dimensions.get("screen").width
 
 function AlarmBox(props: any) {
 	let boxColor = ""
-	if (props.alarmData.read == false) boxColor = `rgba(0, 121, 107, 0.2)`
-	else boxColor = `rgba(203, 203, 203, 1)`
+	if (props.alarmData.read == false) boxColor = `#D2D2FF`
+	else boxColor = `#fff`
 
 	return (
 		<View style={boxStyle(boxColor).container}>
 			<View
 				style={{
 					flexDirection: "row",
-					alignItems: "center",
+					alignItems: "center"
 				}}
 			>
 				<Image style={styles.profile} source={{ uri: props.alarmData.fromUrl }}></Image>
@@ -46,7 +46,7 @@ function AlarmMessage(props: any) {
 		notice
 			.getAlarms(userId.id)
 			.then(result => {
-				dispatch(getAlarmList(result.data))
+				dispatch(getAlarmList(result.data.reverse()))
 			})
 			.catch(err => {
 				console.log(err)
@@ -57,7 +57,6 @@ function AlarmMessage(props: any) {
 		notice
 			.readAlarm(props.alarmData.notice_id)
 			.then(result => {
-				console.log(result)
 				updatAlarmList()
 			})
 			.catch(err => {
@@ -69,7 +68,7 @@ function AlarmMessage(props: any) {
 		readAlarm()
 		let alarmData = {
 			to: props.alarmData.fromPhoneId,
-			title: data,
+			title: "HTWM 알람",
 			body: data,
 			sound: "default"
 		}
@@ -81,9 +80,11 @@ function AlarmMessage(props: any) {
 				// 'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			body: JSON.stringify(alarmData) // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
-		}).then(res => {
-			console.log(JSON.stringify(res))
 		})
+			.then(res => {
+				console.log(JSON.stringify(res))
+			})
+			.catch(err => console.log(err))
 	}
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
@@ -116,12 +117,12 @@ function AlarmMessage(props: any) {
 				onLayout={onLayoutRootView}
 			>
 				<View style={styles.message}>
-					<Text style={{ flexWrap: "wrap", textAlign:"center", fontFamily:"line-rg", fontSize: 18}}>
+					<Text style={{ flexWrap: "wrap", fontFamily: "line-rg", fontSize: 18 }}>
 						{fromName}님이 친구신청 하였습니다.
 					</Text>
 				</View>
 				{props.alarmData.read == false ? (
-					<View style={{ flexDirection: "row", justifyContent: "center", marginTop:5 }}>
+					<View style={{ flexDirection: "row", justifyContent: "center", marginTop: 5 }}>
 						<AlarmButton
 							children={"수락"}
 							color={"skyblue"}
@@ -130,12 +131,9 @@ function AlarmMessage(props: any) {
 									username: props.alarmData.toUsername,
 									friendname: props.alarmData.fromUsername
 								}
-								console.log(data)
-
 								user
 									.friendAdd(data)
 									.then(result => {
-										console.log(result)
 										sendNotice(props.alarmData.toUsername + "님이 친구가 되었습니다.")
 									})
 									.catch(err => {
@@ -159,12 +157,12 @@ function AlarmMessage(props: any) {
 				}}
 			>
 				<View style={styles.message}>
-					<Text style={{ flexWrap: "wrap", textAlign:"center", fontFamily:"line-rg",fontSize: 18 }}>
+					<Text style={{ flexWrap: "wrap", fontFamily: "line-rg", fontSize: 18 }}>
 						{fromName}님이 플레이를 신청하였습니다.
 					</Text>
 				</View>
 				{props.alarmData.read == false ? (
-					<View style={{ flexDirection: "row", justifyContent: "center", marginTop:5}}>
+					<View style={{ flexDirection: "row", justifyContent: "center", marginTop: 5 }}>
 						<AlarmButton
 							children={"수락"}
 							color={"skyblue"}
@@ -177,7 +175,6 @@ function AlarmMessage(props: any) {
 								streaming
 									.acceptStreaming(data)
 									.then(result => {
-										console.log("스트리밍 수락 성공")
 										readAlarm()
 										sendNotice(props.alarmData.toUsername + "님이 플레이를 수락하셨습니다.")
 									})
@@ -190,11 +187,13 @@ function AlarmMessage(props: any) {
 							children={"거절"}
 							color={"pink"}
 							clickFunction={() => {
-								let data = { from: props.alarmData.fromUsername, to: props.alarmData.toUsername }
+								let data = {
+									friendname: props.alarmData.toUsername,
+									username: props.alarmData.fromUsername
+								}
 								streaming
 									.denyStreaming(data)
 									.then(result => {
-										console.log(result)
 										readAlarm()
 										sendNotice(props.alarmData.toUsername + "님이 플레이를 거절하였습니다.")
 									})
@@ -210,7 +209,7 @@ function AlarmMessage(props: any) {
 	} else if (props.alarmData.type == "ACC_FRI") {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
-				<Text style={{ flexWrap: "wrap", textAlign:"center",fontFamily:"line-rg", fontSize: 18 }}>
+				<Text style={{ flexWrap: "wrap", fontFamily: "line-rg", fontSize: 18 }}>
 					{fromName}님이 친구가 되었습니다.
 				</Text>
 			</View>
@@ -218,16 +217,16 @@ function AlarmMessage(props: any) {
 	} else if (props.alarmData.type == "ACC_STR") {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
-				<Text style={{ 	flexWrap: "wrap",textAlign:"center", fontFamily:"line-rg", fontSize: 18 }}>
-					{fromName}님이 플레이를 수락하였습니다.
+				<Text style={{ flexWrap: "wrap", fontFamily: "line-rg", fontSize: 18 }}>
+					{fromName}님과 플레이가 시작되었습니다.
 				</Text>
 			</View>
 		)
 	} else if (props.alarmData.type == "DEN_STR") {
 		return (
 			<View style={styles.message} onTouchEnd={readAlarm}>
-				<Text style={{ flexWrap: "wrap", textAlign:"center", fontFamily:"line-rg", fontSize: 18 }}>
-					{fromName}님이 플레이를 거절하였습니다.
+				<Text style={{ flexWrap: "wrap", fontFamily: "line-rg", fontSize: 18 }}>
+					{fromName}님과의 플레이가 거절되었습니다.
 				</Text>
 			</View>
 		)
@@ -239,12 +238,14 @@ export default AlarmBox
 
 const styles = StyleSheet.create({
 	profile: {
-		width: height / 15,
-		height: height / 15,
-		borderRadius: 30
+		width: height / 17,
+		height: height / 17,
+		borderRadius: 30,
+		marginRight: 10
 	},
 	message: {
-		width: width * 7/10,
+		width: (width * 7) / 10,
+		padding: 5
 	}
 })
 
@@ -252,10 +253,12 @@ const boxStyle = (color: any) =>
 	StyleSheet.create({
 		container: {
 			backgroundColor: color,
-			borderRadius: 10,
+			borderRadius: 15,
 			width: (width * 9) / 10,
 			justifyContent: "center",
 			paddingHorizontal: 10,
-			paddingVertical: 10
+			paddingVertical: 10,
+			elevation: 4,
+			marginHorizontal: 2
 		}
 	})
