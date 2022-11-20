@@ -32,6 +32,7 @@ export default function mainLayout() {
   const [state, setState] = useState(0)
   const stateRef = useRef(0)
   const routineStateRef = useRef(0)
+  const isSleepMode = useRef(false)
 
   const components = [
     <Home />,
@@ -108,7 +109,12 @@ export default function mainLayout() {
           setState(2)
         } else if (content.type === 'knock' && stateRef.current === 0) {
           // 노크
-          if (knockCount < 3) {
+          if (isSleepMode.current) {
+            sendMain('WAKE', 'wake')
+            setTimeout(() => {
+              isSleepMode.current = false
+            }, 3000)
+          } else if (knockCount < 3) {
             knockCount++
             setTimeout(() => {
               if (knockCount > 0) {
@@ -213,18 +219,17 @@ export default function mainLayout() {
 
   ////////////////////////////////////////////////////IPC 통신//////////////////////////////////////////////////////////////
 
-  useEffect(() => {
-    const getMsg = (event, arg) => {
-      console.log(event, arg)
-    }
-    const sendMain = () => {
-      ipcRenderer.send('send_test', 'hello')
-    }
+  const sendMain = (event, data) => {
+    ipcRenderer.send(event, data)
+  }
 
-    ipcRenderer.on('send_test', getMsg)
-    return () => {
-      ipcRenderer.removeListener('send_test', getMsg)
-    }
+  useEffect(() => {
+    ipcRenderer.on('WALK', () => {
+      isSleepMode.current = false
+    })
+    ipcRenderer.on('SLEEP', () => {
+      isSleepMode.current = true
+    })
   }, [])
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
