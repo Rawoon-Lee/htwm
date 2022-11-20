@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable, Platform } from "react-native"
+import { StyleSheet, Text, View, Image, Pressable, Platform, ScrollView } from "react-native"
 import { StatusBar } from "expo-status-bar"
 import Constants from "expo-constants"
 import * as React from "react"
@@ -86,19 +86,21 @@ function Main({ navigation }: any) {
 	})
 	return (
 		<View style={styles.container}>
-			<Header navigation={navigation}></Header>
-			<StatusBar style="auto" />
-			<TrainingBird></TrainingBird>
-			<View style={{ flexDirection: "row", marginTop: 10 }}>
-				<FriendCount />
-				<WeightInput></WeightInput>
-			</View>
-			<View style={{ flexDirection: "row" }}>
-				<ExerciseDays></ExerciseDays>
-				<AccumulatedInfo />
-			</View>
-			{/* <WeightGraph></WeightGraph> */}
-			{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
+			<ScrollView>
+				<Header navigation={navigation}></Header>
+				<StatusBar style="auto" />
+				<TrainingBird></TrainingBird>
+				{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
+				<View style={{ flexDirection: "row", marginTop: 10 }}>
+					<FriendCount />
+					<WeightInput></WeightInput>
+				</View>
+				<View style={{ flexDirection: "row" }}>
+					<ExerciseDays></ExerciseDays>
+					<AccumulatedInfo />
+				</View>
+				{/* <WeightGraph></WeightGraph> */}
+			</ScrollView>
 		</View>
 	)
 }

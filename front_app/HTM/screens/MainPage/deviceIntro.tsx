@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
 		alignItems: "center",
-		padding: 20
+		padding: 10,
+		marginTop: 10
 	},
 	text: {
 		fontSize: 25,

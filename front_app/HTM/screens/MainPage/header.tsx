@@ -91,7 +91,8 @@ function Header({ navigation }: any) {
 const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
-		elevation: 4
+		elevation: 4,
+		alignItems: "center"
 	},
 	logo: {
 		fontFamily: "line-bd",
