@@ -156,7 +156,6 @@ function ProfileEdit({ navigation }: any) {
 	}
 
 	async function logout() {
-		console.log("로그아웃 ㄱㄱ")
 		await AsyncStorage.removeItem("userId")
 		let data = {
 			nickname: "",

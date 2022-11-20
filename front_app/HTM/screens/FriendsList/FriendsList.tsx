@@ -11,6 +11,7 @@ import { FriendData } from "../../store/user"
 
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
+import { withRepeat } from "react-native-reanimated"
 
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
@@ -20,11 +21,14 @@ function renderItems({ item }: { item: FriendData }) {
 		<FriendBox nickname={item.nickname} username={item.username} url={item.url} isSearch={false} />
 	)
 }
+const wait = (timeout: number) => {
+	return new Promise(resolve => setTimeout(resolve, timeout))
+}
 function FriendsList({ navigation }: any) {
 	const userId = useAppSelector(state => state.userId)
 	const friendList = useAppSelector(state => state.friendList)
 	const dispatch = useAppDispatch()
-
+	const [refreshing, setRefreshing] = React.useState(false)
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
 		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
@@ -50,6 +54,16 @@ function FriendsList({ navigation }: any) {
 			.catch(err => console.log(err))
 	}, [userId.id])
 
+	function handleRefreshing() {
+		setRefreshing(true)
+		user
+			.friendList(userId.id)
+			.then(result => {
+				dispatch(getFriendsList(result.data))
+			})
+			.catch(err => console.log(err))
+		wait(1000).then(() => setRefreshing(false))
+	}
 	function moveToSearch() {
 		navigation.navigate("FriendSearch")
 	}
@@ -98,6 +112,8 @@ function FriendsList({ navigation }: any) {
 					data={friendList}
 					keyExtractor={item => item.username}
 					renderItem={renderItems}
+					refreshing={refreshing}
+					onRefresh={handleRefreshing}
 				></FlatList>
 			) : (
 				<Text style={{ fontFamily: "line-rg", fontSize: 25 }}>😥 아직 친구가 없군요</Text>

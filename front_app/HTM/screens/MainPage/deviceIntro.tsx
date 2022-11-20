@@ -27,17 +27,12 @@ function DeviceIntro({ navigation }: any) {
 		user
 			.getUuid({ username: userId.id })
 			.then(result => {
-				console.log(result.data)
 				dispatch(getUserUuid(result.data))
 			})
 			.catch(err => {
 				console.log(err)
-
-				if (err.response.status === 400) {
-					console.log("어쩔 수 없지")
-				}
 			})
-	}, [])
+	}, [userId.id])
 
 	function moveToEdit() {
 		navigation.navigate("ProfileEdit")
@@ -65,7 +60,8 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
 		alignItems: "center",
-		padding: 20
+		padding: 10,
+		marginTop: 10
 	},
 	text: {
 		fontSize: 25,
