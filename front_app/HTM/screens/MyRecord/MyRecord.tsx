@@ -88,7 +88,6 @@ function MyRecord() {
 		record
 			.recordList(userId.id)
 			.then(result => {
-				// console.log("레코드 결과", result.data)
 				dispatch(getUserRecord(result.data))
 				markDates()
 			})
@@ -162,7 +161,6 @@ function MyRecord() {
 					}
 				})
 				.catch(err => {
-					console.log("오늘의 사진 못가져옴")
 					console.log(err)
 				})
 		}
@@ -186,16 +184,8 @@ function MyRecord() {
 				onDayPress={day => {
 					setDayInfo(day)
 				}}
-				// Handler which gets executed on day long press. Default = undefined
-				onDayLongPress={day => {
-					console.log("selected day", day)
-				}}
 				// Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
 				monthFormat={"yyyy년 MM월"}
-				// Handler which gets executed when visible month changes in calendar. Default = undefined
-				onMonthChange={month => {
-					console.log("month changed", month)
-				}}
 				// Do not show days of other months in month page. Default = false
 				hideExtraDays={true}
 				// If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out

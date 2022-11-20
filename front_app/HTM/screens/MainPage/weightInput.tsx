@@ -37,13 +37,10 @@ export default function WeightInput() {
 			username: userId.id,
 			weight: weight
 		}
-		console.log(data)
 
 		user
 			.weightRecord(data)
 			.then(res => {
-				console.log(res.data)
-				console.log("몸무게 저장 성공")
 				setShowWeight(!showWeight)
 			})
 			.catch(err => {

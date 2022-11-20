@@ -85,17 +85,6 @@ function RoutineBox(props: any) {
 					{min === 0 ? null : `${min} 분 `}
 					{sec} 초
 				</Text>
-				{/* <View style={{ borderRadius: 18 }}>
-					<Pressable
-						onPress={() => {
-							console.log("hello")
-						}}
-						android_ripple={{ color: "yellow" }}
-						style={{ paddingHorizontal: 5 }}
-					>
-						<Text>...</Text>
-					</Pressable>
-				</View> */}
 			</View>
 			<View
 				style={{
@@ -144,13 +133,10 @@ function RoutineBox(props: any) {
 							routine
 								.routineDelete(body)
 								.then(result => {
-									console.log("삭제진행중")
-									console.log(result.data)
 									alert("삭제 되었습니다")
 									updateReduxRoutineList()
 								})
 								.catch(err => {
-									console.log(err)
 									alert(err.response.data)
 								})
 						}}

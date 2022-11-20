@@ -3,10 +3,6 @@ import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native"
 import { color } from "../Style/commonStyle"
 
 function PrimaryButton({ children, clickFunction }: any) {
-	function pressHandler() {
-		console.log("눌렀다!")
-	}
-
 	return (
 		<View style={styles.outerContainer}>
 			<Pressable
@@ -21,10 +17,6 @@ function PrimaryButton({ children, clickFunction }: any) {
 }
 
 function SelectButton({ children, clickFunction, color, width, borderColor, textColor }: any) {
-	function pressHandler() {
-		console.log("눌렀다!")
-	}
-
 	return (
 		<View style={styles2(color, width, borderColor, textColor).outerContainer}>
 			<Pressable

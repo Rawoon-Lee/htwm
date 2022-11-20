@@ -27,7 +27,6 @@ function AccumulatedInfo() {
 	async function storeRoutineCnt() {
 		try {
 			const routineCnt = recordList.length
-			console.log("rouineCnt", routineCnt)
 			await AsyncStorage.setItem("rouineCnt", String(routineCnt))
 		} catch (err) {
 			console.log(err)
@@ -36,8 +35,6 @@ function AccumulatedInfo() {
 	async function retreiveRoutineCnt() {
 		try {
 			const loadedData = await AsyncStorage.getItem("rouineCnt")
-			console.log("loaded data", loadedData)
-
 			if (loadedData) {
 				setRoutine(loadedData)
 			}
@@ -75,9 +72,7 @@ function AccumulatedInfo() {
 
 		for (let i = 0; i < recordList.length; i++) {
 			if (!temp.includes(recordList[i].startDateTime.slice(0, 10))) {
-				console.log(recordList[i].startDateTime.slice(0, 10))
 				temp.push(recordList[i].startDateTime.slice(0, 10))
-				console.log(temp)
 			}
 		}
 		setExercise(temp)

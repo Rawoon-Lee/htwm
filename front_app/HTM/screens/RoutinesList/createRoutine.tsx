@@ -111,7 +111,6 @@ export default function CreateRoutine({ navigation }: any) {
 		let tempBox = boxes
 		tempBox.pop()
 		setBoxes(tempBox)
-		console.log("component delete")
 	}
 
 	function createRoutine() {
@@ -133,14 +132,11 @@ export default function CreateRoutine({ navigation }: any) {
 		routine
 			.routineCreate(data)
 			.then(result => {
-				console.log("생성 성공")
-				console.log(result.data)
 				updateReduxRoutineList()
 				alert("루틴이 등록되었습니다")
 				navigation.navigate("RoutineList")
 			})
 			.catch(err => {
-				console.log("실패했습니다")
 				console.log(err)
 				alert(err.response.data)
 			})
@@ -154,7 +150,6 @@ export default function CreateRoutine({ navigation }: any) {
 		routine
 			.routineList(userId.id)
 			.then(result => {
-				console.log(result.data)
 				dispatch(getRoutineList(result.data))
 			})
 			.catch(err => {
@@ -205,7 +200,7 @@ export default function CreateRoutine({ navigation }: any) {
 								<View key={idx}>
 									<Pressable
 										onPress={() => {
-											setSelectedColor(color), console.log(selectedColor)
+											setSelectedColor(color)
 										}}
 									>
 										<View
