@@ -1,0 +1,27 @@
+.show-routine {
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.show-routine-alert {
+  align-self: center;
+  font-size: 60px;
+}
+
+.show-routine-break {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+
+  border-left: 2vw solid gray;
+}
+
+.show-routine-exercise {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+
+  border-left: 2vw solid rgba(0, 0, 255, 0.724);
+}

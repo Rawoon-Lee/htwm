@@ -1,0 +1,46 @@
+{
+	"project_info": {
+		"project_number": "440495779704",
+		"project_id": "htm-app-1fd4f",
+		"storage_bucket": "htm-app-1fd4f.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:440495779704:android:0e7be9af1647fb7347a28d",
+				"android_client_info": {
+					"package_name": "com.phorest.htm"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "440495779704-ekaoouogu6bnahpkh5qka267linn8f2d.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyC8AvAGr74oUIE-PE2DbY97U0ys3ctrvls"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "440495779704-ekaoouogu6bnahpkh5qka267linn8f2d.apps.googleusercontent.com",
+							"client_type": 3
+						},
+						{
+							"client_id": "440495779704-5uftm1ea7girg4j5v78cbdrjq2lcuoe7.apps.googleusercontent.com",
+							"client_type": 2,
+							"ios_info": {
+								"bundle_id": "com.phorest.htm"
+							}
+						}
+					]
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
+}

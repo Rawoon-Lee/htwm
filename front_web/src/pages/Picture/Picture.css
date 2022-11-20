@@ -1,0 +1,30 @@
+.picture {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  height: 100%;
+}
+
+.picture-message {
+  display: flex;
+  align-items: center;
+
+  height: 20vh;
+  font-size: 5vw;
+}
+
+.picture-video {
+  width: 100vw;
+  height: 75vw;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.picture-result {
+  width: 100vw;
+  height: 75vw;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}

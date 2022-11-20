@@ -1,0 +1,24 @@
+spring:
+  config:
+    import: credentials.yaml
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+        format_sql: true
+        ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      location: /var/lib/jenkins/workspace/imagefiles
+
+server:
+  servlet:
+    context-path: /api/
+  port: 8399
