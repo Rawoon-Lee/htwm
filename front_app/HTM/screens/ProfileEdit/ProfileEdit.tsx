@@ -57,7 +57,6 @@ function ProfileEdit({ navigation }: any) {
 			return null
 		}
 		// 이미지 업로드 결과 및 이미지 경로 업데이트
-		console.log(result)
 
 		const localUri = result.uri
 		const fileName = localUri.split("/").pop()
@@ -69,11 +68,9 @@ function ProfileEdit({ navigation }: any) {
 		picture
 			.changeProfile(formData)
 			.then(result => {
-				console.log("프로필 이미지 업로드 성공")
 				setImageUrl(result.data)
 			})
 			.catch(err => {
-				console.log("프로필 못 바꿈")
 				console.log(err)
 				alert("예기치 못한 이유로 업로드가 실패했습니다")
 			})
@@ -116,13 +113,10 @@ function ProfileEdit({ navigation }: any) {
 		user
 			.profileEdit(data)
 			.then(result => {
-				console.log("유저 정보 변경 성공")
-				console.log(result.data)
 				alert("유저 정보가 성공적으로 변경되었습니다")
 				user
 					.getInfo(userId.id)
 					.then(result => {
-						console.log("redux 값 업데이트")
 						dispatch(getUserInfo(result.data))
 					})
 					.catch(err => {
@@ -130,7 +124,6 @@ function ProfileEdit({ navigation }: any) {
 					})
 			})
 			.catch(err => {
-				console.log("실패함")
 				console.log(err)
 			})
 	}
@@ -144,7 +137,6 @@ function ProfileEdit({ navigation }: any) {
 		user
 			.registerUuid(data)
 			.then(result => {
-				console.log("등록됨")
 				alert("기기 등록이 완료되었습니다")
 			})
 			.catch(err => {
@@ -156,7 +148,6 @@ function ProfileEdit({ navigation }: any) {
 	}
 
 	async function logout() {
-		console.log("로그아웃 ㄱㄱ")
 		await AsyncStorage.removeItem("userId")
 		let data = {
 			nickname: "",

@@ -3,10 +3,6 @@ import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native"
 import { color } from "../Style/commonStyle"
 
 function PrimaryButton({ children, clickFunction }: any) {
-	function pressHandler() {
-		console.log("눌렀다!")
-	}
-
 	return (
 		<View style={styles.outerContainer}>
 			<Pressable
@@ -21,10 +17,6 @@ function PrimaryButton({ children, clickFunction }: any) {
 }
 
 function SelectButton({ children, clickFunction, color, width, borderColor, textColor }: any) {
-	function pressHandler() {
-		console.log("눌렀다!")
-	}
-
 	return (
 		<View style={styles2(color, width, borderColor, textColor).outerContainer}>
 			<Pressable
@@ -121,11 +113,16 @@ const styles2 = (givencolor: any, width: number, borderColor: string, textColor:
 const styles3 = (color: any, borderColor: any) =>
 	StyleSheet.create({
 		outerContainer: {
-			borderRadius: 18,
+			borderRadius: 7,
+			backgroundColor: color,
+			margin: 5,
+			paddingHorizontal: 5,
+			paddingVertical: 3,
+			// borderRadius: 18,
 			borderColor: borderColor,
-			margin: 10,
-			overflow: "hidden",
-			borderStyle: "solid",
+			// margin: 10,
+			// overflow: "hidden",
+			// borderStyle: "solid",
 			borderWidth: 2
 		},
 		innerContainer: {
@@ -133,9 +130,9 @@ const styles3 = (color: any, borderColor: any) =>
 		},
 		textStyle: {
 			color: "black",
-			fontSize: 15,
+			fontSize: 20,
 			textAlign: "center",
-			fontFamily: "line-rg"
+			fontFamily: "line-bd"
 		}
 	})
 
@@ -162,19 +159,26 @@ const styles4 = (color: any) =>
 const alarmStyle = (color: any) =>
 	StyleSheet.create({
 		outerContainer: {
-			borderRadius: 18,
-			margin: 5,
-			overflow: "hidden"
+			// borderRadius: 18,
+			// margin: 5,
+			// overflow: "hidden"
+			backgroundColor: color,
+			borderWidth: 2,
+			borderColor: color,
+			borderRadius: 7,
+			paddingHorizontal: 5,
+			paddingVertical: 3,
+			margin: 4
 		},
 		innerContainer: {
-			paddingHorizontal: 45,
-			paddingVertical: 5,
-			backgroundColor: color
+			paddingHorizontal: 35,
+			paddingVertical: 5
+			// backgroundColor: color
 		},
 		textStyle: {
-			color: "black",
+			color: "white",
 			fontSize: 16,
 			textAlign: "center",
-			fontFamily: "line-rg"
+			fontFamily: "line-bd"
 		}
 	})
