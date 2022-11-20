@@ -60,7 +60,6 @@ export default function DailyInfo(props: DateData) {
 		picture
 			.pictureList(data)
 			.then(result => {
-				console.log("사진가져왔음")
 				dispatch(getPicList(result.data))
 			})
 			.catch(err => {
@@ -109,7 +108,6 @@ export default function DailyInfo(props: DateData) {
 		return "오후 " + hour + " : " + min
 	}
 
-	// console.log(recordList[0].routineJson)
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {
 			await SplashScreen.hideAsync()

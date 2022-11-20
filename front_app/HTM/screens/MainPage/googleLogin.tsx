@@ -36,8 +36,6 @@ function GoogleLogin() {
 		if (!userInfo || typeof userInfo.email === "undefined") return
 		try {
 			const userId = userInfo.email.split("@")[0]
-			console.log("userId", userId)
-
 			await AsyncStorage.setItem("userId", userId)
 			dispatch(getUserId(userId))
 		} catch (err) {
@@ -47,8 +45,6 @@ function GoogleLogin() {
 	async function retreiveUserData() {
 		try {
 			const loadedData = await AsyncStorage.getItem("userId")
-			console.log("로그인정보 loaded data", loadedData)
-
 			if (loadedData) {
 				dispatch(getUserId(loadedData))
 			}
@@ -79,10 +75,7 @@ function GoogleLogin() {
 
 	React.useEffect(() => {
 		if (response?.type === "success") {
-			// const { authentication } = response
 			setAccessToken(response.authentication?.accessToken)
-			// console.log(response.authentication)
-			// console.log(response.authentication?.accessToken)
 			storeUserData()
 		}
 		getUserData()
@@ -126,7 +119,6 @@ function GoogleLogin() {
 		})
 
 		await userInfoResponse.json().then(data => {
-			// console.log(userInfo)
 			setUserInfo(data)
 		})
 

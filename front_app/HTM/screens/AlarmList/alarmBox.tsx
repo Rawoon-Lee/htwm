@@ -57,12 +57,9 @@ function AlarmMessage(props: any) {
 		notice
 			.readAlarm(props.alarmData.notice_id)
 			.then(result => {
-				// console.log(result)
 				updatAlarmList()
 			})
 			.catch(err => {
-				console.log("----------------------------------------------------")
-
 				console.log(err.response.data)
 			})
 	}
@@ -83,9 +80,11 @@ function AlarmMessage(props: any) {
 				// 'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			body: JSON.stringify(alarmData) // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
-		}).then(res => {
-			console.log(JSON.stringify(res))
 		})
+			.then(res => {
+				console.log(JSON.stringify(res))
+			})
+			.catch(err => console.log(err))
 	}
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
@@ -132,12 +131,9 @@ function AlarmMessage(props: any) {
 									username: props.alarmData.toUsername,
 									friendname: props.alarmData.fromUsername
 								}
-								console.log(data)
-
 								user
 									.friendAdd(data)
 									.then(result => {
-										console.log(result)
 										sendNotice(props.alarmData.toUsername + "님이 친구가 되었습니다.")
 									})
 									.catch(err => {
@@ -179,13 +175,10 @@ function AlarmMessage(props: any) {
 								streaming
 									.acceptStreaming(data)
 									.then(result => {
-										console.log("스트리밍 수락 성공")
 										readAlarm()
 										sendNotice(props.alarmData.toUsername + "님이 플레이를 수락하셨습니다.")
 									})
 									.catch(err => {
-										console.log("=============================================")
-
 										console.log(err.response.data)
 									})
 							}}
@@ -201,13 +194,11 @@ function AlarmMessage(props: any) {
 								streaming
 									.denyStreaming(data)
 									.then(result => {
-										console.log(result)
 										readAlarm()
 										sendNotice(props.alarmData.toUsername + "님이 플레이를 거절하였습니다.")
 									})
 									.catch(err => {
 										console.log(err.response.data)
-										console.log(data)
 									})
 							}}
 						/>

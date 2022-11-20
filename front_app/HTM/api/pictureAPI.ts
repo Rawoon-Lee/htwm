@@ -29,7 +29,6 @@ const picture = {
 		})
 	},
 	changeProfile(data: FormData) {
-		console.log(data)
 		return api({
 			method: "post",
 			data: data,
