@@ -28,7 +28,6 @@ function FriendCount() {
 	async function storeRoutineCnt() {
 		try {
 			const routineCnt = friendList.length
-			console.log("friendCnt", routineCnt)
 			await AsyncStorage.setItem("friendCnt", String(routineCnt))
 		} catch (err) {
 			console.log(err)
@@ -37,8 +36,6 @@ function FriendCount() {
 	async function retreiveRoutineCnt() {
 		try {
 			const loadedData = await AsyncStorage.getItem("friendCnt")
-			console.log("loaded data", loadedData)
-
 			if (loadedData) {
 				setRoutine(loadedData)
 			}

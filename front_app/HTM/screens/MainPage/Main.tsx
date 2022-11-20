@@ -48,7 +48,6 @@ function Main({ navigation }: any) {
 					return
 				}
 				const token = (await Notifications.getExpoPushTokenAsync()).data
-				console.log(token)
 				dispatch(getPushToken(token))
 				if (Platform.OS === "android") {
 					Notifications.setNotificationChannelAsync("default", {
