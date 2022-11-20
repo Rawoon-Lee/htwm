@@ -22,3 +22,6 @@
  - BE : Spring Boot
  - DB : MySQL
  - EMB : python, javascript
+
+ ## 기술스택
+ - [WIKI](https://lab.ssafy.com/s07-final/S07P31A306/-/wikis/home)
