@@ -29,6 +29,10 @@ export default function WeightInput() {
 		prepare()
 	}, [])
 	function updateWeight(weight: number) {
+		if (!weight || weight === 0) {
+			alert("몸무게를 정확히 입력해주세요")
+			return
+		}
 		let data = {
 			username: userId.id,
 			weight: weight

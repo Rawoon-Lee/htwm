@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Dimensions } from "react-native"
 import * as React from "react"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { user } from "../../api/userAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
@@ -18,27 +19,52 @@ function FriendCount() {
 	const userId = useAppSelector(state => state.userId)
 	const friendList = useAppSelector(state => state.friendList)
 	const [exercise, setExercise] = React.useState<string[]>([])
-	const [routine, setRoutine] = React.useState(0)
+	const [routine, setRoutine] = React.useState("0")
 
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
 		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
 	})
+	async function storeRoutineCnt() {
+		try {
+			const routineCnt = friendList.length
+			console.log("friendCnt", routineCnt)
+			await AsyncStorage.setItem("friendCnt", String(routineCnt))
+		} catch (err) {
+			console.log(err)
+		}
+	}
+	async function retreiveRoutineCnt() {
+		try {
+			const loadedData = await AsyncStorage.getItem("friendCnt")
+			console.log("loaded data", loadedData)
 
+			if (loadedData) {
+				setRoutine(loadedData)
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
 	React.useEffect(() => {
+		if (friendList.length > 0) storeRoutineCnt()
+		retreiveRoutineCnt()
 		async function prepare() {
 			await SplashScreen.preventAutoHideAsync()
 		}
 		prepare()
-		setRoutine(friendList.length)
 		user
 			.friendList(userId.id)
 			.then(result => {
 				dispatch(getFriendsList(result.data))
-				setRoutine(friendList.length)
 			})
 			.catch(err => console.log(err))
 	}, [])
+
+	React.useEffect(() => {
+		if (friendList.length > 0) storeRoutineCnt()
+		retreiveRoutineCnt()
+	}, [friendList])
 
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {

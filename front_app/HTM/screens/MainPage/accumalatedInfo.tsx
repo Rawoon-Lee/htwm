@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Dimensions } from "react-native"
 import * as React from "react"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { record } from "../../api/recordAPI"
 import { useAppSelector, useAppDispatch } from "../../store/hook"
@@ -16,21 +17,38 @@ function AccumulatedInfo() {
 	const userId = useAppSelector(state => state.userId)
 	const recordList = useAppSelector(state => state.recordList)
 	const [exercise, setExercise] = React.useState<string[]>([])
-	const [routine, setRoutine] = React.useState(recordList.length)
+	const [routine, setRoutine] = React.useState("0")
 
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
 		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
 	})
 
-	let today = new Date()
-	let year = today.getFullYear()
-	let month = ("0" + (today.getMonth() + 1)).slice(-2)
-	let day = ("0" + today.getDate()).slice(-2)
-	let dateString = year + "-" + month + "-" + day
+	async function storeRoutineCnt() {
+		try {
+			const routineCnt = recordList.length
+			console.log("rouineCnt", routineCnt)
+			await AsyncStorage.setItem("rouineCnt", String(routineCnt))
+		} catch (err) {
+			console.log(err)
+		}
+	}
+	async function retreiveRoutineCnt() {
+		try {
+			const loadedData = await AsyncStorage.getItem("rouineCnt")
+			console.log("loaded data", loadedData)
 
+			if (loadedData) {
+				setRoutine(loadedData)
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
 	React.useEffect(() => {
-		countUniqueDays()
+		// countUniqueDays()
+		if (recordList.length > 0) storeRoutineCnt()
+		retreiveRoutineCnt()
 		async function prepare() {
 			await SplashScreen.preventAutoHideAsync()
 		}
@@ -48,7 +66,8 @@ function AccumulatedInfo() {
 	}, [])
 
 	React.useEffect(() => {
-		countUniqueDays()
+		if (recordList.length > 0) storeRoutineCnt()
+		retreiveRoutineCnt()
 	}, [recordList])
 
 	function countUniqueDays() {
