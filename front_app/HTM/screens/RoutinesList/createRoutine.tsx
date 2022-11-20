@@ -26,7 +26,6 @@ interface tempSetData extends SetData {
 export default function CreateRoutine({ navigation }: any) {
 	const dispatch = useAppDispatch()
 	const userId = useAppSelector(state => state.userId)
-
 	const [index, setIndex] = React.useState(0)
 
 	const [boxes, setBoxes] = React.useState<JSX.Element[]>([])
@@ -41,9 +40,11 @@ export default function CreateRoutine({ navigation }: any) {
 	// 인풋 데이터
 	const [name, setName] = React.useState("")
 	const [selectedExercise, setSelectedExercise] = React.useState("")
-	const [time, setTime] = React.useState(10)
+	const [breakTime, setBreakTime] = React.useState(20)
 	const [num, setNum] = React.useState(0)
 	const [set, setSet] = React.useState(0)
+	const [minTime, setMinTime] = React.useState(0)
+	const [secTime, setSecTime] = React.useState(0)
 
 	const [sets, setSets] = React.useState<SetData[]>([])
 	const [fontsLoaded] = useFonts({
@@ -70,8 +71,6 @@ export default function CreateRoutine({ navigation }: any) {
 		// exerciseList 없음
 		if (!exerciseList) return
 		// 먼저 값이 제대로 들어와 있는지 확인
-		console.log("확안용")
-		console.log(name, setType, selectedExercise, time, num, set)
 		if (!selectedExercise) {
 			alert("운동을 선택해주세요")
 			return
@@ -81,7 +80,7 @@ export default function CreateRoutine({ navigation }: any) {
 			return
 		}
 
-		if (time < 10) {
+		if (breakTime < 20) {
 			alert("시간은 10보다 작을 수 없습니다")
 			return
 		}
@@ -90,21 +89,20 @@ export default function CreateRoutine({ navigation }: any) {
 				exercise_id: parseInt(selectedExercise),
 				exercise_name: exerciseList[parseInt(selectedExercise) - 1].name,
 				number: num,
-				sec: 0,
+				sec: minTime * 60 + secTime,
 				set_cnt: set
 			},
 			{
 				exercise_id: 1,
 				exercise_name: "휴식",
 				number: 0,
-				sec: time,
+				sec: breakTime,
 				set_cnt: 0
 			}
 		]
 		// let list = sets
 		// list.push(temp)
 		setSets(sets.concat(temp))
-		console.log(sets)
 	}
 
 	function deleteSetInfoBox() {
@@ -129,10 +127,9 @@ export default function CreateRoutine({ navigation }: any) {
 			color: selectedColor,
 			name: name,
 			username: userId.id,
-			sets: sets
+			sets: sets.slice(0, -1)
 		}
 
-		console.log(JSON.stringify(sets))
 		routine
 			.routineCreate(data)
 			.then(result => {
@@ -173,11 +170,11 @@ export default function CreateRoutine({ navigation }: any) {
 			alert("휴식시간은 60분을 넘을 수 없습니다")
 			return
 		}
-		if (num < 10) {
-			alert(`휴식시간은 10초보다 작을 수 없습니다.`)
-			return
-		}
-		setTime(num)
+		// if (num < 10) {
+		// 	alert(`휴식시간은 10초보다 작을 수 없습니다.`)
+		// 	return
+		// }
+		setBreakTime(num)
 	}
 
 	const onLayoutRootView = React.useCallback(async () => {
@@ -283,6 +280,7 @@ export default function CreateRoutine({ navigation }: any) {
 								</Picker>
 							</View>
 							<View style={styles.exerciseNumInput}>
+								<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-bd" }}>목표 횟수 </Text>
 								<TextInput
 									style={styles.textInput_sm}
 									onChangeText={text => {
@@ -302,6 +300,33 @@ export default function CreateRoutine({ navigation }: any) {
 								></TextInput>
 								<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 세트</Text>
 							</View>
+							<View style={{ alignItems: "center" }}>
+								<View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-bd" }}>
+										목표 시간{" "}
+									</Text>
+									<TextInput
+										style={styles.textInput_sm}
+										onChangeText={text => {
+											setMinTime(parseInt(text))
+										}}
+										// placeholder="횟수를 설정해주세요"
+										keyboardType={"numeric"}
+									></TextInput>
+									<Text style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}> 분 </Text>
+									<TextInput
+										style={styles.textInput_sm}
+										onChangeText={text => {
+											setSecTime(parseInt(text))
+										}}
+										// placeholder="횟수를 설정해주세요"
+										keyboardType={"numeric"}
+									></TextInput>
+									<Text
+										style={{ fontSize: 20, padding: 5, fontFamily: "line-rg" }}
+									>{` 초    `}</Text>
+								</View>
+							</View>
 						</View>
 						<View style={{ alignItems: "center" }}>
 							<Text style={{ fontSize: 22, margin: 10, marginTop: 25, fontFamily: "line-bd" }}>
@@ -313,7 +338,7 @@ export default function CreateRoutine({ navigation }: any) {
 									onChangeText={text => {
 										changeTime(parseInt(text))
 									}}
-									defaultValue={"10"}
+									defaultValue={"20"}
 									// placeholder="휴식시간을 설정해주세요"
 									keyboardType={"numeric"}
 								></TextInput>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native"
+import { StyleSheet, Text, View, ScrollView, Dimensions, RefreshControl } from "react-native"
 import Constants from "expo-constants"
 import * as React from "react"
 
@@ -12,13 +12,25 @@ import { SelectButton } from "../../components/PrimaryButton"
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
 import { color } from "../../Style/commonStyle"
+
 let width = Dimensions.get("screen").width
+
+const wait = (timeout: number) => {
+	return new Promise(resolve => setTimeout(resolve, timeout))
+}
 
 function RoutineList({ navigation }: any) {
 	const dispatch = useAppDispatch()
 
 	const userId = useAppSelector(state => state.userId)
 	const routineList = useAppSelector(state => state.routineList)
+	const [refreshing, setRefreshing] = React.useState(false)
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true)
+		wait(1000).then(() => setRefreshing(false))
+	}, [])
+
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf")
 	})
@@ -58,7 +70,7 @@ function RoutineList({ navigation }: any) {
 
 	return (
 		<View style={styles.container} onLayout={onLayoutRootView}>
-			<ScrollView>
+			<ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 				<Text
 					style={{
 						fontSize: 30,

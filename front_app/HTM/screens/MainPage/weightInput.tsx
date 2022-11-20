@@ -4,6 +4,9 @@ import { TextInput } from "react-native-gesture-handler"
 
 import { SmallButton } from "../../components/PrimaryButton"
 
+import { user } from "../../api/userAPI"
+import { useAppSelector } from "../../store/hook"
+
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
 
@@ -11,6 +14,7 @@ let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
 
 export default function WeightInput() {
+	const userId = useAppSelector(state => state.userId)
 	const [weightToday, setWeightToday] = React.useState("")
 	const [showWeight, setShowWeight] = React.useState(true)
 	const [fontsLoaded] = useFonts({
@@ -24,8 +28,30 @@ export default function WeightInput() {
 		}
 		prepare()
 	}, [])
+	function updateWeight(weight: number) {
+		if (!weight || weight === 0) {
+			alert("몸무게를 정확히 입력해주세요")
+			return
+		}
+		let data = {
+			username: userId.id,
+			weight: weight
+		}
+		console.log(data)
+
+		user
+			.weightRecord(data)
+			.then(res => {
+				console.log(res.data)
+				console.log("몸무게 저장 성공")
+				setShowWeight(!showWeight)
+			})
+			.catch(err => {
+				console.log(err.response.data)
+			})
+	}
 	let click = () => {
-		setShowWeight(false)
+		setShowWeight(!showWeight)
 	}
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {
@@ -44,7 +70,7 @@ export default function WeightInput() {
 						<TextInput
 							style={{
 								textAlign: "center",
-								width: width / 4,
+								width: width / 5,
 								fontFamily: "line-rg",
 								fontSize: 20
 							}}
@@ -54,12 +80,12 @@ export default function WeightInput() {
 							}}
 							placeholder="몸무게"
 						></TextInput>
-						<Text> kg</Text>
+						<Text style={{ fontFamily: "line-rg", fontSize: 20 }}> kg</Text>
 					</View>
-					<View style={{ width: (width * 2) / 10 }}>
+					<View style={{ width: (width * 2) / 12 }}>
 						<SmallButton
 							children={"입력"}
-							clickFunction={click}
+							clickFunction={() => updateWeight(parseInt(weightToday))}
 							color={"white"}
 							borderColor={"white"}
 						/>
@@ -67,8 +93,32 @@ export default function WeightInput() {
 				</View>
 			) : (
 				<View style={styles.container2}>
-					<Text style={{ fontSize: 15, color: "#727272" }}>오늘의 몸무게</Text>
-					<Text style={{ fontSize: 24, color: "#373737" }}> {weightToday}kg</Text>
+					<Text
+						style={{ fontSize: 20, color: "#727272", fontFamily: "line-rg", marginVertical: 5 }}
+					>
+						오늘의 몸무게
+					</Text>
+					<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+						<Text
+							style={{
+								fontSize: 22,
+								color: "#373737",
+								fontFamily: "line-bd",
+								marginVertical: 5,
+								marginRight: 7
+							}}
+						>
+							{weightToday}kg
+						</Text>
+						<View style={{ width: (width * 2) / 12 }}>
+							<SmallButton
+								children={"수정"}
+								clickFunction={click}
+								color={"white"}
+								borderColor={"white"}
+							/>
+						</View>
+					</View>
 				</View>
 			)}
 		</View>
@@ -83,12 +133,12 @@ let styles = StyleSheet.create({
 		borderRadius: 10,
 		width: width / 2.5,
 		height: height / 9,
-		marginLeft: 5
+		margin: 10
 	},
 	container1: {
 		flexDirection: "row",
 		alignItems: "center",
-		paddingTop: 10
+		marginVertical: 2
 	},
 	container2: {
 		paddingBottom: 15,
@@ -99,6 +149,6 @@ let styles = StyleSheet.create({
 		borderRadius: 10,
 		width: width / 2.5,
 		height: height / 9,
-		marginLeft: 5
+		margin: 10
 	}
 })
