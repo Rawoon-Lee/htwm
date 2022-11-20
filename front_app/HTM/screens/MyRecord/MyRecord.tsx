@@ -6,13 +6,17 @@ import { LocaleConfig } from "react-native-calendars"
 import * as React from "react"
 
 import { useAppSelector, useAppDispatch } from "../../store/hook"
-import { getUserRecord } from "../../store/record"
+import { getStreamingList, getUserRecord } from "../../store/record"
 import { record } from "../../api/recordAPI"
 import { picture } from "../../api/pictureAPI"
 import { user } from "../../api/userAPI"
+import { streaming } from "../../api/streamingAPI"
 import { getPicList } from "../../store/picture"
 import { getWeightList } from "../../store/user"
 import routine from "../../store/routine"
+
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
 
 import DailyInfo from "./dailyInfo"
 
@@ -42,10 +46,16 @@ function MyRecord() {
 	const recordList = useAppSelector(state => state.recordList)
 	const picList = useAppSelector(state => state.picList)
 	const weightList = useAppSelector(state => state.weightList)
+	const streamingList = useAppSelector(state => state.streamingList)
 
 	const [dayInfo, setDayInfo] = React.useState<DateData | null>(null)
 	const [markedDates, setMarkedDates] = React.useState<ObjType>({})
 	const [refreshing, setRefreshing] = React.useState(false)
+
+	const [fontsLoaded] = useFonts({
+		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
+		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
+	})
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true)
@@ -53,6 +63,12 @@ function MyRecord() {
 	}, [])
 
 	React.useEffect(() => {
+		// 폰트 불러오기
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync()
+		}
+		prepare()
+		//오늘 날짜 가져오기
 		let today = new Date()
 		let year = today.getFullYear()
 		let month = ("0" + (today.getMonth() + 1)).slice(-2)
@@ -81,6 +97,12 @@ function MyRecord() {
 			.weightList(userId.id)
 			.then(result => {
 				dispatch(getWeightList(result.data))
+			})
+			.catch(err => console.log(err))
+		streaming
+			.getStreamings(userId.id)
+			.then(res => {
+				dispatch(getStreamingList(res.data))
 			})
 			.catch(err => console.log(err))
 	}, [])
@@ -120,6 +142,10 @@ function MyRecord() {
 			markedDates[weightList[i].date] = setting
 			setMarkedDates({ ...markedDates })
 		}
+		for (let i = 0; i < streamingList.length; i++) {
+			markedDates[streamingList[i].startTime.slice(0, 10)] = setting
+			setMarkedDates({ ...markedDates })
+		}
 		for (let i = 1; i <= 30; i++) {
 			let num = String(i)
 			if (i < 10) {
@@ -130,8 +156,6 @@ function MyRecord() {
 			picture
 				.pictureList(data)
 				.then(result => {
-					console.log("사진가져왔음")
-					console.log(result.data)
 					if (result.data.length >= 1) {
 						markedDates[date] = setting
 						setMarkedDates({ ...markedDates })
@@ -143,10 +167,17 @@ function MyRecord() {
 				})
 		}
 	}
-	console.log("marked", markedDates)
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
 
+	if (!fontsLoaded) {
+		return null
+	}
 	return (
-		<View style={styles.container}>
+		<View style={styles.container} onLayout={onLayoutRootView}>
 			<Calendar
 				style={{ width: Dimensions.get("screen").width }}
 				// Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
@@ -160,7 +191,7 @@ function MyRecord() {
 					console.log("selected day", day)
 				}}
 				// Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-				monthFormat={"yyyy MM"}
+				monthFormat={"yyyy년 MM월"}
 				// Handler which gets executed when visible month changes in calendar. Default = undefined
 				onMonthChange={month => {
 					console.log("month changed", month)
@@ -178,6 +209,14 @@ function MyRecord() {
 				enableSwipeMonths={true}
 				markingType={"custom"}
 				markedDates={markedDates}
+				theme={{
+					textDayFontFamily: "line-rg",
+					textMonthFontFamily: "line-bd",
+					textMonthFontSize: 20,
+					textDayHeaderFontFamily: "line-rg",
+					todayTextColor: "#7070be",
+					arrowColor: "#b3b3f0"
+				}}
 			/>
 			<ScrollView
 				style={{ marginBottom: tabBarHeight }}

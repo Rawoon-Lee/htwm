@@ -2,45 +2,67 @@ import { StyleSheet, Text, View, Dimensions } from "react-native"
 import * as React from "react"
 
 import { record } from "../../api/recordAPI"
-import { useAppSelector } from "../../store/hook"
+import { useAppSelector, useAppDispatch } from "../../store/hook"
+import { getUserRecord } from "../../store/record"
 
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
 
 let height = Dimensions.get("screen").height
 let width = Dimensions.get("screen").width
-function ExerciseDays() {
+function AccumulatedInfo() {
+	const dispatch = useAppDispatch()
+
 	const userId = useAppSelector(state => state.userId)
-	const [daysCont, setDaysCont] = React.useState("0")
+	const recordList = useAppSelector(state => state.recordList)
+	const [exercise, setExercise] = React.useState<string[]>([])
+	const [routine, setRoutine] = React.useState(recordList.length)
 
 	const [fontsLoaded] = useFonts({
 		"line-rg": require("../../assets/fonts/LINESeedKR-Rg.ttf"),
 		"line-bd": require("../../assets/fonts/LINESeedKR-Bd.ttf")
 	})
 
+	let today = new Date()
+	let year = today.getFullYear()
+	let month = ("0" + (today.getMonth() + 1)).slice(-2)
+	let day = ("0" + today.getDate()).slice(-2)
+	let dateString = year + "-" + month + "-" + day
+
 	React.useEffect(() => {
+		countUniqueDays()
 		async function prepare() {
 			await SplashScreen.preventAutoHideAsync()
 		}
 		prepare()
-		let today = new Date()
-		let year = today.getFullYear()
-		let month = ("0" + (today.getMonth() + 1)).slice(-2)
-		let day = ("0" + (today.getDate() - 1)).slice(-2)
-		let dateString = year + "-" + month + "-" + day
-		let data = {
-			username: userId.id,
-			date: dateString
-		}
 		record
-			.recordDays(data)
+			.recordList(userId.id)
 			.then(result => {
-				setDaysCont(result.data)
+				// setExercise(result.data)
+				setRoutine(result.data.length)
+				dispatch(getUserRecord(result.data))
 			})
 			.catch(err => {
 				console.log(err)
 			})
-	}, [userId.id])
+	}, [])
+
+	React.useEffect(() => {
+		countUniqueDays()
+	}, [recordList])
+
+	function countUniqueDays() {
+		let temp: string[] = []
+
+		for (let i = 0; i < recordList.length; i++) {
+			if (!temp.includes(recordList[i].startDateTime.slice(0, 10))) {
+				console.log(recordList[i].startDateTime.slice(0, 10))
+				temp.push(recordList[i].startDateTime.slice(0, 10))
+				console.log(temp)
+			}
+		}
+		setExercise(temp)
+	}
 
 	const onLayoutRootView = React.useCallback(async () => {
 		if (fontsLoaded) {
@@ -54,9 +76,9 @@ function ExerciseDays() {
 	return (
 		<View onLayout={onLayoutRootView} style={styles.container}>
 			<Text style={{ fontFamily: "line-rg", fontSize: 20, color: "#727272", marginTop: 10 }}>
-				연속 운동 일자
+				누적 루틴 수행
 			</Text>
-			<Text style={styles.text}>{daysCont} 일</Text>
+			<Text style={styles.text}>{routine} 회</Text>
 		</View>
 	)
 }
@@ -68,7 +90,7 @@ const styles = StyleSheet.create({
 		padding: 5,
 		paddingBottom: 15,
 		paddingTop: 10,
-		backgroundColor: `#fff46184`,
+		backgroundColor: `#5ece6333`,
 		borderRadius: 10,
 		width: width / 2.5,
 		height: height / 9,
@@ -82,4 +104,4 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default ExerciseDays
+export default AccumulatedInfo

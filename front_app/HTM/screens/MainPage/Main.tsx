@@ -10,6 +10,8 @@ import ExerciseDays from "./exerciseDays"
 import WeightGraph from "./weightGraph"
 import WeightInput from "./weightInput"
 import Header from "./header"
+import AccumulatedInfo from "./accumalatedInfo"
+import FriendCount from "./friendCount"
 
 import TrainingBird from "./trainingBird"
 import { getPushToken } from "../../store/user"
@@ -88,8 +90,12 @@ function Main({ navigation }: any) {
 			<StatusBar style="auto" />
 			<TrainingBird></TrainingBird>
 			<View style={{ flexDirection: "row", marginTop: 10 }}>
-				<ExerciseDays></ExerciseDays>
+				<FriendCount />
 				<WeightInput></WeightInput>
+			</View>
+			<View style={{ flexDirection: "row" }}>
+				<ExerciseDays></ExerciseDays>
+				<AccumulatedInfo />
 			</View>
 			{/* <WeightGraph></WeightGraph> */}
 			{userUuid ? null : <DeviceIntro navigation={navigation}></DeviceIntro>}
