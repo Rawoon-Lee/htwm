@@ -175,7 +175,6 @@ function AlarmMessage(props: any) {
 								streaming
 									.acceptStreaming(data)
 									.then(result => {
-										readAlarm()
 										sendNotice(props.alarmData.toUsername + "님이 플레이를 수락하셨습니다.")
 									})
 									.catch(err => {

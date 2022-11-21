@@ -29,7 +29,7 @@
 			"package": "com.phorest.htm",
 			"googleServicesFile": "./google-services.json",
 			"useNextNotificationsApi": true,
-			"permissions": []
+			"permissions": ["READ_EXTERNAL_STORAGE"]
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"
