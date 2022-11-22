@@ -240,6 +240,7 @@ export default function StartRoutine(props) {
 
   return (
     <div className="start">
+      <button onClick={addCount}>test</button>
       {!isSetInterval ? (
         <div className="start-header">
           <div className="start-time">

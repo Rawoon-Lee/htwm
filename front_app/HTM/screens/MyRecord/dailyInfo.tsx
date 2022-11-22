@@ -264,8 +264,8 @@ export default function DailyInfo(props: DateData) {
 														{msToTime(
 															Date.parse(item.endDateTime) - Date.parse(item.startDateTime)
 														)}
-														{`${"\n"}총 수행한 세트 개수 :${"  "}`}
-														{item.doneSetNum}개
+														{`${"\n"}루틴 진행률 :${"  "}`}
+														{item.doneSetNum}%
 													</Text>
 												</View>
 												<View style={{ paddingLeft: 4 }}>
@@ -293,7 +293,7 @@ export default function DailyInfo(props: DateData) {
 																	}}
 																>{`${set.exercise_name}`}</Text>
 																<Text style={{ fontFamily: "line-rg", fontSize: 18 }}>
-																	{`${set.set_cnt}${"  "}세트`}
+																	{`${set.number}${"  "}개`}
 																</Text>
 															</View>
 														)
